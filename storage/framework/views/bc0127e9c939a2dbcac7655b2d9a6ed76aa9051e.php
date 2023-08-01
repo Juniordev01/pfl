@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html dir="@if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl){{'rtl'}}@endif">
+<html dir="<?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?><?php echo e('rtl'); ?><?php endif; ?>">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    @if(!config('database.connections.saleprosaas_landlord'))
-    <link rel="icon" type="image/png" href="{{url('logo', $general_setting->site_logo)}}" />
-    <title>{{$general_setting->site_title}}</title>
+    <?php if(!config('database.connections.saleprosaas_landlord')): ?>
+    <link rel="icon" type="image/png" href="<?php echo e(url('logo', $general_setting->site_logo)); ?>" />
+    <title><?php echo e($general_setting->site_title); ?></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="manifest" href="{{url('manifest.json')}}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <link rel="manifest" href="<?php echo e(url('manifest.json')); ?>">
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
     <link rel="preload" href="<?php echo asset('vendor/bootstrap-toggle/css/bootstrap-toggle.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -36,7 +36,7 @@
     <link rel="preload" href="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" rel="stylesheet"></noscript>
 
-    @if(Route::current()->getName() != '/')
+    <?php if(Route::current()->getName() != '/'): ?>
     <!-- date range stylesheet-->
     <link rel="preload" href="<?php echo asset('vendor/daterange/css/daterangepicker.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('vendor/daterange/css/daterangepicker.min.css') ?>" rel="stylesheet"></noscript>
@@ -47,26 +47,26 @@
     <noscript><link href="https://cdn.datatables.net/fixedheader/3.1.6/css/fixedHeader.bootstrap.min.css" rel="stylesheet"></noscript>
     <link rel="preload" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" rel="stylesheet"></noscript>
-    @endif
+    <?php endif; ?>
 
     <link rel="stylesheet" href="<?php echo asset('css/style.default.css') ?>" id="theme-stylesheet" type="text/css">
     <link rel="stylesheet" href="<?php echo asset('css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
 
-    @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+    <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('css/custom-rtl.css') ?>" type="text/css" id="custom-style">
-    @endif
-    @else
-    <link rel="icon" type="image/png" href="{{url('../../logo', $general_setting->site_logo)}}" />
-    <title>{{$general_setting->site_title}}</title>
+    <?php endif; ?>
+    <?php else: ?>
+    <link rel="icon" type="image/png" href="<?php echo e(url('../../logo', $general_setting->site_logo)); ?>" />
+    <title><?php echo e($general_setting->site_title); ?></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="manifest" href="{{url('manifest.json')}}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <link rel="manifest" href="<?php echo e(url('manifest.json')); ?>">
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="<?php echo asset('../../vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">
     <link rel="preload" href="<?php echo asset('../../vendor/bootstrap-toggle/css/bootstrap-toggle.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -93,7 +93,7 @@
     <link rel="preload" href="<?php echo asset('../../vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('../../vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css') ?>" rel="stylesheet"></noscript>
 
-    @if(Route::current()->getName() != '/')
+    <?php if(Route::current()->getName() != '/'): ?>
     <!-- date range stylesheet-->
     <link rel="preload" href="<?php echo asset('../../vendor/daterange/css/daterangepicker.min.css') ?>" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="<?php echo asset('../../vendor/daterange/css/daterangepicker.min.css') ?>" rel="stylesheet"></noscript>
@@ -104,19 +104,19 @@
     <noscript><link href="https://cdn.datatables.net/fixedheader/3.1.6/css/fixedHeader.bootstrap.min.css" rel="stylesheet"></noscript>
     <link rel="preload" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css" rel="stylesheet"></noscript>
-    @endif
+    <?php endif; ?>
 
     <link rel="stylesheet" href="<?php echo asset('../../css/style.default.css') ?>" id="theme-stylesheet" type="text/css">
     <link rel="stylesheet" href="<?php echo asset('../../css/dropzone.css') ?>">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="<?php echo asset('../../css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
 
-    @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+    <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
       <!-- RTL css -->
       <link rel="stylesheet" href="<?php echo asset('../../vendor/bootstrap/css/bootstrap-rtl.min.css') ?>" type="text/css">
       <link rel="stylesheet" href="<?php echo asset('../../css/custom-rtl.css') ?>" type="text/css" id="custom-style">
-    @endif
-    @endif
+    <?php endif; ?>
+    <?php endif; ?>
     <!-- Google fonts - Roboto -->
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Nunito:400,500,700" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css?family=Nunito:400,500,700" rel="stylesheet"></noscript>
@@ -127,23 +127,23 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   </head>
 
-  <body class="@if($theme == 'dark')dark-mode dripicons-brightness-low @endif  @if(Route::current()->getName() == 'sale.pos') pos-page @endif" onload="myFunction()">
+  <body class="<?php if($theme == 'dark'): ?>dark-mode dripicons-brightness-low <?php endif; ?>  <?php if(Route::current()->getName() == 'sale.pos'): ?> pos-page <?php endif; ?>" onload="myFunction()">
     <div id="loader"></div>
       <!-- Side Navbar -->
       <nav class="side-navbar">
         <span class="brand-big">
-            @if($general_setting->site_logo)
-            <a href="{{url('/')}}"><img src="{{url('logo', $general_setting->site_logo)}}" width="115"></a>
-            @else
-            <a href="{{url('/')}}"><h1 class="d-inline">{{$general_setting->site_title}}</h1></a>
-            @endif
+            <?php if($general_setting->site_logo): ?>
+            <a href="<?php echo e(url('/')); ?>"><img src="<?php echo e(url('logo', $general_setting->site_logo)); ?>" width="115"></a>
+            <?php else: ?>
+            <a href="<?php echo e(url('/')); ?>"><h1 class="d-inline"><?php echo e($general_setting->site_title); ?></h1></a>
+            <?php endif; ?>
         </span>
-        @include('backend.layout.sidebar')
+        <?php echo $__env->make('backend.layout.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
       </nav>
 
     <div class="page">
         <!-- navbar-->
-      @if(Route::current()->getName() != 'sale.pos')
+      <?php if(Route::current()->getName() != 'sale.pos'): ?>
       <header class="container-fluid">
         <nav class="navbar">
             <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars"> </i></a>
@@ -158,81 +158,81 @@
                 <?php
                     $category_permission_active = $role_has_permissions_list->where('name', 'category')->first();
                 ?>
-                @if($category_permission_active)
-                <li class="dropdown-item"><a data-toggle="modal" data-target="#category-modal">{{__('file.Add Category')}}</a></li>
-                @endif
+                <?php if($category_permission_active): ?>
+                <li class="dropdown-item"><a data-toggle="modal" data-target="#category-modal"><?php echo e(__('file.Add Category')); ?></a></li>
+                <?php endif; ?>
                 <?php
                     $add_permission_active = $role_has_permissions_list->where('name', 'products-add')->first();
                 ?>
-                @if($add_permission_active)
-                <li class="dropdown-item"><a href="{{route('products.create')}}">{{__('file.add_product')}}</a></li>
-                @endif
+                <?php if($add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('products.create')); ?>"><?php echo e(__('file.add_product')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $add_permission_active = $role_has_permissions_list->where('name', 'purchases-add')->first();
                 ?>
-                @if($add_permission_active)
-                <li class="dropdown-item"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
-                @endif
+                <?php if($add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('purchases.create')); ?>"><?php echo e(trans('file.Add Purchase')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $sale_add_permission_active = $role_has_permissions_list->where('name', 'sales-add')->first();
                 ?>
-                @if($sale_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li>
-                @endif
+                <?php if($sale_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('sales.create')); ?>"><?php echo e(trans('file.Add Sale')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $expense_add_permission_active = $role_has_permissions_list->where('name', 'expenses-add')->first();
                 ?>
-                @if($expense_add_permission_active)
-                <li class="dropdown-item"><a data-toggle="modal" data-target="#expense-modal"> {{trans('file.Add Expense')}}</a></li>
-                @endif
+                <?php if($expense_add_permission_active): ?>
+                <li class="dropdown-item"><a data-toggle="modal" data-target="#expense-modal"> <?php echo e(trans('file.Add Expense')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $quotation_add_permission_active = $role_has_permissions_list->where('name', 'quotes-add')->first();
                 ?>
-                @if($quotation_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('quotations.create')}}">{{trans('file.Add Quotation')}}</a></li>
-                @endif
+                <?php if($quotation_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('quotations.create')); ?>"><?php echo e(trans('file.Add Quotation')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $transfer_add_permission_active = $role_has_permissions_list->where('name', 'transfers-add')->first();
                 ?>
-                @if($transfer_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('transfers.create')}}">{{trans('file.Add Transfer')}}</a></li>
-                @endif
+                <?php if($transfer_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('transfers.create')); ?>"><?php echo e(trans('file.Add Transfer')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $return_add_permission_active = $role_has_permissions_list->where('name', 'returns-add')->first();
                 ?>
-                @if($return_add_permission_active)
-                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-sale-return"> {{trans('file.Add Return')}}</a></li>
-                @endif
+                <?php if($return_add_permission_active): ?>
+                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-sale-return"> <?php echo e(trans('file.Add Return')); ?></a></li>
+                <?php endif; ?>
                 <?php
                 $purchase_return_add_permission_active = $role_has_permissions_list->where('name', 'purchase-return-add')->first();
                 ?>
-                @if($purchase_return_add_permission_active)
-                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-purchase-return"> {{trans('file.Add Purchase Return')}}</a></li>
-                @endif
+                <?php if($purchase_return_add_permission_active): ?>
+                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-purchase-return"> <?php echo e(trans('file.Add Purchase Return')); ?></a></li>
+                <?php endif; ?>
                 <?php
                     $user_add_permission_active = $role_has_permissions_list->where('name', 'users-add')->first();
                 ?>
-                @if($user_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
-                @endif
+                <?php if($user_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('user.create')); ?>"><?php echo e(trans('file.Add User')); ?></a></li>
+                <?php endif; ?>
                 <?php
                     $customer_add_permission_active = $role_has_permissions_list->where('name', 'customers-add')->first();
                 ?>
-                @if($customer_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li>
-                @endif
+                <?php if($customer_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('customer.create')); ?>"><?php echo e(trans('file.Add Customer')); ?></a></li>
+                <?php endif; ?>
                 <?php
                     $biller_add_permission_active = $role_has_permissions_list->where('name', 'billers-add')->first();
                 ?>
-                @if($biller_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li>
-                @endif
+                <?php if($biller_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('biller.create')); ?>"><?php echo e(trans('file.Add Biller')); ?></a></li>
+                <?php endif; ?>
                 <?php
                     $supplier_add_permission_active = $role_has_permissions_list->where('name', 'suppliers-add')->first();
                 ?>
-                @if($supplier_add_permission_active)
-                <li class="dropdown-item"><a href="{{route('supplier.create')}}">{{trans('file.Add Supplier')}}</a></li>
-                @endif
+                <?php if($supplier_add_permission_active): ?>
+                <li class="dropdown-item"><a href="<?php echo e(route('supplier.create')); ?>"><?php echo e(trans('file.Add Supplier')); ?></a></li>
+                <?php endif; ?>
               </ul>
             </div>
             <?php
@@ -244,148 +244,149 @@
 
                 $general_setting_permission_active = $role_has_permissions_list->where('name', 'general_setting')->first();
             ?>
-            @if($sale_add_permission_active)
-            <li class="nav-item"><a class="btn-pos btn-sm" href="{{route('sale.pos')}}"><i class="dripicons-shopping-bag"></i><span> POS</span></a></li>
-            @endif
-            <li class="nav-item"><a id="switch-theme" data-toggle="tooltip" title="{{trans('file.Switch Theme')}}"><i class="dripicons-brightness-max"></i></a></li>
-            <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip" title="{{trans('file.Full Screen')}}"><i class="dripicons-expand"></i></a></li>
-            @if(\Auth::user()->role_id <= 2)
-                <li class="nav-item"><a href="{{route('cashRegister.index')}}" data-toggle="tooltip" title="{{trans('file.Cash Register List')}}"><i class="dripicons-archive"></i></a></li>
-            @endif
-            @if($product_qty_alert_active && ($alert_product + $dso_alert_product_no + \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count() ) > 0)
+            <?php if($sale_add_permission_active): ?>
+            <li class="nav-item"><a class="btn-pos btn-sm" href="<?php echo e(route('sale.pos')); ?>"><i class="dripicons-shopping-bag"></i><span> POS</span></a></li>
+            <?php endif; ?>
+            <li class="nav-item"><a id="switch-theme" data-toggle="tooltip" title="<?php echo e(trans('file.Switch Theme')); ?>"><i class="dripicons-brightness-max"></i></a></li>
+            <li class="nav-item"><a id="btnFullscreen" data-toggle="tooltip" title="<?php echo e(trans('file.Full Screen')); ?>"><i class="dripicons-expand"></i></a></li>
+            <?php if(\Auth::user()->role_id <= 2): ?>
+                <li class="nav-item"><a href="<?php echo e(route('cashRegister.index')); ?>" data-toggle="tooltip" title="<?php echo e(trans('file.Cash Register List')); ?>"><i class="dripicons-archive"></i></a></li>
+            <?php endif; ?>
+            <?php if($product_qty_alert_active && ($alert_product + $dso_alert_product_no + \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count() ) > 0): ?>
                 <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{$alert_product + $dso_alert_product_no + \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count()}}</span>
+                    <a rel="nofollow" data-toggle="tooltip" title="<?php echo e(__('Notifications')); ?>" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number"><?php echo e($alert_product + $dso_alert_product_no + \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count()); ?></span>
                     </a>
                     <ul class="right-sidebar">
                         <li class="notifications">
-                            <a href="{{route('report.qtyAlert')}}" class="btn btn-link"> {{$alert_product}} product exceeds alert quantity</a>
+                            <a href="<?php echo e(route('report.qtyAlert')); ?>" class="btn btn-link"> <?php echo e($alert_product); ?> product exceeds alert quantity</a>
                         </li>
-                        @if($dso_alert_product_no)
+                        <?php if($dso_alert_product_no): ?>
                         <li class="notifications">
-                            <a href="{{route('report.dailySaleObjective')}}" class="btn btn-link"> {{$dso_alert_product_no}} product could not fulfill daily sale objective</a>
+                            <a href="<?php echo e(route('report.dailySaleObjective')); ?>" class="btn btn-link"> <?php echo e($dso_alert_product_no); ?> product could not fulfill daily sale objective</a>
                         </li>
-                        @endif
-                        @foreach(\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d')) as $key => $notification)
+                        <?php endif; ?>
+                        <?php $__currentLoopData = \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d')); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li class="notifications">
-                                @if($notification->data['document_name'])
-                                <a target="_blank" href="{{url('public/documents/notification', $notification->data['document_name'])}}" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                                @else
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                                @endif
+                                <?php if($notification->data['document_name']): ?>
+                                <a target="_blank" href="<?php echo e(url('public/documents/notification', $notification->data['document_name'])); ?>" class="btn btn-link"><?php echo e($notification->data['message']); ?></a>
+                                <?php else: ?>
+                                <a href="#" class="btn btn-link"><?php echo e($notification->data['message']); ?></a>
+                                <?php endif; ?>
                             </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </li>
-            @endif
-            @if(\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count() > 0)
+            <?php endif; ?>
+            <?php if(\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count() > 0): ?>
                 <li class="nav-item" id="notification-icon">
-                    <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count()}}</span>
+                    <a rel="nofollow" data-toggle="tooltip" title="<?php echo e(__('Notifications')); ?>" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number"><?php echo e(\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d'))->count()); ?></span>
                     </a>
                     <ul class="right-sidebar">
-                        @foreach(\Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d')) as $key => $notification)
+                        <?php $__currentLoopData = \Auth::user()->unreadNotifications->where('data.reminder_date', date('Y-m-d')); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li class="notifications">
-                                @if($notification->data['document_name'])
-                                <a target="_blank" href="{{url('public/documents/notification', $notification->data['document_name'])}}" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                                @else
-                                <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
-                                @endif
+                                <?php if($notification->data['document_name']): ?>
+                                <a target="_blank" href="<?php echo e(url('public/documents/notification', $notification->data['document_name'])); ?>" class="btn btn-link"><?php echo e($notification->data['message']); ?></a>
+                                <?php else: ?>
+                                <a href="#" class="btn btn-link"><?php echo e($notification->data['message']); ?></a>
+                                <?php endif; ?>
                             </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </li>
-            @endif
+            <?php endif; ?>
             <li class="nav-item">
-                    <a rel="nofollow" title="{{trans('file.language')}}" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
+                    <a rel="nofollow" title="<?php echo e(trans('file.language')); ?>" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-web"></i></a>
                     <ul class="right-sidebar">
                         <li>
-                        <a href="{{ url('language_switch/en') }}" class="btn btn-link"> English</a>
+                        <a href="<?php echo e(url('language_switch/en')); ?>" class="btn btn-link"> English</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/es') }}" class="btn btn-link"> Español</a>
+                        <a href="<?php echo e(url('language_switch/es')); ?>" class="btn btn-link"> Español</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/ar') }}" class="btn btn-link"> عربى</a>
+                        <a href="<?php echo e(url('language_switch/ar')); ?>" class="btn btn-link"> عربى</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/id') }}" class="btn btn-link"> Bahasa</a>
+                        <a href="<?php echo e(url('language_switch/id')); ?>" class="btn btn-link"> Bahasa</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/ms') }}" class="btn btn-link"> Malay</a>
+                        <a href="<?php echo e(url('language_switch/ms')); ?>" class="btn btn-link"> Malay</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/s_chinese') }}" class="btn btn-link">中国人</a>
+                        <a href="<?php echo e(url('language_switch/s_chinese')); ?>" class="btn btn-link">中国人</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/t_chinese') }}" class="btn btn-link">中國人</a>
+                        <a href="<?php echo e(url('language_switch/t_chinese')); ?>" class="btn btn-link">中國人</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/pt_BR') }}" class="btn btn-link"> Portuguese</a>
+                        <a href="<?php echo e(url('language_switch/pt_BR')); ?>" class="btn btn-link"> Portuguese</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/fr') }}" class="btn btn-link"> Français</a>
+                        <a href="<?php echo e(url('language_switch/fr')); ?>" class="btn btn-link"> Français</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/de') }}" class="btn btn-link"> Deutsche</a>
+                        <a href="<?php echo e(url('language_switch/de')); ?>" class="btn btn-link"> Deutsche</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/hi') }}" class="btn btn-link"> हिंदी</a>
+                        <a href="<?php echo e(url('language_switch/hi')); ?>" class="btn btn-link"> हिंदी</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/vi') }}" class="btn btn-link"> Tiếng Việt</a>
+                        <a href="<?php echo e(url('language_switch/vi')); ?>" class="btn btn-link"> Tiếng Việt</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/ru') }}" class="btn btn-link"> русский</a>
+                        <a href="<?php echo e(url('language_switch/ru')); ?>" class="btn btn-link"> русский</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/bg') }}" class="btn btn-link"> български</a>
+                        <a href="<?php echo e(url('language_switch/bg')); ?>" class="btn btn-link"> български</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/tr') }}" class="btn btn-link"> Türk</a>
+                        <a href="<?php echo e(url('language_switch/tr')); ?>" class="btn btn-link"> Türk</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/it') }}" class="btn btn-link"> Italiano</a>
+                        <a href="<?php echo e(url('language_switch/it')); ?>" class="btn btn-link"> Italiano</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/nl') }}" class="btn btn-link"> Nederlands</a>
+                        <a href="<?php echo e(url('language_switch/nl')); ?>" class="btn btn-link"> Nederlands</a>
                         </li>
                         <li>
-                        <a href="{{ url('language_switch/lao') }}" class="btn btn-link"> Lao</a>
+                        <a href="<?php echo e(url('language_switch/lao')); ?>" class="btn btn-link"> Lao</a>
                         </li>
                     </ul>
             </li>
             <li class="nav-item">
-                <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span><?php echo e(ucfirst(Auth::user()->name)); ?></span> <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="right-sidebar">
                     <li>
-                    <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
+                    <a href="<?php echo e(route('user.profile', ['id' => Auth::id()])); ?>"><i class="dripicons-user"></i> <?php echo e(trans('file.profile')); ?></a>
                     </li>
-                    @if($general_setting_permission_active)
+                    <?php if($general_setting_permission_active): ?>
                     <li>
-                    <a href="{{route('setting.general')}}"><i class="dripicons-gear"></i> {{trans('file.settings')}}</a>
+                    <a href="<?php echo e(route('setting.general')); ?>"><i class="dripicons-gear"></i> <?php echo e(trans('file.settings')); ?></a>
                     </li>
-                    @endif
+                    <?php endif; ?>
                     <li>
-                    <a href="{{url('my-transactions/'.date('Y').'/'.date('m'))}}"><i class="dripicons-swap"></i> {{trans('file.My Transaction')}}</a>
+                    <a href="<?php echo e(url('my-transactions/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-swap"></i> <?php echo e(trans('file.My Transaction')); ?></a>
                     </li>
-                    @if(Auth::user()->role_id != 5)
+                    <?php if(Auth::user()->role_id != 5): ?>
                     <li>
-                    <a href="{{url('holidays/my-holiday/'.date('Y').'/'.date('m'))}}"><i class="dripicons-vibrate"></i> {{trans('file.My Holiday')}}</a>
+                    <a href="<?php echo e(url('holidays/my-holiday/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-vibrate"></i> <?php echo e(trans('file.My Holiday')); ?></a>
                     </li>
-                    @endif
-                    @if($empty_database_permission_active)
+                    <?php endif; ?>
+                    <?php if($empty_database_permission_active): ?>
                     <li>
-                    <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="{{route('setting.emptyDatabase')}}"><i class="dripicons-stack"></i> {{trans('file.Empty Database')}}</a>
+                    <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="<?php echo e(route('setting.emptyDatabase')); ?>"><i class="dripicons-stack"></i> <?php echo e(trans('file.Empty Database')); ?></a>
                     </li>
-                    @endif
+                    <?php endif; ?>
                     <li>
-                    <a href="{{ route('logout') }}"
+                    <a href="<?php echo e(route('logout')); ?>"
                         onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
-                        {{trans('file.logout')}}
+                        <?php echo e(trans('file.logout')); ?>
+
                     </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
+                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                        <?php echo csrf_field(); ?>
                     </form>
                     </li>
                 </ul>
@@ -393,18 +394,18 @@
             </ul>
         </nav>
       </header>
-      @endif
+      <?php endif; ?>
       
 
       <div style="display:none" id="content" class="animate-bottom">
-          @yield('content')
+          <?php echo $__env->yieldContent('content'); ?>
       </div>
 
       <footer class="main-footer">
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-12">
-              <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} <span class="external">{{$general_setting->developed_by}}</span> | V {{env('VERSION')}}</p>
+              <p>&copy; <?php echo e($general_setting->site_title); ?> | <?php echo e(trans('file.Developed')); ?> <?php echo e(trans('file.By')); ?> <span class="external"><?php echo e($general_setting->developed_by); ?></span> | V <?php echo e(env('VERSION')); ?></p>
             </div>
           </div>
         </div>
@@ -415,12 +416,13 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Send Notification')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Send Notification')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'notifications.store', 'method' => 'post', 'files'=> true]) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'notifications.store', 'method' => 'post', 'files'=> true]); ?>
+
                       <div class="row">
                           <?php
                               $lims_user_list = DB::table('users')->where([
@@ -429,31 +431,32 @@
                               ])->get();
                           ?>
                           <div class="col-md-4 form-group">
-                                <input type="hidden" name="sender_id" value="{{\Auth::id()}}">
-                              <label>{{trans('file.User')}} *</label>
+                                <input type="hidden" name="sender_id" value="<?php echo e(\Auth::id()); ?>">
+                              <label><?php echo e(trans('file.User')); ?> *</label>
                               <select name="receiver_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select user...">
-                                  @foreach($lims_user_list as $user)
-                                  <option value="{{$user->id}}">{{$user->name . ' (' . $user->email. ')'}}</option>
-                                  @endforeach
+                                  <?php $__currentLoopData = $lims_user_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                  <option value="<?php echo e($user->id); ?>"><?php echo e($user->name . ' (' . $user->email. ')'); ?></option>
+                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                               </select>
                           </div>
                           <div class="col-md-4 form-group">
-                                <label>{{trans('file.Reminder Date')}}</label>
-                                <input type="text" name="reminder_date" class="form-control date" value="{{date('d-m-Y')}}">
+                                <label><?php echo e(trans('file.Reminder Date')); ?></label>
+                                <input type="text" name="reminder_date" class="form-control date" value="<?php echo e(date('d-m-Y')); ?>">
                           </div>
                           <div class="col-md-4 form-group">
-                                <label>{{trans('file.Attach Document')}}</label>
+                                <label><?php echo e(trans('file.Attach Document')); ?></label>
                                 <input type="file" name="document" class="form-control">
                           </div>
                           <div class="col-md-12 form-group">
-                              <label>{{trans('file.Message')}} *</label>
+                              <label><?php echo e(trans('file.Message')); ?> *</label>
                               <textarea rows="5" name="message" class="form-control" required></textarea>
                           </div>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -464,38 +467,41 @@
       <div id="category-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
           <div role="document" class="modal-dialog">
             <div class="modal-content">
-              {!! Form::open(['route' => 'category.store', 'method' => 'post', 'files' => true]) !!}
+              <?php echo Form::open(['route' => 'category.store', 'method' => 'post', 'files' => true]); ?>
+
               <div class="modal-header">
-                <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Category')}}</h5>
+                <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Category')); ?></h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
               </div>
               <div class="modal-body">
-                <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                   <div class="row">
                       <div class="col-md-6 form-group">
-                          <label>{{trans('file.name')}} *</label>
-                          {{Form::text('name',null,array('required' => 'required', 'class' => 'form-control', 'placeholder' => 'Type category name...'))}}
+                          <label><?php echo e(trans('file.name')); ?> *</label>
+                          <?php echo e(Form::text('name',null,array('required' => 'required', 'class' => 'form-control', 'placeholder' => 'Type category name...'))); ?>
+
                       </div>
                       <div class="col-md-6 form-group">
-                          <label>{{trans('file.Image')}}</label>
+                          <label><?php echo e(trans('file.Image')); ?></label>
                           <input type="file" name="image" class="form-control">
                       </div>
                       <div class="col-md-6 form-group">
-                          <label>{{trans('file.Parent Category')}}</label>
+                          <label><?php echo e(trans('file.Parent Category')); ?></label>
                           <select name="parent_id" class="form-control selectpicker" id="parent">
-                              <option value="">No {{trans('file.parent')}}</option>
-                              @foreach($categories_list as $category)
-                              <option value="{{$category->id}}">{{$category->name}}</option>
-                              @endforeach
+                              <option value="">No <?php echo e(trans('file.parent')); ?></option>
+                              <?php $__currentLoopData = $categories_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
                   </div>
 
                   <div class="form-group">
-                    <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary">
+                    <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary">
                   </div>
               </div>
-              {{ Form::close() }}
+              <?php echo e(Form::close()); ?>
+
             </div>
           </div>
       </div>
@@ -506,12 +512,13 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Expense')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Expense')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'expenses.store', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'expenses.store', 'method' => 'post']); ?>
+
                     <?php
                       $lims_expense_category_list = DB::table('expense_categories')->where('is_active', true)->get();
                       if(Auth::user()->role_id > 2)
@@ -525,50 +532,51 @@
                     ?>
                       <div class="row">
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Date')}}</label>
+                            <label><?php echo e(trans('file.Date')); ?></label>
                             <input type="text" name="created_at" class="form-control date" placeholder="Choose date"/>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Expense Category')}} *</label>
+                            <label><?php echo e(trans('file.Expense Category')); ?> *</label>
                             <select name="expense_category_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select Expense Category...">
-                                @foreach($lims_expense_category_list as $expense_category)
-                                <option value="{{$expense_category->id}}">{{$expense_category->name . ' (' . $expense_category->code. ')'}}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $lims_expense_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $expense_category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($expense_category->id); ?>"><?php echo e($expense_category->name . ' (' . $expense_category->code. ')'); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Warehouse')}} *</label>
+                            <label><?php echo e(trans('file.Warehouse')); ?> *</label>
                             <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true" data-live-search-style="begins" title="Select Warehouse...">
-                                @foreach($lims_warehouse_list as $warehouse)
-                                <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>{{trans('file.Amount')}} *</label>
+                            <label><?php echo e(trans('file.Amount')); ?> *</label>
                             <input type="number" name="amount" step="any" required class="form-control">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Account')}}</label>
+                            <label> <?php echo e(trans('file.Account')); ?></label>
                             <select class="form-control selectpicker" name="account_id">
-                            @foreach($lims_account_list as $account)
-                                @if($account->is_default)
-                                <option selected value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                                @else
-                                <option value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                                @endif
-                            @endforeach
+                            <?php $__currentLoopData = $lims_account_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if($account->is_default): ?>
+                                <option selected value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                                <?php else: ?>
+                                <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Note')}}</label>
+                          <label><?php echo e(trans('file.Note')); ?></label>
                           <textarea name="note" rows="3" class="form-control"></textarea>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -579,24 +587,27 @@
       <div id="add-sale-return" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
           <div role="document" class="modal-dialog">
             <div class="modal-content">
-              {!! Form::open(['route' => 'return-sale.create', 'method' => 'get']) !!}
+              <?php echo Form::open(['route' => 'return-sale.create', 'method' => 'get']); ?>
+
               <div class="modal-header">
                 <h5 id="exampleModalLabel" class="modal-title">Add Sale Return</h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
               </div>
               <div class="modal-body">
-                <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                  <div class="row">
                       <div class="col-md-6">
                           <div class="form-group">
-                              <label>{{trans('file.Sale Reference')}} *</label>
+                              <label><?php echo e(trans('file.Sale Reference')); ?> *</label>
                               <input type="text" name="reference_no" class="form-control">
                           </div>
                       </div>
                  </div>
-                  {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+                  <?php echo e(Form::submit('Submit', ['class' => 'btn btn-primary'])); ?>
+
               </div>
-              {!! Form::close() !!}
+              <?php echo Form::close(); ?>
+
             </div>
           </div>
       </div>
@@ -606,24 +617,27 @@
       <div id="add-purchase-return" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
           <div role="document" class="modal-dialog">
             <div class="modal-content">
-              {!! Form::open(['route' => 'return-purchase.create', 'method' => 'get']) !!}
+              <?php echo Form::open(['route' => 'return-purchase.create', 'method' => 'get']); ?>
+
               <div class="modal-header">
                 <h5 id="exampleModalLabel" class="modal-title">Add Purchase Return</h5>
                 <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
               </div>
               <div class="modal-body">
-                <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                  <div class="row">
                       <div class="col-md-6">
                           <div class="form-group">
-                              <label>{{trans('file.Purchase Reference')}} *</label>
+                              <label><?php echo e(trans('file.Purchase Reference')); ?> *</label>
                               <input type="text" name="reference_no" class="form-control">
                           </div>
                       </div>
                  </div>
-                  {{Form::submit('Submit', ['class' => 'btn btn-primary'])}}
+                  <?php echo e(Form::submit('Submit', ['class' => 'btn btn-primary'])); ?>
+
               </div>
-              {!! Form::close() !!}
+              <?php echo Form::close(); ?>
+
             </div>
           </div>
       </div>
@@ -634,32 +648,34 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Account')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Account')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'accounts.store', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'accounts.store', 'method' => 'post']); ?>
+
                       <div class="form-group">
-                          <label>{{trans('file.Account No')}} *</label>
+                          <label><?php echo e(trans('file.Account No')); ?> *</label>
                           <input type="text" name="account_no" required class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.name')}} *</label>
+                          <label><?php echo e(trans('file.name')); ?> *</label>
                           <input type="text" name="name" required class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Initial Balance')}}</label>
+                          <label><?php echo e(trans('file.Initial Balance')); ?></label>
                           <input type="number" name="initial_balance" step="any" class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>{{trans('file.Note')}}</label>
+                          <label><?php echo e(trans('file.Note')); ?></label>
                           <textarea name="note" rows="3" class="form-control"></textarea>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -671,31 +687,32 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Account Statement')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Account Statement')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'accounts.statement', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'accounts.statement', 'method' => 'post']); ?>
+
                       <div class="row">
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Account')}}</label>
+                            <label> <?php echo e(trans('file.Account')); ?></label>
                             <select class="form-control selectpicker" name="account_id">
-                            @foreach($lims_account_list as $account)
-                                <option value="{{$account->id}}">{{$account->name}} [{{$account->account_no}}]</option>
-                            @endforeach
+                            <?php $__currentLoopData = $lims_account_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($account->id); ?>"><?php echo e($account->name); ?> [<?php echo e($account->account_no); ?>]</option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label> {{trans('file.Type')}}</label>
+                            <label> <?php echo e(trans('file.Type')); ?></label>
                             <select class="form-control selectpicker" name="type">
-                                <option value="0">{{trans('file.All')}}</option>
-                                <option value="1">{{trans('file.Debit')}}</option>
-                                <option value="2">{{trans('file.Credit')}}</option>
+                                <option value="0"><?php echo e(trans('file.All')); ?></option>
+                                <option value="1"><?php echo e(trans('file.Debit')); ?></option>
+                                <option value="2"><?php echo e(trans('file.Credit')); ?></option>
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label>{{trans('file.Choose Your Date')}}</label>
+                            <label><?php echo e(trans('file.Choose Your Date')); ?></label>
                             <div class="input-group">
                                 <input type="text" class="account-statement-daterangepicker-field form-control" required />
                                 <input type="hidden" name="start_date" />
@@ -704,9 +721,10 @@
                         </div>
                       </div>
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -718,29 +736,31 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Warehouse Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Warehouse Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.warehouse', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.warehouse', 'method' => 'post']); ?>
+
                     
                       <div class="form-group">
-                          <label>{{trans('file.Warehouse')}} *</label>
+                          <label><?php echo e(trans('file.Warehouse')); ?> *</label>
                           <select name="warehouse_id" class="selectpicker form-control" required data-live-search="true" id="warehouse-id" data-live-search-style="begins" title="Select warehouse...">
-                              @foreach($lims_warehouse_list as $warehouse)
-                              <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -752,31 +772,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.User Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.User Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.user', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.user', 'method' => 'post']); ?>
+
                     <?php
                       $lims_user_list = DB::table('users')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.User')}} *</label>
+                          <label><?php echo e(trans('file.User')); ?> *</label>
                           <select name="user_id" class="selectpicker form-control" required data-live-search="true" id="user-id" data-live-search-style="begins" title="Select user...">
-                              @foreach($lims_user_list as $user)
-                              <option value="{{$user->id}}">{{$user->name . ' (' . $user->phone. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_user_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($user->id); ?>"><?php echo e($user->name . ' (' . $user->phone. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -788,31 +810,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Customer Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Customer Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.customer', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.customer', 'method' => 'post']); ?>
+
                     <?php
                       $lims_customer_list = DB::table('customers')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.customer')}} *</label>
+                          <label><?php echo e(trans('file.customer')); ?> *</label>
                           <select name="customer_id" class="selectpicker form-control" required data-live-search="true" id="customer-id" data-live-search-style="begins" title="Select customer...">
-                              @foreach($lims_customer_list as $customer)
-                              <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_customer_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name . ' (' . $customer->phone_number. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -824,31 +848,33 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Customer Group Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Customer Group Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.customer_group', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.customer_group', 'method' => 'post']); ?>
+
                     <?php
                       $lims_customer_group_list = DB::table('customer_groups')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.Customer Group')}} *</label>
+                          <label><?php echo e(trans('file.Customer Group')); ?> *</label>
                           <select name="customer_group_id" class="selectpicker form-control" required data-live-search="true" id="customer-group-id" data-live-search-style="begins" title="Select customer group...">
-                              @foreach($lims_customer_group_list as $customer_group)
-                              <option value="{{$customer_group->id}}">{{$customer_group->name}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_customer_group_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer_group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($customer_group->id); ?>"><?php echo e($customer_group->name); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
@@ -860,38 +886,40 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Supplier Report')}}</h5>
+                    <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Supplier Report')); ?></h5>
                     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
-                  <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                    {!! Form::open(['route' => 'report.supplier', 'method' => 'post']) !!}
+                  <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
+                    <?php echo Form::open(['route' => 'report.supplier', 'method' => 'post']); ?>
+
                     <?php
                       $lims_supplier_list = DB::table('suppliers')->where('is_active', true)->get();
                     ?>
                       <div class="form-group">
-                          <label>{{trans('file.Supplier')}} *</label>
+                          <label><?php echo e(trans('file.Supplier')); ?> *</label>
                           <select name="supplier_id" class="selectpicker form-control" required data-live-search="true" id="supplier-id" data-live-search-style="begins" title="Select Supplier...">
-                              @foreach($lims_supplier_list as $supplier)
-                              <option value="{{$supplier->id}}">{{$supplier->name . ' (' . $supplier->phone_number. ')'}}</option>
-                              @endforeach
+                              <?php $__currentLoopData = $lims_supplier_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $supplier): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                              <option value="<?php echo e($supplier->id); ?>"><?php echo e($supplier->name . ' (' . $supplier->phone_number. ')'); ?></option>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                           </select>
                       </div>
 
-                      <input type="hidden" name="start_date" value="{{date('Y-m').'-'.'01'}}" />
-                      <input type="hidden" name="end_date" value="{{date('Y-m-d')}}" />
+                      <input type="hidden" name="start_date" value="<?php echo e(date('Y-m').'-'.'01'); ?>" />
+                      <input type="hidden" name="end_date" value="<?php echo e(date('Y-m-d')); ?>" />
 
                       <div class="form-group">
-                          <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                          <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                       </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                 </div>
             </div>
         </div>
       </div>
       <!-- end supplier modal -->
     </div>
-    @if(!config('database.connections.saleprosaas_landlord'))
+    <?php if(!config('database.connections.saleprosaas_landlord')): ?>
         <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/jquery/jquery-ui.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
@@ -901,10 +929,10 @@
         <script type="text/javascript" src="<?php echo asset('vendor/bootstrap/js/bootstrap.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/bootstrap-toggle/js/bootstrap-toggle.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/bootstrap/js/bootstrap-select.min.js') ?>"></script>
-        @if(Route::current()->getName() == 'sale.pos')
+        <?php if(Route::current()->getName() == 'sale.pos'): ?>
         <script type="text/javascript" src="<?php echo asset('vendor/keyboard/js/jquery.keyboard.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/keyboard/js/jquery.keyboard.extension-autocomplete.js') ?>"></script>
-        @endif
+        <?php endif; ?>
         <script type="text/javascript" src="<?php echo asset('js/grasp_mobile_progress_circle-1.0.0.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/jquery.cookie/jquery.cookie.js') ?>">
         </script>
@@ -912,13 +940,13 @@
         <script type="text/javascript" src="<?php echo asset('js/charts-custom.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/jquery-validation/jquery.validate.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')?>"></script>
-        @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+        <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
           <script type="text/javascript" src="<?php echo asset('js/front_rtl.js') ?>"></script>
-        @else
+        <?php else: ?>
           <script type="text/javascript" src="<?php echo asset('js/front.js') ?>"></script>
-        @endif
+        <?php endif; ?>
 
-        @if(Route::current()->getName() != '/')
+        <?php if(Route::current()->getName() != '/'): ?>
         <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/moment.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/knockout-3.4.2.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/daterange/js/daterangepicker.min.js') ?>"></script>
@@ -926,13 +954,13 @@
         <script type="text/javascript" src="<?php echo asset('js/dropzone.js') ?>"></script>
 
         <!-- table sorter js-->
-        @if( Config::get('app.locale') == 'ar')
+        <?php if( Config::get('app.locale') == 'ar'): ?>
             <script type="text/javascript" src="<?php echo asset('vendor/datatable/pdfmake_arabic.min.js') ?>"></script>
             <script type="text/javascript" src="<?php echo asset('vendor/datatable/vfs_fonts_arabic.js') ?>"></script>
-        @else
+        <?php else: ?>
             <script type="text/javascript" src="<?php echo asset('vendor/datatable/pdfmake.min.js') ?>"></script>
             <script type="text/javascript" src="<?php echo asset('vendor/datatable/vfs_fonts.js') ?>"></script>
-        @endif
+        <?php endif; ?>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/jquery.dataTables.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/dataTables.bootstrap4.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('vendor/datatable/dataTables.buttons.min.js') ?>"></script>
@@ -947,8 +975,8 @@
         <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-        @endif
-    @else
+        <?php endif; ?>
+    <?php else: ?>
         <script type="text/javascript" src="<?php echo asset('../../vendor/jquery/jquery.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/jquery/jquery-ui.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/jquery/bootstrap-datepicker.min.js') ?>"></script>
@@ -966,13 +994,13 @@
         <script type="text/javascript" src="<?php echo asset('../../js/charts-custom.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/jquery-validation/jquery.validate.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js')?>"></script>
-        @if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl)
+        <?php if( Config::get('app.locale') == 'ar' || $general_setting->is_rtl): ?>
           <script type="text/javascript" src="<?php echo asset('../../js/front_rtl.js') ?>"></script>
-        @else
+        <?php else: ?>
           <script type="text/javascript" src="<?php echo asset('../../js/front.js') ?>"></script>
-        @endif
+        <?php endif; ?>
 
-        @if(Route::current()->getName() != '/')
+        <?php if(Route::current()->getName() != '/'): ?>
         <script type="text/javascript" src="<?php echo asset('../../vendor/daterange/js/moment.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/daterange/js/knockout-3.4.2.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/daterange/js/daterangepicker.min.js') ?>"></script>
@@ -980,13 +1008,13 @@
         <script type="text/javascript" src="<?php echo asset('../../js/dropzone.js') ?>"></script>
 
         <!-- table sorter js-->
-        @if( Config::get('app.locale') == 'ar')
+        <?php if( Config::get('app.locale') == 'ar'): ?>
             <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/pdfmake_arabic.min.js') ?>"></script>
             <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/vfs_fonts_arabic.js') ?>"></script>
-        @else
+        <?php else: ?>
             <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/pdfmake.min.js') ?>"></script>
             <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/vfs_fonts.js') ?>"></script>
-        @endif
+        <?php endif; ?>
         <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/jquery.dataTables.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/dataTables.bootstrap4.min.js') ?>"></script>
         <script type="text/javascript" src="<?php echo asset('../../vendor/datatable/dataTables.buttons.min.js') ?>"></script>
@@ -1000,9 +1028,9 @@
         <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
-        @endif
-    @endif
-    @stack('scripts')
+        <?php endif; ?>
+    <?php endif; ?>
+    <?php echo $__env->yieldPushContent('scripts'); ?>
     <script>
         if ('serviceWorker' in navigator ) {
             window.addEventListener('load', function() {
@@ -1182,3 +1210,4 @@
     </script>
   </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\PFL\pfl\resources\views/backend/layout/main.blade.php ENDPATH**/ ?>
