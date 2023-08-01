@@ -1,0 +1,76 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Rubik",sans-serif;
+}
+body{
+    background-color: #f5f8ff;
+}
+.container{
+    background-color: #ffffff;
+    width: 60%;
+    min-width: 450px;
+    position: relative;
+    margin:  50px auto;
+    padding: 50px 20px;
+    border-radius: 7px;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.05);
+}
+input[type="file"]{
+    display: none;
+}
+/* .multi_image_select{
+    display: block;
+    position: relative;
+    background-color: white;
+    color: black;
+    font-size: 18px;
+    text-align: center;
+    width: 300px;
+    padding: 18px 0;
+    margin: auto;
+    border-radius: 5px;
+    cursor: pointer;
+} */
+
+.multi_image_select{
+    display: block;
+    position: relative;
+    background-color: white;
+    color: black;
+    font-size: 13px;
+    text-align: center;
+    width: 150px;
+    padding: 18px 0;
+    margin: auto;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid #ccc; /* Add a 2px solid border with a color of your choice */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a box shadow with x-offset 0, y-offset 2px, blur radius 4px, and color with 20% opacity */
+} 
+
+
+
+#images{
+    width: 50%;
+    position: relative;
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+figure{
+    width: 45%;
+    height: 100px; /* Adjust the height to your preference */
+    overflow: hidden;
+}
+img{
+    width: 100%;
+}
+figcaption{
+    text-align: center;
+    font-size: 2.4vmin;
+    margin-top: 0.5vmin;
+}

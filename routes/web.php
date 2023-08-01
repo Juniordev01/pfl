@@ -10,6 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use App\Http\Controllers\BarcodeGenerator;
+
 Route::get('migrate', 'App\Http\Controllers\LandingPageController@migrateDB');
 Route::get('clear',function() {
     Artisan::call('optimize:clear');
@@ -392,5 +395,18 @@ Route::group(['middleware' => ['common', 'auth', 'active']], function() {
 
 	Route::get('addon-list', 'HomeController@addonList');
 	Route::post('woocommerce-install', 'AddonInstallController@woocommerceInstall')->name('woocommerce.install');
+
+	
+	//Barcode 
+	Route::get("barcode-generator",'BarcodeGenerator@generateBarcode');
+	Route::get("get-product-barcode",'BarcodeGenerator@fetchBarcodeProduct');
+
+
+	// Store Product 
+	Route::post('store', 'ProductController@store')->name('store');
+
+	// Route::resource('products', 'ProductController');
+
+
 });
 

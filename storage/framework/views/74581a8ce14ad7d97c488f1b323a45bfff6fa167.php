@@ -1,10 +1,10 @@
-@extends('backend.layout.main')
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{asset('calender/date-picker.css')}}">
-<link rel="stylesheet" href="{{asset('ImageSelector/style.css')}}">
+<link rel="stylesheet" href="<?php echo e(asset('calender/date-picker.css')); ?>">
+<link rel="stylesheet" href="<?php echo e(asset('ImageSelector/style.css')); ?>">
 
 <style>
     .form-control {
@@ -137,17 +137,17 @@
     #fields {
         padding: 9px 14px 9px 40px;
         /* background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 9px center; */
-        background: transparent url('{{asset("svg/pound.svg")}}') no-repeat 9px center;
-        /* background-image: url('{{asset("svg/pound.svg")}}'); Relative path example */
+        background: transparent url('<?php echo e(asset("svg/pound.svg")); ?>') no-repeat 9px center;
+        /* background-image: url('<?php echo e(asset("svg/pound.svg")); ?>'); Relative path example */
     }
 </style>
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 
 <section>
     <div class="container-fluid">
-        <form action="{{ url('store') }}" method="post" enctype="multipart/form-data">
-            @csrf
+        <form action="<?php echo e(url('store')); ?>" method="post" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-8 rounded">
                     <div class="card shadow-lg  p-3  bg-white cards">
@@ -156,9 +156,16 @@
                             <input type="text" name="name" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
                         </div>
                         <span class="mt-1 mb-2">
-                            @error('name')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span >
 
                         <div class="form-group">
@@ -166,16 +173,23 @@
                             <textarea class="form-control" name="summernote" id="summernote"></textarea>
                         </div>
                         <span class=" mb-2">
-                            @error('summernote')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['summernote'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span >
                     </div>
 
                     <div class="card shadow-lg  p-3 bg-white rounded">
                         <div class="form-group">
                             <div class="d-flex justify-content-start">
-                                <label class="media ml-2">Media</strong></label><i class="dripicons-question ml-2" data-toggle="tooltip" title="{{trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')}}"></i>
+                                <label class="media ml-2">Media</strong></label><i class="dripicons-question ml-2" data-toggle="tooltip" title="<?php echo e(trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')); ?>"></i>
                             </div>
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
@@ -354,11 +368,11 @@
                         <div class="col-md-12" id="variant-section" style="display: none;">
                             <div class="row" id="variant-input-section">
                                 <div class="col-md-6 form-group mt-2">
-                                    <label>{{trans('file.Option')}} *</label>
+                                    <label><?php echo e(trans('file.Option')); ?> *</label>
                                     <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc...">
                                 </div>
                                 <div class="col-md-6 form-group mt-2">
-                                    <label>{{trans('file.Value')}} *</label>
+                                    <label><?php echo e(trans('file.Value')); ?> *</label>
                                     <input type="text" name="variant_value[]" class="type-variant form-control variant-field">
                                 </div>
                             </div>
@@ -367,10 +381,10 @@
                                 <table id="variant-table" class="table table-hover variant-list">
                                     <thead>
                                         <tr>
-                                            <th>{{trans('file.name')}}</th>
-                                            <th>{{trans('file.Item Code')}}</th>
-                                            <th>{{trans('file.Additional Cost')}}</th>
-                                            <th>{{trans('file.Additional Price')}}</th>
+                                            <th><?php echo e(trans('file.name')); ?></th>
+                                            <th><?php echo e(trans('file.Item Code')); ?></th>
+                                            <th><?php echo e(trans('file.Additional Cost')); ?></th>
+                                            <th><?php echo e(trans('file.Additional Price')); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -409,9 +423,16 @@
                                 </div>
                             </div>
                             <span class=" mb-2">
-                            @error('save_status')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['save_status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span >
                         </div>
                     </div>
@@ -436,18 +457,32 @@
                                             <!-- <input type="date" id="start_date" class="form-control" /> -->
                                         </div>
                                         <span class=" mb-2">
-                                            @error('starting_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                            <?php $__errorArgs = ['starting_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="text-danger"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </span >
                                         <div class="col-lg-6">
                                             <label for="">End Time</label>
                                             <input type="text" id="end_date" name="ending_date" class="date-picker form-control" />
                                         </div>
                                         <span class=" mb-2">
-                                            @error('ending_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                            <?php $__errorArgs = ['ending_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="text-danger"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </span >
                                     </div>
                                 </div>
@@ -474,7 +509,7 @@
                                             <span class="text Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Online Store</span>
                                         </li>
                                         <li>
-                                            <img src="{{asset('icons/datetime.png')}}" alt="" width="20px" height="20px" class="" data-toggle="modal" data-target="#exampleModal">
+                                            <img src="<?php echo e(asset('icons/datetime.png')); ?>" alt="" width="20px" height="20px" class="" data-toggle="modal" data-target="#exampleModal">
                                         </li>
                                     </ul>
                                     <ul class="list-unstyled">
@@ -517,14 +552,21 @@
                                 <label for="" class="product">Product Category</label>
 
                                 <select class="form-select border w-100" aria-label="Default select example" name="prod_category" style="border: 1px solid black; border-radius: 5px;">
-                                    @foreach ($lims_category_list as $lims_category_list)
-                                    <option value="{{$lims_category_list->id}}">{{$lims_category_list->name}}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $lims_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lims_category_list): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($lims_category_list->id); ?>"><?php echo e($lims_category_list->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <!-- Add more option elements for other tags if needed -->
                                 </select>
-                                @error('prod_category')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_category'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 
 
                             </div>
@@ -536,9 +578,16 @@
                                     <option value="Product Type 2">Product Type 2</option>
                                     <!-- Add more option elements for other tags if needed -->
                                 </select>
-                                @error('prod_type')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                             <div class="form-group">
                                 <label for="" class="product">Vendor</label>
@@ -546,9 +595,16 @@
                                     <option value="Pakistan Fashion Lounge" selected>Pakistan Fashion Lounge</option>
                                     <!-- Add more option elements for other tags if needed -->
                                 </select>
-                                @error('prod_vendor')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_vendor'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <!-- <input type="text" class="form-control" name="prod_vendor" style="border: 1px solid black; border-radius: 5px;"> -->
                             </div>
                             <span class="coll_error">There are no collection available to add this product to. You can add a new collection or modify your existing collection </span>
@@ -558,9 +614,9 @@
                                 </div>
                                 <div>
                                     <select class="form-select border w-100" name="tags[]" aria-label="Default select example" style="border: 1px solid black; border-radius: 5px;" multiple>
-                                        @foreach ($collections as $tag)
-                                        <option value="{{$tag->title}}">{{$tag->title}}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $collections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($tag->title); ?>"><?php echo e($tag->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -589,8 +645,8 @@
         </form>
     </div>
 
-    @endsection
-    @push('scripts')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startPush('scripts'); ?>
 
     <script>
         // Variants Code Start
@@ -668,7 +724,7 @@
         //     paramName: 'image',
         //     clickable: true,
         //     method: 'POST',
-        //     url: '{{route('products.store')}}',
+        //     url: '<?php echo e(route('products.store')); ?>',
         //     headers: {
         //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         //     },
@@ -698,7 +754,7 @@
         //                         formData.append('file',file[0]);
         //                     $.ajax({
         //                         type:'POST',
-        //                         url:'{{route('products.store')}}',
+        //                         url:'<?php echo e(route('products.store')); ?>',
         //                         data: formData,
         //                         contentType: false,
         //                         processData: false,
@@ -1380,5 +1436,6 @@ function preview() {
             height: 400
         });
     </script>
-    <script src="{{asset('calender/date-picker.js')}}"></script>
-    @endpush
+    <script src="<?php echo e(asset('calender/date-picker.js')); ?>"></script>
+    <?php $__env->stopPush(); ?>
+<?php echo $__env->make('backend.layout.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\PFL\pfl\resources\views/backend/product/create.blade.php ENDPATH**/ ?>
