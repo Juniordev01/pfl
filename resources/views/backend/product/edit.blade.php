@@ -1,578 +1,659 @@
 @extends('backend.layout.main')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{asset('calender/date-picker.css')}}">
+<link rel="stylesheet" href="{{asset('ImageSelector/style.css')}}">
 @section('content')
-<section class="forms">
+
+<section>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.Update Product')}}</h4>
+            <div class="col-lg-6 d-flex justify-content-end" style="z-index: 12;">
+                    @if (session('create_message'))
+                    <div class="alert alert-success">
+                        {{ session('create_message') }}
                     </div>
-                    <div class="card-body">
-                        <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
-                        <form id="product-form">
-                            <input type="hidden" name="id" value="{{$lims_product_data->id}}" />
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Type')}} *</strong> </label>
-                                        <div class="input-group">
-                                            <select name="type" required class="form-control selectpicker" id="type">
-                                                <option value="standard">Standard</option>
-                                                <option value="combo">Combo</option>
-                                                <option value="digital">Digital</option>
-                                                <option value="service">Service</option>
-                                            </select>
-                                            <input type="hidden" name="type_hidden" value="{{$lims_product_data->type}}">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Name')}} *</strong> </label>
-                                        <input type="text" name="name" value="{{$lims_product_data->name}}" required class="form-control">
-                                        <span class="validation-msg" id="name-error"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Code')}} *</strong> </label>
-                                        <div class="input-group">
-                                            <input type="text" name="code" id="code" value="{{$lims_product_data->code}}" class="form-control" required>
-                                            <div class="input-group-append">
-                                                <button id="genbutton" type="button" class="btn btn-sm btn-default" title="{{trans('file.Generate')}}"><i class="fa fa-refresh"></i></button>
-                                            </div>
-                                        </div>
-                                        <span class="validation-msg" id="code-error"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Barcode Symbology')}} *</strong> </label>
-                                        <div class="input-group">
-                                            <input type="hidden" name="barcode_symbology_hidden" value="{{$lims_product_data->barcode_symbology}}">
-                                            <select name="barcode_symbology" required class="form-control selectpicker">
-                                                <option value="UPCE">UPC-E</option>
-                                                <option value="C128">Code 128</option>
-                                                <option value="C39">Code 39</option>
-                                                <option value="UPCA">UPC-A</option>
-                                                <option value="EAN8">EAN-8</option>
-                                                <option value="EAN13">EAN-13</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="digital" class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Attach File')}}</strong> </label>
-                                        <div class="input-group">
-                                            <input id="file" type="file" name="file" class="form-control">
-                                        </div>
-                                        <span class="validation-msg"></span>
-                                    </div>
-                                </div>
-                                <div id="combo" class="col-md-9 mb-1">
-                                    <label>{{trans('file.add_product')}}</label>
-                                    <div class="search-box input-group mb-3">
-                                        <button class="btn btn-secondary"><i class="fa fa-barcode"></i></button>
-                                        <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Please type product code and select..." class="form-control" />
-                                    </div>
-                                    <label>{{trans('file.Combo Products')}}</label>
-                                    <div class="table-responsive">
-                                        <table id="myTable" class="table table-hover order-list">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{trans('file.product')}}</th>
-                                                    <th>{{trans('file.Quantity')}}</th>
-                                                    <th>{{trans('file.Unit Price')}}</th>
-                                                    <th><i class="dripicons-trash"></i></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if($lims_product_data->type == 'combo')
-                                                <?php
-                                                    $product_list = explode(",", $lims_product_data->product_list);
-                                                    $qty_list = explode(",", $lims_product_data->qty_list);
-                                                    $variant_list = explode(",", $lims_product_data->variant_list);
-                                                    $price_list = explode(",", $lims_product_data->price_list);
-                                                ?>
-                                                @foreach($product_list as $key=>$id)
-                                                <tr>
-                                                    <?php
-                                                        $product = App\Product::find($id);
-                                                        if($lims_product_data->variant_list && $variant_list[$key]) {
-                                                            $product_variant_data = App\ProductVariant::select('item_code')->FindExactProduct($id, $variant_list[$key])->first();
-                                                            $product->code = $product_variant_data->item_code;
-                                                        }
-                                                        else
-                                                            $variant_list[$key] = "";
-                                                    ?>
-                                                    <td>{{$product->name}} [{{$product->code}}]</td>
-                                                    <td><input type="number" class="form-control qty" name="product_qty[]" value="{{$qty_list[$key]}}" step="any"></td>
-                                                    <td><input type="number" class="form-control unit_price" name="unit_price[]" value="{{$price_list[$key]}}" step="any"/></td>
-                                                    <td><button type="button" class="ibtnDel btn btn-danger btn-sm">X</button></td>
-                                                    <input type="hidden" class="product-id" name="product_id[]" value="{{$id}}"/>
-                                                    <input type="hidden" class="variant-id" name="variant_id[]" value="{{$variant_list[$key]}}"/>
-                                                </tr>
-                                                @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Brand')}}</strong> </label>
-                                        <div class="input-group">
-                                            <input type="hidden" name="brand" value="{{ $lims_product_data->brand_id}}">
-                                          <select name="brand_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Brand...">
-                                            @foreach($lims_brand_list as $brand)
-                                                <option value="{{$brand->id}}">{{$brand->title}}</option>
-                                            @endforeach
-                                          </select>
-                                      </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <input type="hidden" name="category" value="{{$lims_product_data->category_id}}">
-                                        <label>{{trans('file.category')}} *</strong> </label>
-                                        <div class="input-group">
-                                          <select name="category_id" required class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Category...">
-                                            @foreach($lims_category_list as $category)
-                                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                            @endforeach
-                                          </select>
-                                      </div>
-                                    </div>
-                                </div>
-                                <div id="unit" class="col-md-12">
-                                    <div class="row ">
-                                        <div class="col-md-4">
-                                                <label>{{trans('file.Product Unit')}} *</strong> </label>
-                                                <div class="input-group">
-                                                  <select required class="form-control selectpicker" data-live-search="true" data-live-search-style="begins" title="Select unit..." name="unit_id">
-                                                    @foreach($lims_unit_list as $unit)
-                                                        @if($unit->base_unit==null)
-                                                            <option value="{{$unit->id}}">{{$unit->unit_name}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                  </select>
-                                                  <input type="hidden" name="unit" value="{{ $lims_product_data->unit_id}}">
-                                              </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                                <label>{{trans('file.Sale Unit')}}</strong> </label>
-                                                <div class="input-group">
-                                                  <select class="form-control selectpicker" name="sale_unit_id" id="sale-unit">
-                                                  </select>
-                                                  <input type="hidden" name="sale_unit" value="{{ $lims_product_data->sale_unit_id}}">
-                                              </div>
-                                        </div>
-                                        <div class="col-md-4 mt-2">
-                                                <div class="form-group">
-                                                    <label>{{trans('file.Purchase Unit')}}</strong> </label>
-                                                    <div class="input-group">
-                                                      <select class="form-control selectpicker" name="purchase_unit_id">
-                                                      </select>
-                                                      <input type="hidden" name="purchase_unit" value="{{ $lims_product_data->purchase_unit_id}}">
-                                                  </div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="cost" class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Cost')}} *</strong> </label>
-                                        <input type="number" name="cost" value="{{$lims_product_data->cost}}" required class="form-control" step="any">
-                                        <span class="validation-msg"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Price')}} *</strong> </label>
-                                        <input type="number" name="price" value="{{$lims_product_data->price}}" required class="form-control" step="any">
-                                        <span class="validation-msg"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="hidden" name="qty" value="{{ $lims_product_data->qty }}" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Daily Sale Objective')}}</strong> </label>
-                                        <input type="number" name="daily_sale_objective" class="form-control" step="any" value="{{$lims_product_data->daily_sale_objective}}">
-                                    </div>
-                                </div>
-                                <div id="alert-qty" class="col-md-4">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Alert Quantity')}}</strong> </label>
-                                        <input type="number" name="alert_quantity" value="{{$lims_product_data->alert_quantity}}" class="form-control" step="any">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <input type="hidden" name="tax" value="{{$lims_product_data->tax_id}}">
-                                        <label>{{trans('file.product')}} {{trans('file.Tax')}}</strong> </label>
-                                        <select name="tax_id" class="form-control selectpicker">
-                                            <option value="">No Tax</option>
-                                            @foreach($lims_tax_list as $tax)
-                                                <option value="{{$tax->id}}">{{$tax->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <input type="hidden" name="tax_method_id" value="{{$lims_product_data->tax_method}}">
-                                        <label>{{trans('file.Tax Method')}}</strong> </label>
-                                        <select name="tax_method" class="form-control selectpicker">
-                                            <option value="1">{{trans('file.Exclusive')}}</option>
-                                            <option value="2">{{trans('file.Inclusive')}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mt-3">
-                                        @if($lims_product_data->featured)
-                                            <input type="checkbox" name="featured" value="1" checked>
-                                        @else
-                                            <input type="checkbox" name="featured" value="1">
-                                        @endif
-                                        <label>{{trans('file.Featured')}}</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mt-3">
-                                        @if($lims_product_data->is_embeded)
-                                            <input type="checkbox" name="is_embeded" value="1" checked>
-                                        @else
-                                            <input type="checkbox" name="is_embeded" value="1">
-                                        @endif
-                                        <label>{{trans('file.Embedded Barcode')}} <i class="dripicons-question" data-toggle="tooltip" title="{{trans('file.Check this if this product will be used in weight scale machine.')}}"></i></label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Image')}}</strong> </label> <i class="dripicons-question" data-toggle="tooltip" title="{{trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')}}"></i>
-                                        <div id="imageUpload" class="dropzone"></div>
-                                        <span class="validation-msg" id="image-error"></span>
-                                    </div>
-                                </div>
-                                @if($lims_product_data->image)
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th><button type="button" class="btn btn-sm"><i class="fa fa-list"></i></button></th>
-                                                    <th>Image</th>
-                                                    <th>Remove</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php $images = explode(",", $lims_product_data->image)?>
-                                                @foreach($images as $key => $image)
-                                                <tr>
-                                                    <td><button type="button" class="btn btn-sm"><i class="fa fa-list"></i></button></i></td>
-                                                    <td>
-                                                        <img src="{{url('public/images/product', $image)}}" height="60" width="60">
-                                                        <input type="hidden" name="prev_img[]" value="{{$image}}">
-                                                    </td>
-                                                    <td><button type="button" class="btn btn-sm btn-danger remove-img">X</button></td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                @endif
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>{{trans('file.Product Details')}}</label>
-                                        <textarea name="product_details" class="form-control" rows="5">{{str_replace('@', '"', $lims_product_data->product_details)}}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 mt-2" id="diffPrice-option">
-                                    @if($lims_product_data->is_diffPrice)
-                                        <h5><input name="is_diffPrice" type="checkbox" id="is-diffPrice" value="1" checked>&nbsp; {{trans('file.This product has different price for different warehouse')}}</h5>
-                                    @else
-                                        <h5><input name="is_diffPrice" type="checkbox" id="is-diffPrice" value="1">&nbsp; {{trans('file.This product has different price for different warehouse')}}</h5>
-                                    @endif
-                                </div>
-                                <div class="col-md-6" id="diffPrice-section">
-                                    <div class="table-responsive ml-2">
-                                        <table id="diffPrice-table" class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{trans('file.Warehouse')}}</th>
-                                                    <th>{{trans('file.Price')}}</th>
-                                                </tr>
-                                                @foreach($lims_warehouse_list as $warehouse)
-                                                <tr>
-                                                    <td>
-                                                        <input type="hidden" name="warehouse_id[]" value="{{$warehouse->id}}">
-                                                        {{$warehouse->name}}
-                                                    </td>
-                                                    <td>
-                                                        <?php
-                                                            $product_warehouse = \App\Product_Warehouse::FindProductWithoutVariant($lims_product_data->id, $warehouse->id)->first();
-                                                        ?>
-                                                        @if($product_warehouse)
-                                                            <input type="number" name="diff_price[]" class="form-control" value="{{$product_warehouse->price}}">
-                                                        @else
-                                                            <input type="number" name="diff_price[]" class="form-control">
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 mt-3" id="batch-option">
-                                    @if($lims_product_data->is_batch)
-                                    <h5><input name="is_batch" type="checkbox" id="is-batch" value="1" checked>&nbsp; {{trans('file.This product has batch and expired date')}}</h5>
-                                    @else
-                                    <h5><input name="is_batch" type="checkbox" id="is-batch" value="1">&nbsp; {{trans('file.This product has batch and expired date')}}</h5>
-                                    @endif
-                                </div>
-                                <div class="col-md-12 mt-3" id="imei-option">
-                                    @if($lims_product_data->is_imei)
-                                    <h5><input name="is_imei" type="checkbox" id="is-imei" value="1" checked>&nbsp; {{trans('file.This product has IMEI or Serial numbers')}}</h5>
-                                    @else
-                                    <h5><input name="is_imei" type="checkbox" id="is-imei" value="1">&nbsp; {{trans('file.This product has IMEI or Serial numbers')}}</h5>
-                                    @endif
-                                </div>
-                                <div class="col-md-12 mt-3" id="variant-option">
-                                    @if($lims_product_data->is_variant)
-                                    <h5 class="d-none"><input name="is_variant" type="checkbox" id="is-variant" value="1" checked>&nbsp; {{trans('file.This product has variant')}}</h5>
-                                    @else
-                                    <h5><input name="is_variant" type="checkbox" id="is-variant" value="1">&nbsp; {{trans('file.This product has variant')}}</h5>
-                                    @endif
-                                </div>
-                                <div class="col-md-12" id="variant-section">
-                                    @if($lims_product_data->variant_option)
-                                    <div class="row" id="variant-input-section">
-                                        @foreach($lims_product_data->variant_option as $key => $variant_option)
-                                        <?php 
-                                            $noOfVariantValue += count(explode(",", $lims_product_data->variant_value[$key]));
-                                        ?>
-                                        <div class="col-md-4 form-group mt-2">
-                                            <label>{{trans('file.Option')}} *</label>
-                                            <input type="text" name="variant_option[]" class="form-control variant-field" value="{{$lims_product_data->variant_option[$key]}}">
-                                        </div>
-                                        <div class="col-md-6 form-group mt-2">
-                                            <label>{{trans('file.Value')}} *</label>
-                                            <input type="text" name="variant_value[]" class="type-variant form-control variant-field" value="{{$lims_product_data->variant_value[$key]}}">
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                    @else
-                                    <div class="row" id="variant-input-section">
-                                        <div class="col-md-4 form-group mt-2">
-                                            <label>{{trans('file.Option')}} *</label>
-                                            <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc...">
-                                        </div>
-                                        <div class="col-md-6 form-group mt-2">
-                                            <label>{{trans('file.Value')}} *</label>
-                                            <input type="text" name="variant_value[]" class="type-variant form-control variant-field">
-                                        </div>
-                                    </div>
-                                    @endif
-                                    <div class="col-md-12 form-group">
-                                        <button type="button" class="btn btn-info add-more-variant"><i class="dripicons-plus"></i> {{trans('file.Add More Variant')}}</button>
-                                    </div>
-                                    <div class="table-responsive ml-2">
-                                        <table id="variant-table" class="table table-hover variant-list">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{trans('file.name')}}</th>
-                                                    <th>{{trans('file.Item Code')}}</th>
-                                                    <th>{{trans('file.Additional Cost')}}</th>
-                                                    <th>{{trans('file.Additional Price')}}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($lims_product_variant_data as $key=> $variant)
-                                                <tr>
-                                                    <td>{{$variant->name}}
-                                                        <input type="hidden" class="form-control variant-name" name="variant_name[]" value="{{$variant->name}}" />
-                                                    </td>
-                                                    <td><input type="text" class="form-control" name="item_code[]" value="{{$variant->pivot['item_code']}}" /></td>
-                                                    <td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="{{$variant->pivot['additional_cost']}}" step="any" /></td>
-                                                    <td><input type="number" class="form-control additional-price" name="additional_price[]" value="{{$variant->pivot['additional_price']}}" step="any" /></td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mt-3">
-                                    <input type="hidden" name="promotion_hidden" value="{{$lims_product_data->promotion}}">
-                                    <input name="promotion" type="checkbox" id="promotion" value="1">&nbsp;
-                                    <label><h5>{{trans('file.Add Promotional Price')}}</h5></label>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-4" id="promotion_price">   <label>{{trans('file.Promotional Price')}}</label>
-                                            <input type="number" name="promotion_price" value="{{$lims_product_data->promotion_price}}" class="form-control" step="any" />
-                                        </div>
-                                        <div id="start_date" class="col-md-4">
-                                            <div class="form-group">
-                                                <label>{{trans('file.Promotion Starts')}}</label>
-                                                <input type="text" name="starting_date" value="{{$lims_product_data->starting_date}}" id="starting_date" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div id="last_date" class="col-md-4">
-                                            <div class="form-group">
-                                                <label>{{trans('file.Promotion Ends')}}</label>
-                                                <input type="text" name="last_date" value="{{$lims_product_data->last_date}}" id="ending_date" class="form-control" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @if (\Schema::hasColumn('products', 'woocommerce_product_id'))
-                                    <div class="col-md-12 mt-2">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" {{$lims_product_data->is_sync_disable==1 ? 'checked':''}} type="checkbox" name="is_sync_disable" value="1" >
-                                            <label class="form-check-label"><h5>Disable Woocommerce Sync</h5></label>
-                                        </div>
-                                    </div>
-                                @endif
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <input type="button" value="{{trans('file.submit')}}" class="btn btn-primary" id="submit-btn">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                    @endif
             </div>
         </div>
+        <form action="{{ url('update') }}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="row">
+                <div class="col-lg-8 rounded">
+                    <div class="card shadow-lg  p-3  bg-white cards">
+                    <input type="text" value="{{$lims_product_data->id}}">
+                        <div class="form-group">
+                            <label class="title">Title</label>
+                            <input type="text" name="name"  value="{{$lims_product_data->name}}" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
+                        </div>
+                        <span class="mt-1 mb-2">
+                            @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </span >
+
+                        <div class="form-group">
+                            <label class="title">Description</label>
+                            <textarea class="form-control" name="summernote" value="{{$lims_product_data->product_details}}"  id="summernote">{{$lims_product_data->product_details}}</textarea>
+                        </div>
+                        <span class=" mb-2">
+                            @error('summernote')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </span >
+                    </div>
+
+                    <div class="card shadow-lg  p-3 bg-white rounded">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-start">
+                                <label class="media ml-2">Media</strong></label><i class="dripicons-question ml-2" data-toggle="tooltip" title="{{trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')}}"></i>
+                            </div>
+                            <input type="hidden" name="image_count" class="image_count">
+                            @foreach ($product_image as $product_image)
+                            <input type="file" id="file-input" accept="image/png, image/jpeg" value="{{$product_image->src}}"  name="pro_image[]" onchange="preview()" multiple>
+                            @endforeach
+                            <label for="file-input" class="multi_image_select">
+                                <i class="fas fa-upload"></i> &nbsp; Choose A Photo
+                            </label>
+                            <p id="num-of-files" class="text-center mt-2">{{$imageCount}} No Files Chosen</p>
+                            <div id="images"></div>
+                        </div>
+                        <input type="hidden" id="image-count" name="image_count" value="0">
+                    </div>
+
+
+                    <div class="card shadow-lg  p-3 bg-white cards">
+                        <label for="" class="pricing">Pricing</label>
+                        <div class="form-row mb-3">
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4" class="title">Price</label>
+                                <input type="text" class="form-control price"   name="price" id="fields" placeholder="Enter amount" aria-label="Amount" oninput="getValue()" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4" class="title">Compare-at-price</label>
+                                <input type="text" class="form-control comp_price" name="comp_price"  id="fields" placeholder="Enter amount" oninput="getValue()" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                        </div>
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="taxCharge">
+                            <label class="custom-control-label taxChange" style="margin-top: 1px;" oninput="getValue()" for="taxCharge">Change Tax on this product</label>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="inputPassword4" class="cost">Cost per item</label>
+                                <input type="text" class="form-control cost_per_item" value="{{ old('per_item_cost') }}" name="per_item_cost" id="fields" oninput="getValue()" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputPassword4" class="profit">Profit</label>
+                                <input type="text" class="form-control profit_value" id="fields" value="{{ old('product_profit') }}"  name="product_profit" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputPassword4" class="margin">Margin</label>
+                                <input type="text" class="form-control margin_value" id="fields" value="{{ old('product_margin') }}" name="product_margin" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card shadow-lg  p-3  bg-white cards">
+                        <label for="" class="Inventory">Inventory</label>
+                        <div class="custom-control custom-checkbox mb-3 mt-3">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label track " style="margin-top: 1px;" for="customCheck1" id="toggleQuantityCheck" onclick="toggleQuantityField()">Track Quantity</label>
+                        </div>
+                        <div id="toggle_quantity" style="display: none;">
+                            <div>
+                                <label for="" class="Quantity">Quantity</label>
+                            </div>
+                            <hr />
+
+                            <div class="form-row d-flex justify-content-between">
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4" id="borough">15 Marlborough</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <input type="number" class="form-control" placeholder="0" value="{{ old('product_quantity') }}" name="product_quantity" id="quantityField" style="border: 1px solid black; border-radius: 5px;">
+                                </div>
+                            </div>
+
+
+                            <div class="custom-control custom-checkbox mb-1 mt-2">
+                                <input type="checkbox" class="custom-control-input" onclick="toggleStockField()" id="customCheck2">
+                                <label class="custom-control-label contSelling" for="customCheck2" style="margin-top: 1px;">Continue Selling When Out Of Stock</label>
+                                <p class=" mt-1" id="stock_out">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                                    molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
+                                    numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium.</p>
+                            </div>
+                        </div>
+
+                        <div class="custom-control custom-checkbox mb-3 mt-2">
+                            <input type="checkbox" class="custom-control-input" id="customCheck3" onclick="toggleBarcodeField()">
+                            <label class="custom-control-label sku" for="customCheck3" style="margin-top: 1px;;">This Product has a SKU or barcode</label>
+                        </div>
+                        <div class="form-row" id="barcode">
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4" class="sku">SKU (Stock Keeping Unit)</label>
+                                <input type="text" class="form-control" id="currencyInput" value="{{ old('sku_input') }}"  name="sku_input" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4" class="Barcode">Barcode (ISBN, UCP, GTIN, etc)</label>
+                                <input type="text" class="form-control" id="currencyInput" name="bar_code"  value="{{ old('bar_code') }}" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-lg p-3 bg-white cards">
+                        <label for="" class="shipping">Shipping</label>
+                        <div class="custom-control custom-checkbox mb-3 mt-2">
+                            <input type="checkbox" class="custom-control-input" id="shipping" onclick="toggleShippingField()">
+                            <label class="custom-control-label" for="shipping" id="req_shipping" style="margin-top: 1px;">This Product require Shipping</label>
+                        </div>
+                        <div class=" form-group col-md-4" id="shipping_field">
+                            <label for="" class="Weight ">Weight</label>
+                            <div class="d-flex">
+                                <input type="number" class="form-control" value="{{ old('weight') }}" id="currencyInput" name="weight" aria-label="Amount" step="0.01" style="border: 1px solid black; border-radius: 5px;">
+                                <select class="form-select border ml-2" value="{{ old('weight_unit') }}" style="border-radius: 10px !important;" name="weight_unit" aria-label="Default select example" id="weight_type">
+                                    <option value="1" selected>Kg</option>
+                                    <option value="2">lg</option>
+                                    <option value="3">oz</option>
+                                    <option value="4">g</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="divider">
+                        <a class="text-primary more_opt" id="custom_info" onclick="toggleCustomField()"> + Add custom Information</a>
+                        <div class="form-group" id="custom_info_div" style="display: none;">
+                            <div class="mb-2">
+                                <span class="cus_info">Custom Information</span>
+                                <br>
+                                <span class="int_order">Printed on custom forms or shipping labels for international orders</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="Country">Country</label>
+                                <div>
+                                    <select class="form-select border w-100" name="country" value="{{ old('country') }}" aria-label="Default select example">
+                                        <option value="1" selected>Pakistan</option>
+                                        <option value="2">India</option>
+                                        <option value="3">China</option>
+                                        <option value="4">England</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="HS">HS (Harmonized System)</label>
+                                <input name="harmonized_system" type="search" value="{{ old('harmonized_system') }}" placeholder="Search Here" class="form-control" style="border: 1px solid black; border-radius: 5px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-lg p-3  bg-white cards">
+                        <label for="" class="Variants ">Variants</label>
+                        <div class="col-md-12" id="variant-section" style="display: none;">
+                            <div class="row" id="variant-input-section">
+                                <div class="col-md-6 form-group mt-2">
+                                    <label>{{trans('file.Option')}} *</label>
+                                    <input type="text" name="variant_option[]"  class="form-control variant-field" placeholder="Size, Color etc...">
+                                </div>
+                                <div class="col-md-6 form-group mt-2">
+                                    <label>{{trans('file.Value')}} *</label>
+                                    <input type="text" name="variant_value[]"  class="type-variant form-control variant-field">
+                                </div>
+                            </div>
+
+                            <div class="table-responsive ">
+                                <table id="variant-table" class="table table-hover variant-list">
+                                    <thead>
+                                        <tr>
+                                            <th>{{trans('file.name')}}</th>
+                                            <th>{{trans('file.Item Code')}}</th>
+                                            <th>{{trans('file.Additional Cost')}}</th>
+                                            <th>{{trans('file.Additional Price')}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr class="divider">
+
+                        <a class="text-primary mt-2 add-more-variant" id="add-variant-btn"> + Add Option like size or color</a>
+                    </div>
+
+                    <div class="card shadow-lg  p-3 bg-white cards">
+                        <div class="form-group ">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="search_eng">Search Engine Listing</h5>
+                                <a href="#">Edit</a>
+                            </div>
+                            <!-- <div> -->
+                            <span class="little_desc">Add a little description below to see how this product might appear in the search engine listing</span>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 ">
+                    <div class="card shadow-sm p-3  bg-white cards">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="card-title status">Status</label>
+                                <div>
+                                    <select class="form-select border w-100" name="save_status" value="{{ old('save_status') }}">
+                                        <option value="Active" selected class="text"> Active</option>
+                                        <option value="Inactive" class="text">Draft</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <span class=" mb-2">
+                            @error('save_status')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </span >
+                        </div>
+                    </div>
+                    <input type="hidden" name="startDate" id="sch_start_date">
+                    <input type="hidden" name="endDate" id="sch_end_date">
+                    <!--  Modal  -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog w-50" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header card-header">
+                                    <h5 class="modal-title sch_online " id="exampleModalLabel">Schedule Online Store Before Publishing</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <label for="">Start Date</label>
+                                            <input type="text" id="start_date" name="starting_date" class="date-picker form-control"  value="{{ old('starting_date') }}"/>
+                                            <!-- <input type="date" id="start_date" class="form-control" /> -->
+                                        </div>
+                                        <span class=" mb-2">
+                                            @error('starting_date')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </span >
+                                        <div class="col-lg-6">
+                                            <label for="">End Time</label>
+                                            <input type="text" id="end_date" name="ending_date" class="date-picker form-control" value="{{ old('ending_date') }}" />
+                                        </div>
+                                        <span class=" mb-2">
+                                            @error('ending_date')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </span >
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light text-dark " data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-dark text-white schedule_date">Schedule Publishing</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  -->
+
+                    <div class="card shadow-sm p-3  bg-white cards">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="d-flex justify-content-between">
+                                    <label class="card-title Publishing">Publishing</label>
+                                    <a href="#" style="margin-top: -1px;;" class="text">Manage<i class="fas fa-chevron-down down-arrow"></i></a>
+                                </div>
+                                <!-- <ul > -->
+                                <div>
+                                    <ul class="list-unstyled d-flex justify-content-between align-items-center">
+                                        <li>
+                                            <span class="text Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Online Store</span>
+                                        </li>
+                                        <li>
+                                            <img src="{{asset('icons/datetime.png')}}" alt="" width="20px" height="20px" class="" data-toggle="modal" data-target="#exampleModal">
+                                        </li>
+                                    </ul>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-3">
+                                            <span class="Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Point of Sale and POS</span>
+                                        </li>
+
+                                        <li class="mb-3">
+                                            <span class="Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Shop</span>
+                                            <div style="margin-left: 19px;"><span class="text-black text">Shop has noticed your store does't meet store requirement</span>
+                                                <a href="#" class="learnMore">Learn More</a>
+                                            </div>
+                                        </li>
+                                        <li class="mb-3">
+                                            <span class="Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Facebook & Instagram</span>
+                                            <div style="margin-left: 19px;"><span class="text-black text">Shop has noticed your store does't meet store requirement</span>
+                                                <a href="#" class="learnMore">Learn More</a>
+                                            </div>
+                                        </li>
+
+                                        <li class="mb-3">
+                                            <span class="text Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Markets</span>
+                                            <div style="margin-left: 19px;"><span class="text-black text">Shop has noticed your store does't meet store requirement</span>
+                                                <a href="#" class="text">Learn More</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- </ul> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm p-3 bg-white cards">
+                        <div class="card-body">
+
+                            <label class="card-title pro_org">Product Organization</label>
+                            <div class="form-group">
+                                <label for="" class="product">Product Category</label>
+
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_category" value="{{ old('prod_category') }}" style="border: 1px solid black; border-radius: 5px;">
+                                    @foreach ($lims_category_list as $lims_category_list)
+                                    <option value="{{$lims_category_list->id}}">{{$lims_category_list->name}}</option>
+                                    @endforeach
+                                    <!-- Add more option elements for other tags if needed -->
+                                </select>
+                                @error('prod_category')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                                
+
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="product">Product Type</label>
+                                <!-- <input type="text" class="form-control" name="prod_type" style="border: 1px solid black; border-radius: 5px;"> -->
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_type" value="{{ old('prod_type') }}" style="border: 1px solid black; border-radius: 5px;">
+                                    <option value="Product Type 1">Product Type 1</option>
+                                    <option value="Product Type 2">Product Type 2</option>
+                                    <!-- Add more option elements for other tags if needed -->
+                                </select>
+                                @error('prod_type')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="product">Vendor</label>
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_vendor" value="{{ old('prod_vendor') }}" style="border: 1px solid black; border-radius: 5px;">
+                                    <option value="Pakistan Fashion Lounge" selected>Pakistan Fashion Lounge</option>
+                                    <!-- Add more option elements for other tags if needed -->
+                                </select>
+                                @error('prod_vendor')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                                <!-- <input type="text" class="form-control" name="prod_vendor" style="border: 1px solid black; border-radius: 5px;"> -->
+                            </div>
+                            <span class="coll_error">There are no collection available to add this product to. You can add a new collection or modify your existing collection </span>
+                            <div class="form-group">
+                                <div class="row d-flex justify-content-between ">
+                                    <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4">Manage</a>
+                                </div>
+                                <div>
+                                    <select class="form-select border w-100" name="tags[]" aria-label="Default select example" value="{{ old('tags') }}" style="border: 1px solid black; border-radius: 5px;" multiple>
+                                        @foreach ($collections as $tag)
+                                        <option value="{{$tag->title}}">{{$tag->title}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm p-3 bg-white cards">
+                        <div class="card-body">
+                            <label class="card-title on_store">Online Store</label>
+                            <div class="form-group">
+                                <span for="">Theme Template</span>
+                                <div>
+                                    <select class="form-select border w-100" name="pro_theme" aria-label="Default select example" style="border: 1px solid black; border-radius: 5px;">
+                                        <option value="" selected>Default Product</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group d-flex justify-content-end">
+                <button type="submit" class="btn border text-white mt-2 bg-dark d-flex justify-content-end" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Save</button>
+            </div>
+        </form>
     </div>
-</section>
 
-@endsection
+    @endsection
+    @push('scripts')
 
-@push('scripts')
-<script type="text/javascript">
+    <script>
+        // Variants Code Start
+        var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
+        var variantIds = [];
+        var combinations = [];
+        var oldCombinations = [];
+        var oldAdditionalCost = [];
+        var oldAdditionalPrice = [];
+        var step;
+        var numberOfWarehouse = <?php echo json_encode(count($lims_warehouse_list)) ?>;
 
-    $("ul#product").siblings('a').attr('aria-expanded','true');
-    $("ul#product").addClass("show");
-    var product_id = <?php echo json_encode($lims_product_data->id) ?>;
-    var is_batch = <?php echo json_encode($lims_product_data->is_batch) ?>;
-    var is_variant = <?php echo json_encode($lims_product_data->is_variant) ?>;
-    var redirectUrl = <?php echo json_encode(url('products')); ?>;
-    var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
-    var variantIds = [];
-    var combinations = [];
-    var oldCombinations = [];
-    var step;
-    var count = 1;
-    var customizedVariantCode = 1;
-    var noOfVariantValue = <?php echo json_encode($noOfVariantValue); ?>;
-    console.log(noOfVariantValue);
-    $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip();
 
-    $(".remove-img").on("click", function () {
-        $(this).closest("tr").remove();
-    });
 
-    $("#digital").hide();
-    $("#combo").hide();
-    $("select[name='type']").val($("input[name='type_hidden']").val());
-    variantShowHide();
-    diffPriceShowHide();
-    if(is_batch)
-        $("#variant-option").hide();
-    if(is_variant) {
-        var customizedVariantCode = 0;
-        $("#batch-option").hide();
-    }
+        $('.add-more-variant').on("click", function() {
+            var variantListElement = document.getElementById("variant-section");
+            if (variantListElement.style.display === "none") {
+                variantListElement.style.display = "block";
+            } else {
+                var htmlText = '<div class="col-md-6 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-6 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div>';
+                $("#variant-input-section").append(htmlText);
+                $('.type-variant').tagsInput();
+            }
 
-    if($("input[name='type_hidden']").val() == "digital"){
-        $("input[name='cost']").prop('required',false);
-        $("select[name='unit_id']").prop('required',false);
-        hide();
-        $("#digital").show();
-    }
-    else if($("input[name='type_hidden']").val() == "service"){
-        $("input[name='cost']").prop('required',false);
-        $("select[name='unit_id']").prop('required',false);
-        hide();
-        $("#variant-section, #variant-option").hide();
-    }
-    else if($("input[name='type_hidden']").val() == "combo"){
-        $("input[name='cost']").prop('required', false);
-        $("input[name='price']").prop('disabled', true);
-        $("select[name='unit_id']").prop('required', false);
-        hide();
-        $("#combo").show();
-    }
+        });
 
-    var promotion = $("input[name='promotion_hidden']").val();
-    if(promotion){
-        $("input[name='promotion']").prop('checked', true);
-        $("#promotion_price").show(300);
-        $("#start_date").show(300);
-        $("#last_date").show(300);
-    }
-    else {
-        $("#promotion_price").hide(300);
-        $("#start_date").hide(300);
-        $("#last_date").hide(300);
-    }
+        //start variant related js
+        $(function() {
+            $('.type-variant').tagsInput();
+        });
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        // Variants Code End
+
+
+        function toggleQuantityField() {
+            var checkbox = document.getElementById("toggleQuantityCheck");
+            var quantityField = document.getElementById("toggle_quantity");
+
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
+            }
         }
-    });
 
-    $('#genbutton').on("click", function(){
-      $.get('../gencode', function(data){
-        $("input[name='code']").val(data);
-      });
-    });
 
-    $('.selectpicker').selectpicker({
-      style: 'btn-link',
-    });
+        function toggleStockField() {
+            var checkbox = document.getElementById("customCheck2");
+            var quantityField = document.getElementById("stock_out");
 
-    $('.type-variant').on('input', function() {
-        alert('dadffff');
-    });
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
+            }
+        }
 
-    $('.add-more-variant').on("click", function() {                       
-        var htmlText = '<div class="col-md-4 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-6 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div>';
-        $("#variant-input-section").append(htmlText);
-        $('.type-variant').tagsInput();
-    });
+        function toggleBarcodeField() {
+            var checkbox = document.getElementById("customCheck3");
+            var barcodeFields = document.getElementById("barcode");
 
-    //start variant related js
-    $(function() {
-        $('.type-variant').tagsInput();
-    });
+            if (checkbox.checked) {
+                barcodeFields.style.display = "flex";
+            } else {
+                barcodeFields.style.display = "none";
+            }
+        }
 
-    (function($) {
+        function toggleShippingField() {
+            var checkbox = document.getElementById("shipping");
+            var shippingFields = document.getElementById("shipping_field");
+
+            if (checkbox.checked) {
+                shippingFields.style.display = "block";
+            } else {
+                shippingFields.style.display = "none";
+            }
+        }
+
+        function toggleCustomField() {
+            var customInfoElement = document.getElementById("custom_info");
+            var jsCodeBlock = document.getElementById("custom_info_div");
+            if (jsCodeBlock.style.display === "none") {
+                customInfoElement.style.display = "none";
+                jsCodeBlock.style.display = "block";
+            } else {
+                jsCodeBlock.style.display = "none";
+            }
+        }
+
+        function toggleVariant() {
+            var variantsDiv = document.getElementById("variants_div");
+            if (variantsDiv.style.display === "none") {
+                variantsDiv.style.display = "block";
+            } else {
+                variantsDiv.style.display = "none";
+            }
+        }
+
+        function belowField() {
+            var extraOption = document.getElementById("extraOption");
+            extraOption.style.display = "block";
+        }
+
+        function getValue() {
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
+
+            if (profit > 1) {
+                document.querySelector('.profit_value').value = profit;
+                var margin = (profit / price) * 100;
+                document.querySelector('.margin_value').value = margin.toFixed(2) + '%';
+            } else {
+                document.querySelector('.profit_value').value = "";
+                document.querySelector('.margin_value').value = "";
+            }
+
+            // const margin = ((price - cost) / cost) * 100;
+            // document.querySelector(".margin").value = margin;
+
+        }
+
+        //  Schedule Date 
+        $('.schedule_date').on('click', function() {
+            var startDate = $('#start_date').val();
+            var endDate = $('#end_date').val();
+
+            $('#sch_start_date').val(startDate);
+            $('#sch_end_date').val(endDate);
+
+            $('#exampleModal').modal('hide');
+        });
+
+
+        // // Image Selector
+        // let fileInput = document.getElementById("file-input");
+        
+        // let imageContainer = document.getElementById("images");
+        // let numOfFiles = document.getElementById("num-of-files");
+
+        // function preview() {
+        //     imageContainer.innerHTML = "";
+        //     image_count = numOfFiles.textContent = `${fileInput.files.length}`;
+        //      numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
+           
+
+        //     for (i of fileInput.files) {
+        //         let reader = new FileReader();
+        //         let figure = document.createElement("figure");
+        //         let figCap = document.createElement("figcaption");
+        //         figCap.innerText = i.name;
+        //         figure.appendChild(figCap);
+        //         reader.onload = () => {
+        //             let img = document.createElement("img");
+        //             img.setAttribute("src", reader.result);
+        //             figure.insertBefore(img, figCap);
+        //         }
+        //         imageContainer.appendChild(figure);
+        //         reader.readAsDataURL(i);
+        //     }
+        //     document.querySelector('.image_count').value = image_count;
+        // }
+
+        let fileInput = document.getElementById("file-input");
+let imageContainer = document.getElementById("images");
+let numOfFiles = document.getElementById("num-of-files");
+let imageCountInput = document.getElementById("image-count");
+
+function preview() {
+    // Clear the existing images before adding new ones
+    imageContainer.innerHTML = "";
+
+    let imageFiles = [];
+    for (let i = 0; i < fileInput.files.length; i++) {
+        if (fileInput.files[i].type.startsWith('image/')) {
+            imageFiles.push(fileInput.files[i]);
+        }
+    }
+
+    numOfFiles.textContent = `${imageFiles.length} Images Selected`;
+
+    imageCountInput.value = imageFiles.length; // Update the image_count hidden input field
+
+    for (let i = 0; i < imageFiles.length; i++) {
+        let image = imageFiles[i];
+        let reader = new FileReader();
+        let figure = document.createElement("figure");
+
+        // Create an input field to hold the image index
+        let indexInput = document.createElement("input");
+        indexInput.setAttribute("type", "hidden");
+        indexInput.setAttribute("name", "imageIndex[]"); // Set the name attribute to an array
+        indexInput.value = i; // Set the value to the image index
+        figure.appendChild(indexInput);
+
+        reader.onload = () => {
+            let img = document.createElement("img");
+            img.setAttribute("src", reader.result);
+            figure.appendChild(img);
+        }
+        imageContainer.appendChild(figure);
+        reader.readAsDataURL(image);
+    }
+}
+
+
+// Variants
+(function($) {
         var delimiter = [];
         var inputSettings = [];
         var callbacks = [];
-
+        
         $.fn.addTag = function(value, options) {
-            if(count == noOfVariantValue)
-                customizedVariantCode = 1;
             options = jQuery.extend({
                 focus: false,
                 callback: true
             }, options);
-            
             this.each(function() {
                 var id = $(this).attr('id');
                 var tagslist = $(this).val().split(_getDelimiter(delimiter[id]));
@@ -591,7 +672,6 @@
                         return $('#' + id).removeTag(encodeURI(value));
                     })
                 ).insertBefore('#' + id + '_addTag');
-
                 tagslist.push(value);
 
                 $('#' + id + '_tag').val('');
@@ -617,62 +697,58 @@
                 $(".type-variant").each(function(index) {
                     variantIds.splice(index, 1, $(this).attr('id'));
                 });
-                count++;
-                if(customizedVariantCode) {
-                    first_variant_values = $('#'+variantIds[0]).val().split(_getDelimiter(delimiter[variantIds[0] ]));
-                    combinations = first_variant_values;
-                    step = 1;
-                    while(step < variantIds.length) {
-                        var newCombinations = [];
-                        for (var i = 0; i < combinations.length; i++) {
-                            new_variant_values = $('#'+variantIds[step]).val().split(_getDelimiter(delimiter[variantIds[step] ]));
-                            for (var j = 0; j < new_variant_values.length; j++) {
-                                newCombinations.push(combinations[i]+'/'+new_variant_values[j]);
-                            }
+                
+                //start custom code
+                first_variant_values = $('#'+variantIds[0]).val().split(_getDelimiter(delimiter[variantIds[0] ]));
+                combinations = first_variant_values;
+                step = 1;
+                while(step < variantIds.length) {
+                    var newCombinations = [];
+                    for (var i = 0; i < combinations.length; i++) {
+                        new_variant_values = $('#'+variantIds[step]).val().split(_getDelimiter(delimiter[variantIds[step] ]));
+                        for (var j = 0; j < new_variant_values.length; j++) {
+                            newCombinations.push(combinations[i]+'/'+new_variant_values[j]);
                         }
-                        combinations = newCombinations;
-                        step++;
                     }
-                    var rownumber = $('table.variant-list tbody tr:last').index();
-                    if(rownumber > -1) {
-                        oldCombinations = [];
-                        oldAdditionalCost = [];
-                        oldAdditionalPrice = [];
-                        oldProductVariantId = [];
-                        $(".variant-name").each(function(i) {
-                            oldCombinations.push($(this).val());
-                            oldProductVariantId.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.product-variant-id').val());
-                            oldAdditionalCost.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-cost').val());
-                            oldAdditionalPrice.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-price').val());
-                        });
-                    }
-
-                    $("table.variant-list tbody").remove();
-                    var newBody = $("<tbody>");
-                    for(i = 0; i < combinations.length; i++) {
-                        var variant_name = combinations[i];
-                        var item_code = variant_name+'-'+$("#code").val();
-                        var newRow = $("<tr>");
-                        var cols = '';
-                        cols += '<td>'+variant_name+'<input type="hidden" class="variant-name" name="variant_name[]" value="' + variant_name + '" /></td>';
-                        cols += '<td><input type="text" class="form-control item-code" name="item_code[]" value="'+item_code+'" /></td>';
-                        //checking if this variant already exist in the variant table
-                        oldIndex = oldCombinations.indexOf(combinations[i]);
-                        if(oldIndex >= 0) {
-                            cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="'+oldAdditionalCost[oldIndex]+'" step="any" /></td>';
-                            cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="'+oldAdditionalPrice[oldIndex]+'" step="any" /></td>';
-                        }
-                        else {
-                            cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="" step="any" /></td>';
-                            cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="" step="any" /></td>';
-                        }
-                        newRow.append(cols);
-                        newBody.append(newRow);
-                    }
-                    $("table.variant-list").append(newBody);
+                    combinations = newCombinations;
+                    step++;
                 }
+                var rownumber = $('table.variant-list tbody tr:last').index();
+                if(rownumber > -1) {
+                    oldCombinations = [];
+                    oldAdditionalCost = [];
+                    oldAdditionalPrice = [];
+                    $(".variant-name").each(function(i) {
+                        oldCombinations.push($(this).text());
+                        oldAdditionalCost.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-cost').val());
+                        oldAdditionalPrice.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-price').val());
+                    });
+                }
+                $("table.variant-list tbody").remove();
+                var newBody = $("<tbody>");
+                for(i = 0; i < combinations.length; i++) {
+                    var variant_name = combinations[i];
+                    var item_code = variant_name+'-'+$("#code").val();
+                    var newRow = $("<tr>");
+                    var cols = '';
+                    cols += '<td class="variant-name">'+variant_name+'<input type="hidden" name="variant_name[]" value="' + variant_name + '" /></td>';
+                    cols += '<td><input type="text" class="form-control item-code" name="item_code[]" value="'+item_code+'" /></td>';
+                    //checking if this variant already exist in the variant table
+                    oldIndex = oldCombinations.indexOf(combinations[i]);
+                    if(oldIndex >= 0) {
+                        cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="'+oldAdditionalCost[oldIndex]+'" step="any" /></td>';
+                        cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="'+oldAdditionalPrice[oldIndex]+'" step="any" /></td>';
+                    }
+                    else {
+                        cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="" step="any" /></td>';
+                        cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="" step="any" /></td>';
+                    }
+                    newRow.append(cols);
+                    newBody.append(newRow);
+                }
+                $("table.variant-list").append(newBody);
+                //end custom code
             });
-
             return false;
         };
 
@@ -994,491 +1070,15 @@
              return [];
          };
     })(jQuery);
-    //end of variant related js
 
-    tinymce.init({
-      selector: 'textarea',
-      height: 130,
-      plugins: [
-        'advlist autolink lists link image charmap print preview anchor textcolor',
-        'searchreplace visualblocks code fullscreen',
-        'insertdatetime media table contextmenu paste code wordcount'
-      ],
-      toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-      branding:false
-    });
 
-    var barcode_symbology = $("input[name='barcode_symbology_hidden']").val();
-    $('select[name=barcode_symbology]').val(barcode_symbology);
-
-    var brand = $("input[name='brand']").val();
-    $('select[name=brand_id]').val(brand);
-
-    var cat = $("input[name='category']").val();
-    $('select[name=category_id]').val(cat);
-
-    if($("input[name='unit']").val()) {
-        $('select[name=unit_id]').val($("input[name='unit']").val());
-        populate_unit($("input[name='unit']").val());
-    }
-
-    var tax = $("input[name='tax']").val();
-    if(tax)
-        $('select[name=tax_id]').val(tax);
-
-    var tax_method = $("input[name='tax_method_id']").val();
-    $('select[name=tax_method]').val(tax_method);
-    $('.selectpicker').selectpicker('refresh');
-
-    $('select[name="type"]').on('change', function() {
-        if($(this).val() == 'combo'){
-            $("input[name='cost']").prop('required',false);
-            $("select[name='unit_id']").prop('required',false);
-            hide();
-            $("#digital").hide();
-            $("#variant-section, #variant-option, #diffPrice-option, #diffPrice-section").hide(300);
-            $("#combo").show();
-            $("input[name='price']").prop('disabled',true);
-        }
-        else if($(this).val() == 'digital'){
-            $("input[name='cost']").prop('required',false);
-            $("select[name='unit_id']").prop('required',false);
-            $("input[name='file']").prop('required',true);
-            hide();
-            $("#combo").hide();
-            $("#digital").show();
-            $("#variant-section, #variant-option, #diffPrice-option, #diffPrice-section").hide(300);
-            $("input[name='price']").prop('disabled',false);
-        }
-        else if($(this).val() == 'service') {
-            $("input[name='cost']").prop('required',false);
-            $("select[name='unit_id']").prop('required',false);
-            $("input[name='file']").prop('required',true);
-            hide();
-            $("#combo").hide(300);
-            $("#digital").hide(300);
-            $("input[name='price']").prop('disabled',false);
-            $("#is-variant").prop("checked", false);
-            $("#variant-section, #variant-option").hide(300);
-        }
-        else if($(this).val() == 'standard'){
-            $("input[name='cost']").prop('required',true);
-            $("select[name='unit_id']").prop('required',true);
-            $("input[name='file']").prop('required',false);
-            $("#cost").show();
-            $("#unit").show();
-            $("#alert-qty").show();
-            $("#variant-option").show(300);
-            $("#diffPrice-option").show(300);
-            $("#digital").hide();
-            $("#combo").hide();
-            $("input[name='price']").prop('disabled',false);
-        }
-    });
-
-    $('select[name="unit_id"]').on('change', function() {
-        unitID = $(this).val();
-        if(unitID) {
-            populate_unit_second(unitID);
-        }else{
-            $('select[name="sale_unit_id"]').empty();
-            $('select[name="purchase_unit_id"]').empty();
-        }
-    });
-
-    <?php $productArray = []; ?>
-    var lims_product_code = [
-        @foreach($lims_product_list_without_variant as $product)
-        <?php
-            $productArray[] = htmlspecialchars($product->code . ' (' . $product->name . ')');
-        ?>
-        @endforeach
-        @foreach($lims_product_list_with_variant as $product)
-            <?php
-                $productArray[] = htmlspecialchars($product->item_code . ' (' . $product->name . ')');
-            ?>
-        @endforeach
-            <?php
-                echo  '"'.implode('","', $productArray).'"';
-            ?> ];
-
-    var lims_productcodeSearch = $('#lims_productcodeSearch');
-
-    lims_productcodeSearch.autocomplete({
-        source: function(request, response) {
-            var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
-            response($.grep(lims_product_code, function(item) {
-                return matcher.test(item);
-            }));
-        },
-        select: function(event, ui) {
-            var data = ui.item.value;
-            $.ajax({
-                type: 'GET',
-                url: '../lims_product_search',
-                data: {
-                    data: data
-                },
-                success: function(data) {
-                    //console.log(data);
-                    var flag = 1;
-                    $(".product-id").each(function() {
-                        if ($(this).val() == data[8]) {
-                            alert('Duplicate input is not allowed!')
-                            flag = 0;
-                        }
-                    });
-                    $("input[name='product_code_name']").val('');
-                    if(flag){
-                        var newRow = $("<tr>");
-                        var cols = '';
-                        cols += '<td>' + data[0] +' [' + data[1] + ']</td>';
-                        cols += '<td><input type="number" class="form-control qty" name="product_qty[]" value="1" step="any"/></td>';
-                        cols += '<td><input type="number" class="form-control unit_price" name="unit_price[]" value="' + data[2] + '" step="any"/></td>';
-                        cols += '<td><button type="button" class="ibtnDel btn btn-sm btn-danger">X</button></td>';
-                        cols += '<input type="hidden" class="product-id" name="product_id[]" value="' + data[8] + '"/>';
-                        cols += '<input type="hidden" class="" name="variant_id[]" value="' + data[9] + '"/>';
-
-                        newRow.append(cols);
-                        $("table.order-list tbody").append(newRow);
-                        calculate_price();
-                    }
-                }
-            });
-        }
-    });
-
-    //Change quantity or unit price
-    $("#myTable").on('input', '.qty , .unit_price', function() {
-        calculate_price();
-    });
-
-    //Delete product
-    $("table.order-list tbody").on("click", ".ibtnDel", function(event) {
-        $(this).closest("tr").remove();
-        calculate_price();
-    });
-
-    function calculate_price() {
-        var price = 0;
-        $(".qty").each(function() {
-            rowindex = $(this).closest('tr').index();
-            quantity =  $(this).val();
-            unit_price = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ') .unit_price').val();
-            price += quantity * unit_price;
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script type="text/javascript">
+        $('#summernote').summernote({
+            height: 400
         });
-        $('input[name="price"]').val(price);
-    }
-
-    function hide() {
-        $("#cost").hide();
-        $("#unit").hide();
-        $("#alert-qty").hide();
-    }
-
-    function populate_unit(unitID){
-        $.ajax({
-            url: '../saleunit/'+unitID,
-            type: "GET",
-            dataType: "json",
-
-            success:function(data) {
-                  $('select[name="sale_unit_id"]').empty();
-                  $('select[name="purchase_unit_id"]').empty();
-                  $.each(data, function(key, value) {
-                      $('select[name="sale_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
-                      $('select[name="purchase_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
-                  });
-                  $('.selectpicker').selectpicker('refresh');
-                  var sale_unit = $("input[name='sale_unit']").val();
-                  var purchase_unit = $("input[name='purchase_unit']").val();
-                $('#sale-unit').val(sale_unit);
-                $('select[name=purchase_unit_id]').val(purchase_unit);
-                $('.selectpicker').selectpicker('refresh');
-            },
-        });
-    }
-
-    function populate_unit_second(unitID){
-        $.ajax({
-            url: '../saleunit/'+unitID,
-            type: "GET",
-            dataType: "json",
-            success:function(data) {
-                  $('select[name="sale_unit_id"]').empty();
-                  $('select[name="purchase_unit_id"]').empty();
-                  $.each(data, function(key, value) {
-                      $('select[name="sale_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
-                      $('select[name="purchase_unit_id"]').append('<option value="'+ key +'">'+ value +'</option>');
-                  });
-                  $('.selectpicker').selectpicker('refresh');
-            },
-        });
-    };
-
-    $("input[name='is_batch']").on("change", function () {
-        if ($(this).is(':checked')) {
-            $("#variant-option").hide(300);
-        }
-        else
-            $("#variant-option").show(300);
-    });
-
-    $("input[name='is_variant']").on("change", function () {
-        variantShowHide();
-    });
-
-    $("input[name='is_diffPrice']").on("change", function () {
-        diffPriceShowHide();
-    });
-
-    function variantShowHide() {
-         if ($("#is-variant").is(':checked')) {
-            $("#variant-section").show(300);
-            $("#batch-option").hide(300);
-            $(".variant-field").prop("required", true);
-        }
-        else {
-            $("#variant-section").hide(300);
-            $("#batch-option").show(300);
-            $(".variant-field").prop("required", false);
-        }
-    };
-
-    function diffPriceShowHide() {
-         if ($("#is-diffPrice").is(':checked')) {
-            $("#diffPrice-section").show(300);
-        }
-        else {
-            $("#diffPrice-section").hide(300);
-        }
-    };
-
-    $( "#promotion" ).on( "change", function() {
-        if ($(this).is(':checked')) {
-            $("#promotion_price").show();
-            $("#start_date").show();
-            $("#last_date").show();
-        }
-        else {
-            $("#promotion_price").hide();
-            $("#start_date").hide();
-            $("#last_date").hide();
-        }
-    });
-
-    var starting_date = $('#starting_date');
-    starting_date.datepicker({
-     format: "dd-mm-yyyy",
-     startDate: "<?php echo date('d-m-Y'); ?>",
-     autoclose: true,
-     todayHighlight: true
-     });
-
-    var ending_date = $('#ending_date');
-    ending_date.datepicker({
-     format: "dd-mm-yyyy",
-     startDate: "<?php echo date('d-m-Y'); ?>",
-     autoclose: true,
-     todayHighlight: true
-     });
-
-    //dropzone portion
-    Dropzone.autoDiscover = false;
-
-    jQuery.validator.setDefaults({
-        errorPlacement: function (error, element) {
-            if(error.html() == 'Select Category...')
-                error.html('This field is required.');
-            $(element).closest('div.form-group').find('.validation-msg').html(error.html());
-        },
-        highlight: function (element) {
-            $(element).closest('div.form-group').removeClass('has-success').addClass('has-error');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).closest('div.form-group').removeClass('has-error').addClass('has-success');
-            $(element).closest('div.form-group').find('.validation-msg').html('');
-        }
-    });
-
-    function validate() {
-        var product_code = $("input[name='code']").val();
-        var barcode_symbology = $('select[name="barcode_symbology"]').val();
-        var exp = /^\d+$/;
-
-        if(!(product_code.match(exp)) && (barcode_symbology == 'UPCA' || barcode_symbology == 'UPCE' || barcode_symbology == 'EAN8' || barcode_symbology == 'EAN13') ) {
-            alert('Product code must be numeric.');
-            return false;
-        }
-        else if(product_code.match(exp)) {
-            if(barcode_symbology == 'UPCA' && product_code.length > 11){
-                alert('Product code length must be less than 12');
-                return false;
-            }
-            else if(barcode_symbology == 'EAN8' && product_code.length > 7){
-                alert('Product code length must be less than 8');
-                return false;
-            }
-            else if(barcode_symbology == 'EAN13' && product_code.length > 12){
-                alert('Product code length must be less than 13');
-                return false;
-            }
-        }
-
-        if( $("#type").val() == 'combo' ) {
-            var rownumber = $('table.order-list tbody tr:last').index();
-            if (rownumber < 0) {
-                alert("Please insert product to table!")
-                return false;
-            }
-        }
-        $("input[name='price']").prop('disabled',false);
-        return true;
-    }
-
-    $(".dropzone").sortable({
-        items:'.dz-preview',
-        cursor: 'grab',
-        opacity: 0.5,
-        containment: '.dropzone',
-        distance: 20,
-        tolerance: 'pointer',
-        stop: function () {
-          var queue = myDropzone.getAcceptedFiles();
-          newQueue = [];
-          $('#imageUpload .dz-preview .dz-filename [data-dz-name]').each(function (count, el) {
-                var name = el.innerHTML;
-                queue.forEach(function(file) {
-                    if (file.name === name) {
-                        newQueue.push(file);
-                    }
-                });
-          });
-          myDropzone.files = newQueue;
-        }
-    });
-
-    myDropzone = new Dropzone('div#imageUpload', {
-        addRemoveLinks: true,
-        autoProcessQueue: false,
-        uploadMultiple: true,
-        parallelUploads: 100,
-        maxFilesize: 12,
-        paramName: 'image',
-        clickable: true,
-        method: 'POST',
-        url:'../update',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        renameFile: function(file) {
-            var dt = new Date();
-            var time = dt.getTime();
-            return time + file.name;
-        },
-        acceptedFiles: ".jpeg,.jpg,.png,.gif",
-        init: function () {
-            var myDropzone = this;
-            $('#submit-btn').on("click", function (e) {
-                e.preventDefault();
-                if ( $("#product-form").valid() && validate() ) {
-                    tinyMCE.triggerSave();
-                    if(myDropzone.getAcceptedFiles().length) {
-                        myDropzone.processQueue();
-                    }
-                    else {
-                        var formData = new FormData();
-                        //$("#product-form").serialize();
-                        var data = $("#product-form").serializeArray();
-                        $.each(data, function (key, el) {
-                            formData.append(el.name, el.value);
-                        });
-                        var file = $('#file')[0].files;
-                        if(file.length > 0)
-                            formData.append('file',file[0]);
-                        $.ajax({
-                            type:'POST',
-                            url:'../update',
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                            success:function(response) {
-                                //console.log(response);
-                                location.href = redirectUrl;
-                            },
-                            error:function(response) {
-                                //console.log(response);
-                              if(response.responseJSON.errors.name) {
-                                  $("#name-error").text(response.responseJSON.errors.name);
-                              }
-                              else if(response.responseJSON.errors.code) {
-                                  $("#code-error").text(response.responseJSON.errors.code);
-                              }
-                            },
-                        });
-                    }
-                }
-            });
-
-            this.on('sending', function (file, xhr, formData) {
-                // Append all form inputs to the formData Dropzone will POST
-                var data = $("#product-form").serializeArray();
-                $.each(data, function (key, el) {
-                    formData.append(el.name, el.value);
-                });
-                var file = $('#file')[0].files;
-                if(file.length > 0)
-                    formData.append('file',file[0]);
-            });
-        },
-        error: function (file, response) {
-            console.log(response);
-            /*if(response.errors.name) {
-              $("#name-error").text(response.errors.name);
-              this.removeAllFiles(true);
-            }
-            else if(response.errors.code) {
-              $("#code-error").text(response.errors.code);
-              this.removeAllFiles(true);
-            }
-            else {
-              try {
-                  var res = JSON.parse(response);
-                  if (typeof res.message !== 'undefined' && !$modal.hasClass('in')) {
-                      $("#success-icon").attr("class", "fas fa-thumbs-down");
-                      $("#success-text").html(res.message);
-                      $modal.modal("show");
-                  } else {
-                      if ($.type(response) === "string")
-                          var message = response; //dropzone sends it's own error messages in string
-                      else
-                          var message = response.message;
-                      file.previewElement.classList.add("dz-error");
-                      _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
-                      _results = [];
-                      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                          node = _ref[_i];
-                          _results.push(node.textContent = message);
-                      }
-                      return _results;
-                  }
-              } catch (error) {
-                  console.log(error);
-              }
-            }*/
-        },
-        successmultiple: function (file, response) {
-            location.href = redirectUrl;
-            //console.log('sss: '+ response);
-        },
-        completemultiple: function (file, response) {
-            console.log(file, response, "completemultiple");
-        },
-        reset: function () {
-            console.log("resetFiles");
-            this.removeAllFiles(true);
-        }
-    });
-
-</script>
-@endpush
+    </script>
+    <script src="{{asset('calender/date-picker.js')}}"></script>
+    @endpush

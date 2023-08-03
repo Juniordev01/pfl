@@ -404,6 +404,7 @@ Route::group(['middleware' => ['common', 'auth', 'active']], function() {
 
 	// Store Product 
 	Route::post('store', 'ProductController@store')->name('store');
+	Route::post('update', 'ProductController@updateProduct')->name('updateProduct');
 
 	// Route::resource('products', 'ProductController');
 
