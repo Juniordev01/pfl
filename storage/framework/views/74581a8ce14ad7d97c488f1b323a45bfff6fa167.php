@@ -5,74 +5,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo e(asset('calender/date-picker.css')); ?>">
 <link rel="stylesheet" href="<?php echo e(asset('ImageSelector/style.css')); ?>">
+
 <style>
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        border: 1px solid #ddd;
+    .form-control {
+        background-color: white !important;
     }
 
-    .table th {
-        background-color: #f2f2f2;
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
+    .form-check {
+        padding-left: 0% !important;
     }
 
-    .table td {
-        border: 1px solid #ddd;
-        padding: 8px;
+    .form-check-input {
+        margin-top: 0.5rem !important;
     }
 
-    .custom-table tbody {
-        border-bottom: 2px solid #ddd;
+    #barcode,
+    #shipping_field {
+        display: none;
     }
 
-    /* Add to Table */
-    /* Style for the button */
+    #weight_type {
+        border-radius: 3px !important;
+        ;
+    }
 
+    button.btn.dropdown-toggle.btn-default.btn-light {
+        color: black !important;
+        ;
+        background-color: white !important;
+    }
 
+    span.dropdown-item-inner {
+        color: black !important;
 
-    /* Style for the button */
-    .variant_btn,
-    .edit_btn {
-        padding: 10px 20px;
-        background-color: #ffffff;
-        color: #000000;
-        border: none;
-        border-radius: 8px;
+    }
+
+    .dropdown-item.selected {
+        color: black;
+
+    }
+
+    #custom_info:hover,
+    #variants_option:hover,
+    #add-variant-btn:hover {
         cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        color: #0B5ED7 !important;
     }
 
-    .variant_btn:hover,
-    .edit_btn:hover {
-        background-color: #f0f0f0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    .divider {
+        margin-top: -2px;
+
+    }
+
+    .form-group select {
+        border-radius: 5px !important;
+
+    }
+
+    .cards {
+        border-radius: 16px !important;
+    }
+
+    .custom-button {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* Add a shadow to the button */
+        border: 1px solid #ced4da;
+        /* Add a border to the button */
+    }
+
+    .down-arrow {
+        margin-left: 5px;
+        /* Add some space between the "Manage" link and the arrow */
+        font-size: 14px;
+        color: #666;
+        /* Customize the color of the arrow */
+    }
+
+    .title,
+    .cost,
+    .profit,
+    .margin,
+    .track,
+    .Quantity,
+    .taxChange,
+    .contSelling,
+    #stock_out,
+    .sku,
+    .Barcode,
+    #req_shipping,
+    .Weight,
+    .int_order,
+    .Country,
+    .HS,
+    .opt_name,
+    .opt_val,
+    .more_opt,
+    .little_desc,
+    .text,
+    .product,
+    .Publishing_sub_cont,
+    .coll_error,
+    #add-variant-btn,
+    #borough {
+        font-family: 'Inter', sans-serif;
+        font-style: normal;
+        font-size: 13px;
+        ;
+        color: #303030;
+        line-height: 20px;
+        ;
+        font-weight: 400;
+    }
+
+    .media,
+    .pricing,
+    .Inventory,
+    .shipping,
+    .Variants,
+    .search_eng,
+    .cus_info,
+    .status,
+    #sch_online,
+    .pro_org,
+    .on_store #exampleModalLabel,
+    .Publishing {
+        font-family: 'Inter', sans-serif;
+        font-style: bold;
+        font-weight: 600;
+    }
+
+    #fields {
+        padding: 9px 14px 9px 40px;
+        /* background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E") no-repeat 9px center; */
+        background: transparent url('<?php echo e(asset("svg/pound.svg")); ?>') no-repeat 9px center;
+        /* background-image: url('<?php echo e(asset("svg/pound.svg")); ?>'); Relative path example */
     }
 </style>
 <?php $__env->startSection('content'); ?>
 
+
 <section>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-6 d-flex justify-content-end" style="z-index: 12;">
-                <?php if(session('create_message')): ?>
-                <div class="alert alert-success">
-                    <?php echo e(session('create_message')); ?>
-
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <form action="<?php echo e(url('/store')); ?>" method="POST"  id="hiddenForm" enctype="multipart/form-data">
+        <form action="<?php echo e(url('store')); ?>" method="post" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-8 rounded">
                     <div class="card shadow-lg  p-3  bg-white cards">
                         <div class="form-group">
                             <label class="title">Title</label>
-                            <input type="text" name="name" value="<?php echo e(old('name')); ?>" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
+                            <input type="text" name="name" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
                         </div>
                         <span class="mt-1 mb-2">
                             <?php $__errorArgs = ['name'];
@@ -85,7 +166,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                        </span>
+                        </span >
 
                         <div class="form-group">
                             <label class="title">Description</label>
@@ -102,7 +183,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                        </span>
+                        </span >
                     </div>
 
                     <div class="card shadow-lg  p-3 bg-white rounded">
@@ -113,7 +194,7 @@ unset($__errorArgs, $__bag); ?>
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
                             <span class="validation-msg" id="image-error"></span> -->
-                            <input type="file" id="file-input"  name="pro_image[]" onchange="preview()" multiple>
+                            <input type="file" id="file-input" accept="image/png, image/jpeg" name="pro_image[]" onchange="preview()" multiple>
                             <label for="file-input" class="multi_image_select">
                                 <i class="fas fa-upload"></i> &nbsp; Choose A Photo
                             </label>
@@ -121,20 +202,7 @@ unset($__errorArgs, $__bag); ?>
                             <div id="images"></div>
                         </div>
                         <input type="hidden" id="image-count" name="image_count" value="0">
-                        <span class=" mb-2">
-                            <?php $__errorArgs = ['images'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                            <div class="text-danger"><?php echo e($message); ?></div>
-                            <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                        </span>
                     </div>
-
 
 
                     <div class="card shadow-lg  p-3 bg-white cards">
@@ -143,88 +211,29 @@ unset($__errorArgs, $__bag); ?>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="title">Price</label>
                                 <input type="text" class="form-control price" name="price" id="fields" placeholder="Enter amount" aria-label="Amount" oninput="getValue()" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['price'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="title">Compare-at-price</label>
-                                <input type="text" class="form-control comp_price" name="comp_price" value="<?php echo e(old('comp_price')); ?>" id="fields" placeholder="Enter amount" oninput="getValue()" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['comp_price'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control comp_price" name="comp_price" id="fields" placeholder="Enter amount" oninput="getValue()" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                         </div>
                         <div class="custom-control custom-checkbox mb-3">
                             <input type="checkbox" class="custom-control-input" id="taxCharge">
-                            <label class="custom-control-label taxChange" id="taxId" style="margin-top: 1px;" oninput="getValue()" for="taxCharge" onclick="toggleTax()">Change Tax on this product</label>
+                            <label class="custom-control-label taxChange" style="margin-top: 1px;" oninput="getValue()" for="taxCharge">Change Tax on this product</label>
                         </div>
-                        <div class="form-row" id="pro_mar" style="display: none;">
+                        <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="cost">Cost per item</label>
-                                <input type="text" class="form-control cost_per_item" value="<?php echo e(old('per_item_cost')); ?>" name="per_item_cost" id="fields" oninput="getValue()" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['per_item_cost'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control cost_per_item" name="per_item_cost" id="fields" oninput="getValue()" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="profit">Profit</label>
-                                <input type="text" class="form-control profit_value" id="fields" value="<?php echo e(old('product_profit')); ?>" name="product_profit" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['product_profit'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control profit_value" id="fields" name="product_profit" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="margin">Margin</label>
-                                <input type="text" class="form-control margin_value" id="fields" value="<?php echo e(old('product_margin')); ?>" name="product_margin" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['product_margin'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control margin_value" id="fields" name="product_margin" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+
                             </div>
                         </div>
                     </div>
@@ -247,19 +256,7 @@ unset($__errorArgs, $__bag); ?>
                                     <label for="inputPassword4" id="borough">15 Marlborough</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="number" class="form-control" placeholder="0" value="<?php echo e(old('product_quantity')); ?>" name="product_quantity" id="quantityField" style="border: 1px solid black; border-radius: 5px;">
-                                    <span class=" mb-2">
-                                        <?php $__errorArgs = ['product_quantity'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="text-danger"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </span>
+                                    <input type="number" class="form-control" placeholder="0" name="product_quantity" id="quantityField" style="border: 1px solid black; border-radius: 5px;">
                                 </div>
                             </div>
 
@@ -280,35 +277,11 @@ unset($__errorArgs, $__bag); ?>
                         <div class="form-row" id="barcode">
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="sku">SKU (Stock Keeping Unit)</label>
-                                <input type="text" class="form-control" id="currencyInput" value="<?php echo e(old('sku_input')); ?>" name="sku_input" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['sku_input'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control" id="currencyInput" name="sku_input" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="Barcode">Barcode (ISBN, UCP, GTIN, etc)</label>
-                                <input type="text" class="form-control" id="currencyInput" name="bar_code" value="<?php echo e(old('bar_code')); ?>" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['bar_code'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
+                                <input type="text" class="form-control" id="currencyInput" name="bar_code" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                         </div>
                     </div>
@@ -322,38 +295,13 @@ unset($__errorArgs, $__bag); ?>
                         <div class=" form-group col-md-4" id="shipping_field">
                             <label for="" class="Weight ">Weight</label>
                             <div class="d-flex">
-                                <input type="number" class="form-control" value="<?php echo e(old('weight')); ?>" id="currencyInput" name="weight" aria-label="Amount" step="0.01" style="border: 1px solid black; border-radius: 5px;">
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['weight'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
-                                <select class="form-select border ml-2" value="<?php echo e(old('weight_unit')); ?>" style="border-radius: 10px !important;" name="weight_unit" aria-label="Default select example" id="weight_type">
-                                    <option value="" disabled hidden>Choose Unit</option>
-                                    <option value="1">Kg</option>
+                                <input type="number" class="form-control" id="currencyInput" name="weight" aria-label="Amount" step="0.01" style="border: 1px solid black; border-radius: 5px;">
+                                <select class="form-select border ml-2" style="border-radius: 10px !important;" name="weight_unit" aria-label="Default select example" id="weight_type">
+                                    <option value="1" selected>Kg</option>
                                     <option value="2">lg</option>
                                     <option value="3">oz</option>
                                     <option value="4">g</option>
                                 </select>
-                                <span class=" mb-2">
-                                    <?php $__errorArgs = ['weight_unit'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="text-danger"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </span>
                             </div>
                         </div>
                         <hr class="divider">
@@ -367,161 +315,86 @@ unset($__errorArgs, $__bag); ?>
                             <div class="form-group">
                                 <label class="Country">Country</label>
                                 <div>
-                                    <select class="form-select border w-100" name="country" value="<?php echo e(old('country')); ?>" aria-label="Default select example">
-                                        <option value="" disabled hidden>Choose Country</option>
-                                        <option value="1">Pakistan</option>
+                                    <select class="form-select border w-100" name="country" aria-label="Default select example">
+                                        <option value="1" selected>Pakistan</option>
                                         <option value="2">India</option>
                                         <option value="3">China</option>
                                         <option value="4">England</option>
                                     </select>
-                                    <!-- <span class=" mb-2">
-                                        <?php $__errorArgs = ['country'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="text-danger"><?php echo e($message); ?></div>
-                                         <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </span > -->
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="HS">HS (Harmonized System)</label>
-                                <input name="harmonized_system" type="search" value="<?php echo e(old('harmonized_system')); ?>" placeholder="Search Here" class="form-control" style="border: 1px solid black; border-radius: 5px;">
-                                <!-- <span class=" mb-2">
-                                        <?php $__errorArgs = ['harmonized_system'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="text-danger"><?php echo e($message); ?></div>
-                                         <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </span > -->
+                                <input name="harmonized_system" type="search" placeholder="Search Here" class="form-control" style="border: 1px solid black; border-radius: 5px;">
                             </div>
                         </div>
                     </div>
 
-
                     <!-- <div class="card shadow-lg p-3  bg-white cards">
-                        <label for="" class="Variants ">Variants</label>
-                        <hr class="divider mt-1">
-                        <div class="col-md-12" id="variant-section" style="display: none;">
-                            <div class="row" id="variant-input-section">
-                                <div class="col-md-12 form-group mt-2">
-                                    <label>Option Name</label>
-                                    <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc...">
-                                    <span class=" mb-2">
-                                        <?php $__errorArgs = ['variant_option'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="text-danger"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </span>
-                                </div>
-                                <div class="col-md-12 form-group ">
-                                    <label>Option Value</label>
-                                    <input type="text" name="variant_value[]" id="var_option_value" class="type-variant form-control variant-field">
-                                    <span class=" mb-2">
-                                        <?php $__errorArgs = ['variant_value'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="text-danger"><?php echo e($message); ?></div>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                    </span>
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" onclick="hideNAppend()" class="btn border text-black bg-light mb-1 ml-3" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Done</button>
-                                </div>
+                        <label for="" class="Variants">Variants</label>
+                        <div id="variant-input-section">
+                            <div class="variant-row" style="display: none;">
+                                <label class="opt_name">Option *</label>
+                                <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..." style="border: 1px solid black; border-radius: 5px;">
+                                <label class="opt_val">Value *</label>
+                                <input type="text" name="variant_value[]" class="form-control variant-field" style="border: 1px solid black; border-radius: 5px;">
                             </div>
-                            <hr class="divider">
                         </div>
-                        <a class="text-primary mt-2 mb-2 add-more-variant" id="add-variant-btn"> + Add Option like size or color</a>
+                        <div class="table-responsive  mt-2" style="display: none;" id="variant_list">
+                            <table id="variant-table" class="table table-hover variant-list">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Available</th>
+                                        <th>On hand</th>
+                                        <th>SKU</th>
+                                        <th>Barcode</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
 
-                        <div class="variants_table mt-2" style="display: none;">
-                            <hr class="divider">
-                            <div class=" table-responsive">
-                                <table id="variant-table" class="table variant-list varOption">
-                                    <thead>
-                                        <tr class=" text-center">
-                                            <th>Variant</th>
-                                            <th>Price</th>
-                                            <th>Available</th>
-                                            <th>On hand</th>
-                                            <th>Sku</th>
-                                            <th>Barcode</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="table_body text-center">
-                                            <td class="variantOptionValue"></td>
-                                            <td>
-                                                <input type="text" class="form-control" name="var_price" id="var_price"  style="border: 1px solid black; border-radius: 5px;">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="var_available"  style="border: 1px solid black; border-radius: 5px;">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="var_on_hand"  style="border: 1px solid black; border-radius: 5px;">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="var_sku"  style="border: 1px solid black; border-radius: 5px;">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control" name="var_barcode"  style="border: 1px solid black; border-radius: 5px;">
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <a class="text-primary more_opt mt-2" id="add-variant-btn"> + Add Option like size or color</a>
+
 
                     </div> -->
 
                     <div class="card shadow-lg p-3  bg-white cards">
                         <label for="" class="Variants ">Variants</label>
-                        <div class="form-group">
-                            <input type="text" id="priceInput" name="var_name" class="form-control mt-2" placeholder="Enter Variants Name...">
+                        <div class="col-md-12" id="variant-section" style="display: none;">
+                            <div class="row" id="variant-input-section">
+                                <div class="col-md-6 form-group mt-2">
+                                    <label><?php echo e(trans('file.Option')); ?> *</label>
+                                    <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc...">
+                                </div>
+                                <div class="col-md-6 form-group mt-2">
+                                    <label><?php echo e(trans('file.Value')); ?> *</label>
+                                    <input type="text" name="variant_value[]" class="type-variant form-control variant-field">
+                                </div>
+                            </div>
+
+                            <div class="table-responsive ">
+                                <table id="variant-table" class="table table-hover variant-list">
+                                    <thead>
+                                        <tr>
+                                            <th><?php echo e(trans('file.name')); ?></th>
+                                            <th><?php echo e(trans('file.Item Code')); ?></th>
+                                            <th><?php echo e(trans('file.Additional Cost')); ?></th>
+                                            <th><?php echo e(trans('file.Additional Price')); ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" id="variantInput" name="var_values" class="form-control mt-3 mb-2">
-                        </div>
-                        <div class="form-group">
-                            <button class="btn mt-2 variant_btn" type="button" onclick="addToTable()">Add to Table</button>
-                        </div>
-                        <div class=" table-responsive" id="show_table" style="display: none;">
-                            <table id="dataTable" class="table table-bordered mt-4 custom-table">
-                                <tr>
-                                    <th>Variant</th>
-                                    <th>Price</th>
-                                    <th>Available</th>
-                                    <th>On hand</th>
-                                    <th>Sku</th>
-                                    <th>Barcode</th>
-                                    <th>Action</th>
-                                </tr>
-                            </table>
-                        </div>
+                        <hr class="divider">
+
+                        <a class="text-primary mt-2 add-more-variant" id="add-variant-btn"> + Add Option like size or color</a>
                     </div>
 
                     <div class="card shadow-lg  p-3 bg-white cards">
@@ -544,24 +417,23 @@ unset($__errorArgs, $__bag); ?>
                                 <label class="card-title status">Status</label>
                                 <div>
                                     <select class="form-select border w-100" name="save_status">
-                                        <option value="" disabled hidden>Choose Status</option>
-                                        <option value="Active" class="text"> Active</option>
+                                        <option value="Active" selected class="text"> Active</option>
                                         <option value="Inactive" class="text">Draft</option>
                                     </select>
                                 </div>
                             </div>
                             <span class=" mb-2">
-                                <?php $__errorArgs = ['save_status'];
+                            <?php $__errorArgs = ['save_status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <div class="text-danger"><?php echo e($message); ?></div>
-                                <?php unset($message);
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                            </span>
+                        </span >
                         </div>
                     </div>
                     <input type="hidden" name="startDate" id="sch_start_date">
@@ -581,7 +453,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="">Start Date</label>
-                                            <input type="text" id="start_date" name="starting_date" class="date-picker form-control" value="<?php echo e(old('starting_date')); ?>" />
+                                            <input type="text" id="start_date" name="starting_date" class="date-picker form-control" />
                                             <!-- <input type="date" id="start_date" class="form-control" /> -->
                                         </div>
                                         <span class=" mb-2">
@@ -595,10 +467,10 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                        </span>
+                                        </span >
                                         <div class="col-lg-6">
                                             <label for="">End Time</label>
-                                            <input type="text" id="end_date" name="ending_date" class="date-picker form-control" value="<?php echo e(old('ending_date')); ?>" />
+                                            <input type="text" id="end_date" name="ending_date" class="date-picker form-control" />
                                         </div>
                                         <span class=" mb-2">
                                             <?php $__errorArgs = ['ending_date'];
@@ -611,7 +483,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                                        </span>
+                                        </span >
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -648,13 +520,13 @@ unset($__errorArgs, $__bag); ?>
                                         <li class="mb-3">
                                             <span class="Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Shop</span>
                                             <div style="margin-left: 19px;"><span class="text-black text">Shop has noticed your store does't meet store requirement</span>
-                                                <a href="#" class="learnMore">Learn More</a>
+                                                <a href="#">Learn More</a>
                                             </div>
                                         </li>
                                         <li class="mb-3">
                                             <span class="Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Facebook & Instagram</span>
                                             <div style="margin-left: 19px;"><span class="text-black text">Shop has noticed your store does't meet store requirement</span>
-                                                <a href="#" class="learnMore">Learn More</a>
+                                                <a href="#">Learn More</a>
                                             </div>
                                         </li>
 
@@ -679,11 +551,11 @@ unset($__errorArgs, $__bag); ?>
                             <div class="form-group">
                                 <label for="" class="product">Product Category</label>
 
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_category" value="<?php echo e(old('prod_category')); ?>" style="border: 1px solid black; border-radius: 5px;">
-                                    <option value="" disabled hidden>Choose Category</option>
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_category" style="border: 1px solid black; border-radius: 5px;">
                                     <?php $__currentLoopData = $lims_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lims_category_list): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($lims_category_list->id); ?>"><?php echo e($lims_category_list->name); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <!-- Add more option elements for other tags if needed -->
                                 </select>
                                 <?php $__errorArgs = ['prod_category'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -695,16 +567,16 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-
+                                
 
                             </div>
                             <div class="form-group">
                                 <label for="" class="product">Product Type</label>
                                 <!-- <input type="text" class="form-control" name="prod_type" style="border: 1px solid black; border-radius: 5px;"> -->
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_type" value="<?php echo e(old('prod_type')); ?>" style="border: 1px solid black; border-radius: 5px;">
-                                    <option value="" disabled hidden>Choose Type</option>
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_type" style="border: 1px solid black; border-radius: 5px;">
                                     <option value="Product Type 1">Product Type 1</option>
                                     <option value="Product Type 2">Product Type 2</option>
+                                    <!-- Add more option elements for other tags if needed -->
                                 </select>
                                 <?php $__errorArgs = ['prod_type'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -719,9 +591,8 @@ unset($__errorArgs, $__bag); ?>
                             </div>
                             <div class="form-group">
                                 <label for="" class="product">Vendor</label>
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_vendor" value="<?php echo e(old('prod_vendor')); ?>" style="border: 1px solid black; border-radius: 5px;">
-                                    <option value="" disabled hidden>Choose Vendor</option>
-                                    <option value="Pakistan Fashion Lounge">Pakistan Fashion Lounge</option>
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_vendor" style="border: 1px solid black; border-radius: 5px;">
+                                    <option value="Pakistan Fashion Lounge" selected>Pakistan Fashion Lounge</option>
                                     <!-- Add more option elements for other tags if needed -->
                                 </select>
                                 <?php $__errorArgs = ['prod_vendor'];
@@ -743,7 +614,6 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div>
                                     <select class="form-select border w-100" name="tags[]" aria-label="Default select example" style="border: 1px solid black; border-radius: 5px;" multiple>
-                                        <option value="" disabled hidden>Choose Tags</option>
                                         <?php $__currentLoopData = $collections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($tag->title); ?>"><?php echo e($tag->title); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -760,7 +630,7 @@ unset($__errorArgs, $__bag); ?>
                                 <span for="">Theme Template</span>
                                 <div>
                                     <select class="form-select border w-100" name="pro_theme" aria-label="Default select example" style="border: 1px solid black; border-radius: 5px;">
-                                        <option value="">Default Product</option>
+                                        <option value="" selected>Default Product</option>
                                     </select>
                                 </div>
                             </div>
@@ -779,425 +649,785 @@ unset($__errorArgs, $__bag); ?>
     <?php $__env->startPush('scripts'); ?>
 
     <script>
-        function toggleTax() {
-            var checkbox = document.getElementById("taxId");
-            var quantityField = document.getElementById("pro_mar");
+        // Variants Code Start
+        var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
+        var variantIds = [];
+        var combinations = [];
+        var oldCombinations = [];
+        var oldAdditionalCost = [];
+        var oldAdditionalPrice = [];
+        var step;
+        var numberOfWarehouse = <?php echo json_encode(count($lims_warehouse_list)) ?>;
 
-            checkbox.checked == checkbox.checked ? quantityField.style.display = "flex" : quantityField.style.display = "none";
-            // if (checkbox.checked) {
-            //     quantityField.style.display = "flex";
-            // } if(!checkbox.checked) {
-            //     quantityField.style.display = "none";
-            // }
+        $('[data-toggle="tooltip"]').tooltip();
+
+
+        $('.add-more-variant').on("click", function() {
+            var variantListElement = document.getElementById("variant-section");
+            if (variantListElement.style.display === "none") {
+                variantListElement.style.display = "block";
+            } else {
+                var htmlText = '<div class="col-md-6 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-6 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div>';
+                $("#variant-input-section").append(htmlText);
+                $('.type-variant').tagsInput();
+            }
+
+        });
+
+        //start variant related js
+        $(function() {
+            $('.type-variant').tagsInput();
+        });
+
+        // Variants Code End
+
+
+        function toggleQuantityField() {
+            var checkbox = document.getElementById("toggleQuantityCheck");
+            var quantityField = document.getElementById("toggle_quantity");
+
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
+            }
         }
 
-        // Variants
-        // function hideNAppend() {
+        // $(".dropzone").sortable({
+        //     items: '.dz-preview',
+        //     cursor: 'grab',
+        //     opacity: 0.5,
+        //     containment: '.dropzone',
+        //     distance: 20,
+        //     tolerance: 'pointer',
+        //     stop: function() {
+        //         var queue = myDropzone.getAcceptedFiles();
+        //         newQueue = [];
+        //         $('#imageUpload .dz-preview .dz-filename [data-dz-name]').each(function(count, el) {
+        //             var name = el.innerHTML;
+        //             queue.forEach(function(file) {
+        //                 if (file.name === name) {
+        //                     newQueue.push(file);
+        //                 }
+        //             });
+        //         });
+        //         myDropzone.files = newQueue;
+        //     }
+        // });
 
-        //     var variantsTable = document.querySelector(".variants_table");
-
-        //     // if (variantsTable.style.display === "none") {
-
-        //         variantsTable.style.display = "flex";
-
-        //         const varOptValue = document.getElementById('var_option_value');
-        //         if (varOptValue.trim() !== '')
-        //         {
-        //             const table = document.getElementById('variant-table');
-        //         }
-
-        //         // Get the values and set them to fields
-        //         // var priceValue = $(".price").val();
-        //         // var varOptValue = $("#var_option_value").val();
-        //         // $("#var_price").val(priceValue);
-        //         // $(".variantOptionValue").text(varOptValue);
-        //     // } 
-        //     // else {
-        //     //     var priceValue = $(".price").val();
-        //     //     var varOptValue = $("#var_option_value").val();
-        //     //     $("#var_price").val(priceValue);
-        //     //     $(".variantOptionValue").text(varOptValue);
-        //     //     // The variantsTable is already displayed, show the alert
-        //     //     var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="<?php echo e(old("var_price")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="<?php echo e(old("var_available")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="<?php echo e(old("var_on_hand")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="<?php echo e(old("var_sku")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="<?php echo e(old("var_barcode")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
-        //     //     $("#variant-table tbody").append(tableRow);
-        //     // }
-
-
-        // }
-
-
-        // Variants Start Here
-        // function addToTable() {
-        //     const variantTable = document.getElementById('show_table');
-        //     variantTable.style.display = "flex"
-        //     const variantInput = document.getElementById('variantInput');
-        //     const variant = variantInput.value;
-        //     const priceInput = document.getElementById('priceInput');
-        //     const price = priceInput.value;
-
-        //     const proPrice = document.querySelector('.price').value;
-
-
-        //     if (variant.trim() !== '' && price.trim() !== '') {
-        //         const table = document.getElementById('dataTable');
-        //         const newRow = table.insertRow(-1);
-
-        //         for (let i = 0; i < 6; i++) {
-        //             const newCell = newRow.insertCell(i);
-
-        //             if (i === 0) {
-        //                 newCell.innerHTML = variant;
-        //             } 
-        //              else {
-        //                 newCell.contentEditable = false;
+        // myDropzone = new Dropzone('div#imageUpload', {
+        //     addRemoveLinks: true,
+        //     autoProcessQueue: false,
+        //     uploadMultiple: true,
+        //     parallelUploads: 100,
+        //     maxFilesize: 12,
+        //     paramName: 'image',
+        //     clickable: true,
+        //     method: 'POST',
+        //     url: '<?php echo e(route('products.store')); ?>',
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     renameFile: function(file) {
+        //         var dt = new Date();
+        //         var time = dt.getTime();
+        //         return time + file.name;
+        //     },
+        //     acceptedFiles: ".jpeg,.jpg,.png,.gif",
+        //     init: function () {
+        //         var myDropzone = this;
+        //         $('#submit-btn').on("click", function (e) {
+        //             e.preventDefault();
+        //             if ( $("#product-form").valid() && validate() ) {
+        //                 tinyMCE.triggerSave();
+        //                 if(myDropzone.getAcceptedFiles().length) {
+        //                     myDropzone.processQueue();
+        //                 }
+        //                 else {
+        //                     var formData = new FormData();
+        //                     var data = $("#product-form").serializeArray();
+        //                     $.each(data, function (key, el) {
+        //                         formData.append(el.name, el.value);
+        //                     });
+        //                     var file = $('#file')[0].files;
+        //                     if(file.length > 0)
+        //                         formData.append('file',file[0]);
+        //                     $.ajax({
+        //                         type:'POST',
+        //                         url:'<?php echo e(route('products.store')); ?>',
+        //                         data: formData,
+        //                         contentType: false,
+        //                         processData: false,
+        //                         success:function(response) {
+        //                             //console.log(response);
+        //                             location.href = '../products';
+        //                         },
+        //                         error:function(response) {
+        //                           if(response.responseJSON.errors.name) {
+        //                               $("#name-error").text(response.responseJSON.errors.name);
+        //                           }
+        //                           else if(response.responseJSON.errors.code) {
+        //                               $("#code-error").text(response.responseJSON.errors.code);
+        //                           }
+        //                         },
+        //                     });
+        //                 }
         //             }
+        //         });
+
+        //         this.on('sending', function (file, xhr, formData) {
+        //             // Append all form inputs to the formData Dropzone will POST
+        //             var data = $("#product-form").serializeArray();
+        //             $.each(data, function (key, el) {
+        //                 formData.append(el.name, el.value);
+        //             });
+        //             var file = $('#file')[0].files;
+        //             if(file.length > 0)
+        //                 formData.append('file',file[0]);
+        //         });
+        //     },
+        //     error: function (file, response) {
+        //         console.log(response);
+        //         if(response.errors.name) {
+        //           $("#name-error").text(response.errors.name);
+        //           this.removeAllFiles(true);
         //         }
-
-        //         const actionCell = newRow.insertCell(6);
-        //         actionCell.innerHTML = '<button class="btn edit_btn" type="button" onclick="editRow(this)">Edit</button>';
-
-        //         // Clear input fields after adding to the table
-        //         variantInput.value = '';
-        //         priceInput.value = '';
+        //         else if(response.errors.code) {
+        //           $("#code-error").text(response.errors.code);
+        //           this.removeAllFiles(true);
+        //         }
+        //         else {
+        //           try {
+        //               var res = JSON.parse(response);
+        //               if (typeof res.message !== 'undefined' && !$modal.hasClass('in')) {
+        //                   $("#success-icon").attr("class", "fas fa-thumbs-down");
+        //                   $("#success-text").html(res.message);
+        //                   $modal.modal("show");
+        //               } else {
+        //                   if ($.type(response) === "string")
+        //                       var message = response; //dropzone sends it's own error messages in string
+        //                   else
+        //                       var message = response.message;
+        //                   file.previewElement.classList.add("dz-error");
+        //                   _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+        //                   _results = [];
+        //                   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        //                       node = _ref[_i];
+        //                       _results.push(node.textContent = message);
+        //                   }
+        //                   return _results;
+        //               }
+        //           } catch (error) {
+        //               console.log(error);
+        //           }
+        //         }
+        //     },
+        //     successmultiple: function (file, response) {
+        //         location.href = '../products';
+        //         //console.log(file, response);
+        //     },
+        //     completemultiple: function (file, response) {
+        //         console.log(file, response, "completemultiple");
+        //     },
+        //     reset: function () {
+        //         console.log("resetFiles");
+        //         this.removeAllFiles(true);
         //     }
-        // }
+        // });
 
-        // function editRow(button) {
-        //     const row = button.parentNode.parentNode;
-        //     const cells = row.cells;
+        function toggleStockField() {
+            var checkbox = document.getElementById("customCheck2");
+            var quantityField = document.getElementById("stock_out");
 
-        //     // Toggle the editable state for the cells (start from index 1 to skip Variant column)
-        //     for (let i = 1; i < cells.length - 1; i++) {
-        //         cells[i].contentEditable = true;
-        //     }
-
-        //     // Change the button to a Save button
-        //     button.innerHTML = 'Save';
-        //     button.onclick = function() {
-        //         saveRow(this);
-        //     };
-        // }
-
-        // function saveRow(button) {
-        //     const row = button.parentNode.parentNode;
-        //     const cells = row.cells;
-
-        //     // Toggle the editable state for the cells (start from index 1 to skip Variant column)
-        //     for (let i = 1; i < cells.length - 1; i++) {
-        //         cells[i].contentEditable = false;
-        //     }
-
-        //     // Change the button back to an Edit button
-        //     button.innerHTML = 'Edit';
-        //     button.onclick = function() {
-        //         editRow(this);
-        //     };
-        // }
-
-        function addToTable() {
-            const variantTable = document.getElementById('show_table');
-            variantTable.style.display = "flex"
-            const variantInput = document.getElementById('variantInput');
-            const variant = variantInput.value;
-            const priceInput = document.getElementById('priceInput');
-            const price = priceInput.value;
-
-            if (variant.trim() !== '' && price.trim() !== '') {
-                const table = document.getElementById('dataTable');
-                const newRow = table.insertRow(-1);
-
-                for (let i = 0; i < 6; i++) {
-                    const newCell = newRow.insertCell(i);
-
-                    if (i === 0) {
-                        newCell.innerHTML = variant;
-                    } else if (i === 1) {
-                        const proPrice = document.querySelector('.price').value;
-                        newCell.innerHTML = proPrice;
-                    } else {
-                        newCell.contentEditable = false;
-                    }
-                }
-
-                const actionCell = newRow.insertCell(6);
-                actionCell.innerHTML = '<button class="btn edit_btn" type="button"  onclick="editRow(this)">Edit</button>';
-
-                // Clear input fields after adding to the table
-                variantInput.value = '';
-                priceInput.value = '';
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
             }
         }
 
-        function editRow(button) {
-            const row = button.parentNode.parentNode;
-            const cells = row.cells;
+        function toggleBarcodeField() {
+            var checkbox = document.getElementById("customCheck3");
+            var barcodeFields = document.getElementById("barcode");
 
-            // Toggle the editable state for the cells (start from index 2 to skip Variant and Price columns)
-            for (let i = 2; i < cells.length - 1; i++) {
-                cells[i].contentEditable = true;
+            if (checkbox.checked) {
+                barcodeFields.style.display = "flex";
+            } else {
+                barcodeFields.style.display = "none";
             }
-
-            // Change the button to a Save button
-            button.innerHTML = 'Save';
-            button.onclick = function() {
-                saveRow(this);
-            };
         }
 
-        function saveRow(button) {
-            const row = button.parentNode.parentNode;
-            const cells = row.cells;
+        function toggleShippingField() {
+            var checkbox = document.getElementById("shipping");
+            var shippingFields = document.getElementById("shipping_field");
 
-            // Toggle the editable state for the cells (start from index 2 to skip Variant and Price columns)
-            for (let i = 2; i < cells.length - 1; i++) {
-                cells[i].contentEditable = false;
+            if (checkbox.checked) {
+                shippingFields.style.display = "block";
+            } else {
+                shippingFields.style.display = "none";
             }
-
-            // Change the button back to an Edit button
-            button.innerHTML = 'Edit';
-            button.onclick = function() {
-                editRow(this);
-            };
-
-            const variant = cells[0].innerHTML;
-            const price = cells[1].innerHTML;
-            const available = cells[2].innerHTML;
-            const onHand = cells[3].innerHTML;
-            const sku = cells[4].innerHTML;
-            const barcode = cells[5].innerHTML;
-
-            // Create a unique index for the row
-            const rowIndex = row.rowIndex;
-
-            // Update the hidden form with the data from the row
-            updateHiddenInput('variant', variant, rowIndex);
-            updateHiddenInput('price', price, rowIndex);
-            updateHiddenInput('available', available, rowIndex);
-            updateHiddenInput('onHand', onHand, rowIndex);
-            updateHiddenInput('sku', sku, rowIndex);
-            updateHiddenInput('barcode', barcode, rowIndex);
         }
 
-        function updateHiddenInput(name, value, rowIndex) {
-            const inputName = `${name}[${rowIndex}]`;
-            const inputField = document.createElement('input');
-            inputField.type = 'hidden';
-            inputField.name = inputName;
-            inputField.value = value;
-            document.getElementById('hiddenForm').appendChild(inputField);
+        function toggleCustomField() {
+            var customInfoElement = document.getElementById("custom_info");
+            var jsCodeBlock = document.getElementById("custom_info_div");
+            if (jsCodeBlock.style.display === "none") {
+                customInfoElement.style.display = "none";
+                jsCodeBlock.style.display = "block";
+            } else {
+                jsCodeBlock.style.display = "none";
+            }
         }
 
-            // Variants Ends Here
+        function toggleVariant() {
+            var variantsDiv = document.getElementById("variants_div");
+            if (variantsDiv.style.display === "none") {
+                variantsDiv.style.display = "block";
+            } else {
+                variantsDiv.style.display = "none";
+            }
+        }
 
+        function belowField() {
+            var extraOption = document.getElementById("extraOption");
+            extraOption.style.display = "block";
+        }
 
+        function getValue() {
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
 
-
-            // Variants Code Start
-            var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
-            var variantIds = [];
-            var combinations = [];
-            var oldCombinations = [];
-            var oldAdditionalCost = [];
-            var oldAdditionalPrice = [];
-            var step;
-            var numberOfWarehouse = <?php echo json_encode(count($lims_warehouse_list)) ?>;
-
-            $('[data-toggle="tooltip"]').tooltip();
-
-
-            $('.add-more-variant').on("click", function() {
-                var variantListElement = document.getElementById("variant-section");
-                if (variantListElement.style.display === "none") {
-                    variantListElement.style.display = "block";
-                } else {
-                    var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="<?php echo e(old("var_price")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="<?php echo e(old("var_available")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="<?php echo e(old("var_on_hand")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="<?php echo e(old("var_sku")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="<?php echo e(old("var_barcode")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
-                    $("#variant-table tbody").append(tableRow);
-                    var htmlText = '<div class="col-md-12 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-12 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div><div class="form-group"><button type="button" onclick="hideNAppend()" class="btn border text-black bg-light mb-1 ml-3" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Done</button></div>';
-                    $("#variant-input-section").append(htmlText);
-                    $('.type-variant').tagsInput();
-
-                }
-
-            });
-            // Variants Code End
-
-
-            function toggleQuantityField() {
-                var checkbox = document.getElementById("toggleQuantityCheck");
-                var quantityField = document.getElementById("toggle_quantity");
-
-                if (checkbox.checked) {
-                    quantityField.style.display = "none";
-                } else {
-                    quantityField.style.display = "block";
-                }
+            if (profit > 1) {
+                document.querySelector('.profit_value').value = profit;
+                var margin = (profit / price) * 100;
+                document.querySelector('.margin_value').value = margin.toFixed(2) + '%';
+            } else {
+                document.querySelector('.profit_value').value = "";
+                document.querySelector('.margin_value').value = "";
             }
 
-            function toggleStockField() {
-                var checkbox = document.getElementById("customCheck2");
-                var quantityField = document.getElementById("stock_out");
+            // const margin = ((price - cost) / cost) * 100;
+            // document.querySelector(".margin").value = margin;
 
-                if (checkbox.checked) {
-                    quantityField.style.display = "none";
-                } else {
-                    quantityField.style.display = "block";
-                }
-            }
+        }
 
-            function toggleBarcodeField() {
-                var checkbox = document.getElementById("customCheck3");
-                var barcodeFields = document.getElementById("barcode");
+        //  Schedule Date 
+        $('.schedule_date').on('click', function() {
+            var startDate = $('#start_date').val();
+            var endDate = $('#end_date').val();
 
-                if (checkbox.checked) {
-                    barcodeFields.style.display = "flex";
-                } else {
-                    barcodeFields.style.display = "none";
-                }
-            }
+            $('#sch_start_date').val(startDate);
+            $('#sch_end_date').val(endDate);
 
-            function toggleShippingField() {
-                var checkbox = document.getElementById("shipping");
-                var shippingFields = document.getElementById("shipping_field");
-
-                if (checkbox.checked) {
-                    shippingFields.style.display = "block";
-                } else {
-                    shippingFields.style.display = "none";
-                }
-            }
-
-            function toggleCustomField() {
-                var customInfoElement = document.getElementById("custom_info");
-                var jsCodeBlock = document.getElementById("custom_info_div");
-                if (jsCodeBlock.style.display === "none") {
-                    customInfoElement.style.display = "none";
-                    jsCodeBlock.style.display = "block";
-                } else {
-                    jsCodeBlock.style.display = "none";
-                }
-            }
-
-            function toggleVariant() {
-                var variantsDiv = document.getElementById("variants_div");
-                if (variantsDiv.style.display === "none") {
-                    variantsDiv.style.display = "block";
-                } else {
-                    variantsDiv.style.display = "none";
-                }
-            }
-
-            function belowField() {
-                var extraOption = document.getElementById("extraOption");
-                extraOption.style.display = "block";
-            }
-
-            function getValue() {
-                var price = parseFloat(document.querySelector(".price").value);
-                var cost = parseFloat(document.querySelector(".cost_per_item").value);
-                var profit = price - cost;
-                var price = parseFloat(document.querySelector(".price").value);
-                var cost = parseFloat(document.querySelector(".cost_per_item").value);
-                var profit = price - cost;
-
-                if (profit > 1) {
-                    document.querySelector('.profit_value').value = profit;
-                    var margin = (profit / price) * 100;
-                    document.querySelector('.margin_value').value = margin.toFixed(2) + '%';
-                } else {
-                    document.querySelector('.profit_value').value = "";
-                    document.querySelector('.margin_value').value = "";
-                }
-
-                // const margin = ((price - cost) / cost) * 100;
-                // document.querySelector(".margin").value = margin;
-
-            }
-
-            //  Schedule Date 
-            $('.schedule_date').on('click', function() {
-                var startDate = $('#start_date').val();
-                var endDate = $('#end_date').val();
-
-                $('#sch_start_date').val(startDate);
-                $('#sch_end_date').val(endDate);
-
-                $('#exampleModal').modal('hide');
-            });
+            $('#exampleModal').modal('hide');
+        });
 
 
-            // // Image Selector
-            // let fileInput = document.getElementById("file-input");
+        // // Image Selector
+        // let fileInput = document.getElementById("file-input");
+        
+        // let imageContainer = document.getElementById("images");
+        // let numOfFiles = document.getElementById("num-of-files");
 
-            // let imageContainer = document.getElementById("images");
-            // let numOfFiles = document.getElementById("num-of-files");
-
-            // function preview() {
-            //     imageContainer.innerHTML = "";
-            //     image_count = numOfFiles.textContent = `${fileInput.files.length}`;
-            //      numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
-
-
-            //     for (i of fileInput.files) {
-            //         let reader = new FileReader();
-            //         let figure = document.createElement("figure");
-            //         let figCap = document.createElement("figcaption");
-            //         figCap.innerText = i.name;
-            //         figure.appendChild(figCap);
-            //         reader.onload = () => {
-            //             let img = document.createElement("img");
-            //             img.setAttribute("src", reader.result);
-            //             figure.insertBefore(img, figCap);
-            //         }
-            //         imageContainer.appendChild(figure);
-            //         reader.readAsDataURL(i);
-            //     }
-            //     document.querySelector('.image_count').value = image_count;
-            // }
-
-            let fileInput = document.getElementById("file-input");
-            let imageContainer = document.getElementById("images");
-            let numOfFiles = document.getElementById("num-of-files");
-            let imageCountInput = document.getElementById("image-count");
-
-            function preview() {
-                // Clear the existing images before adding new ones
-                imageContainer.innerHTML = "";
-
-                let imageFiles = [];
-                for (let i = 0; i < fileInput.files.length; i++) {
-                    if (fileInput.files[i].type.startsWith('image/')) {
-                        imageFiles.push(fileInput.files[i]);
-                    }
-                }
-
-                numOfFiles.textContent = `${imageFiles.length} Images Selected`;
-
-                imageCountInput.value = imageFiles.length; // Update the image_count hidden input field
-
-                for (let i = 0; i < imageFiles.length; i++) {
-                    let image = imageFiles[i];
-                    let reader = new FileReader();
-                    let figure = document.createElement("figure");
-
-                    // Create an input field to hold the image index
-                    let indexInput = document.createElement("input");
-                    indexInput.setAttribute("type", "hidden");
-                    indexInput.setAttribute("name", "imageIndex[]"); // Set the name attribute to an array
-                    indexInput.value = i; // Set the value to the image index
-                    figure.appendChild(indexInput);
-
-                    reader.onload = () => {
-                        let img = document.createElement("img");
-                        img.setAttribute("src", reader.result);
-                        figure.appendChild(img);
-                    }
-                    imageContainer.appendChild(figure);
-                    reader.readAsDataURL(image);
-                }
-            }
-
-
+        // function preview() {
+        //     imageContainer.innerHTML = "";
+        //     image_count = numOfFiles.textContent = `${fileInput.files.length}`;
+        //      numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
            
+
+        //     for (i of fileInput.files) {
+        //         let reader = new FileReader();
+        //         let figure = document.createElement("figure");
+        //         let figCap = document.createElement("figcaption");
+        //         figCap.innerText = i.name;
+        //         figure.appendChild(figCap);
+        //         reader.onload = () => {
+        //             let img = document.createElement("img");
+        //             img.setAttribute("src", reader.result);
+        //             figure.insertBefore(img, figCap);
+        //         }
+        //         imageContainer.appendChild(figure);
+        //         reader.readAsDataURL(i);
+        //     }
+        //     document.querySelector('.image_count').value = image_count;
+        // }
+
+        let fileInput = document.getElementById("file-input");
+let imageContainer = document.getElementById("images");
+let numOfFiles = document.getElementById("num-of-files");
+let imageCountInput = document.getElementById("image-count");
+
+function preview() {
+    // Clear the existing images before adding new ones
+    imageContainer.innerHTML = "";
+
+    let imageFiles = [];
+    for (let i = 0; i < fileInput.files.length; i++) {
+        if (fileInput.files[i].type.startsWith('image/')) {
+            imageFiles.push(fileInput.files[i]);
+        }
+    }
+
+    numOfFiles.textContent = `${imageFiles.length} Images Selected`;
+
+    imageCountInput.value = imageFiles.length; // Update the image_count hidden input field
+
+    for (let i = 0; i < imageFiles.length; i++) {
+        let image = imageFiles[i];
+        let reader = new FileReader();
+        let figure = document.createElement("figure");
+
+        // Create an input field to hold the image index
+        let indexInput = document.createElement("input");
+        indexInput.setAttribute("type", "hidden");
+        indexInput.setAttribute("name", "imageIndex[]"); // Set the name attribute to an array
+        indexInput.value = i; // Set the value to the image index
+        figure.appendChild(indexInput);
+
+        reader.onload = () => {
+            let img = document.createElement("img");
+            img.setAttribute("src", reader.result);
+            figure.appendChild(img);
+        }
+        imageContainer.appendChild(figure);
+        reader.readAsDataURL(image);
+    }
+}
+
+
+// Variants
+(function($) {
+        var delimiter = [];
+        var inputSettings = [];
+        var callbacks = [];
+        
+        $.fn.addTag = function(value, options) {
+            options = jQuery.extend({
+                focus: false,
+                callback: true
+            }, options);
+            this.each(function() {
+                var id = $(this).attr('id');
+                var tagslist = $(this).val().split(_getDelimiter(delimiter[id]));
+                if (tagslist[0] === '') tagslist = [];
+
+                value = jQuery.trim(value);
+                
+                if ((inputSettings[id].unique && $(this).tagExist(value)) || !_validateTag(value, inputSettings[id], tagslist, delimiter[id])) {
+                    $('#' + id + '_tag').addClass('error');
+                    return false;
+                }
+                
+                $('<span>', {class: 'tag'}).append(
+                    $('<span>', {class: 'tag-text'}).text(value),
+                    $('<button>', {class: 'tag-remove'}).click(function() {
+                        return $('#' + id).removeTag(encodeURI(value));
+                    })
+                ).insertBefore('#' + id + '_addTag');
+                tagslist.push(value);
+
+                $('#' + id + '_tag').val('');
+                if (options.focus) {
+                    $('#' + id + '_tag').focus();
+                } else {
+                    $('#' + id + '_tag').blur();
+                }
+
+                $.fn.tagsInput.updateTagsField(this, tagslist);
+
+                if (options.callback && callbacks[id] && callbacks[id]['onAddTag']) {
+                    var f = callbacks[id]['onAddTag'];
+                    f.call(this, this, value);
+                }
+                
+                if (callbacks[id] && callbacks[id]['onChange']) {
+                    var i = tagslist.length;
+                    var f = callbacks[id]['onChange'];
+                    f.call(this, this, value);
+                }
+
+                $(".type-variant").each(function(index) {
+                    variantIds.splice(index, 1, $(this).attr('id'));
+                });
+                
+                //start custom code
+                first_variant_values = $('#'+variantIds[0]).val().split(_getDelimiter(delimiter[variantIds[0] ]));
+                combinations = first_variant_values;
+                step = 1;
+                while(step < variantIds.length) {
+                    var newCombinations = [];
+                    for (var i = 0; i < combinations.length; i++) {
+                        new_variant_values = $('#'+variantIds[step]).val().split(_getDelimiter(delimiter[variantIds[step] ]));
+                        for (var j = 0; j < new_variant_values.length; j++) {
+                            newCombinations.push(combinations[i]+'/'+new_variant_values[j]);
+                        }
+                    }
+                    combinations = newCombinations;
+                    step++;
+                }
+                var rownumber = $('table.variant-list tbody tr:last').index();
+                if(rownumber > -1) {
+                    oldCombinations = [];
+                    oldAdditionalCost = [];
+                    oldAdditionalPrice = [];
+                    $(".variant-name").each(function(i) {
+                        oldCombinations.push($(this).text());
+                        oldAdditionalCost.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-cost').val());
+                        oldAdditionalPrice.push($('table.variant-list tbody tr:nth-child(' + (i + 1) + ')').find('.additional-price').val());
+                    });
+                }
+                $("table.variant-list tbody").remove();
+                var newBody = $("<tbody>");
+                for(i = 0; i < combinations.length; i++) {
+                    var variant_name = combinations[i];
+                    var item_code = variant_name+'-'+$("#code").val();
+                    var newRow = $("<tr>");
+                    var cols = '';
+                    cols += '<td class="variant-name">'+variant_name+'<input type="hidden" name="variant_name[]" value="' + variant_name + '" /></td>';
+                    cols += '<td><input type="text" class="form-control item-code" name="item_code[]" value="'+item_code+'" /></td>';
+                    //checking if this variant already exist in the variant table
+                    oldIndex = oldCombinations.indexOf(combinations[i]);
+                    if(oldIndex >= 0) {
+                        cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="'+oldAdditionalCost[oldIndex]+'" step="any" /></td>';
+                        cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="'+oldAdditionalPrice[oldIndex]+'" step="any" /></td>';
+                    }
+                    else {
+                        cols += '<td><input type="number" class="form-control additional-cost" name="additional_cost[]" value="" step="any" /></td>';
+                        cols += '<td><input type="number" class="form-control additional-price" name="additional_price[]" value="" step="any" /></td>';
+                    }
+                    newRow.append(cols);
+                    newBody.append(newRow);
+                }
+                $("table.variant-list").append(newBody);
+                //end custom code
+            });
+            return false;
+        };
+
+        $.fn.removeTag = function(value) {
+            value = decodeURI(value);
+            
+            this.each(function() {
+                var id = $(this).attr('id');
+
+                var old = $(this).val().split(_getDelimiter(delimiter[id]));
+
+                $('#' + id + '_tagsinput .tag').remove();
+                
+                var str = '';
+                for (i = 0; i < old.length; ++i) {
+                    if (old[i] != value) {
+                        str = str + _getDelimiter(delimiter[id]) + old[i];
+                    }
+                }
+
+                $.fn.tagsInput.importTags(this, str);
+
+                if (callbacks[id] && callbacks[id]['onRemoveTag']) {
+                    var f = callbacks[id]['onRemoveTag'];
+                    f.call(this, this, value);
+                }
+            });
+
+            return false;
+        };
+
+        $.fn.tagExist = function(val) {
+            var id = $(this).attr('id');
+            var tagslist = $(this).val().split(_getDelimiter(delimiter[id]));
+            return (jQuery.inArray(val, tagslist) >= 0);
+        };
+
+        $.fn.importTags = function(str) {
+            var id = $(this).attr('id');
+            $('#' + id + '_tagsinput .tag').remove();
+            $.fn.tagsInput.importTags(this, str);
+        };
+
+        $.fn.tagsInput = function(options) {
+            var settings = jQuery.extend({
+                interactive: true,
+                placeholder: variantPlaceholder,
+                minChars: 0,
+                maxChars: null,
+                limit: null,
+                validationPattern: null,
+                width: 'auto',
+                height: 'auto',
+                autocomplete: null,
+                hide: true,
+                delimiter: ',',
+                unique: true,
+                removeWithBackspace: true
+            }, options);
+
+            var uniqueIdCounter = 0;
+
+            this.each(function() {
+                if (typeof $(this).data('tagsinput-init') !== 'undefined') return;
+
+                $(this).data('tagsinput-init', true);
+
+                if (settings.hide) $(this).hide();
+                
+                var id = $(this).attr('id');
+                if (!id || _getDelimiter(delimiter[$(this).attr('id')])) {
+                    id = $(this).attr('id', 'tags' + new Date().getTime() + (++uniqueIdCounter)).attr('id');
+                }
+
+                var data = jQuery.extend({
+                    pid: id,
+                    real_input: '#' + id,
+                    holder: '#' + id + '_tagsinput',
+                    input_wrapper: '#' + id + '_addTag',
+                    fake_input: '#' + id + '_tag'
+                }, settings);
+
+                delimiter[id] = data.delimiter;
+                inputSettings[id] = {
+                    minChars: settings.minChars,
+                    maxChars: settings.maxChars,
+                    limit: settings.limit,
+                    validationPattern: settings.validationPattern,
+                    unique: settings.unique
+                };
+
+                if (settings.onAddTag || settings.onRemoveTag || settings.onChange) {
+                    callbacks[id] = [];
+                    callbacks[id]['onAddTag'] = settings.onAddTag;
+                    callbacks[id]['onRemoveTag'] = settings.onRemoveTag;
+                    callbacks[id]['onChange'] = settings.onChange;
+                }
+
+                var markup = $('<div>', {id: id + '_tagsinput', class: 'tagsinput'}).append(
+                    $('<div>', {id: id + '_addTag'}).append(
+                        settings.interactive ? $('<input>', {id: id + '_tag', class: 'tag-input', value: '', placeholder: settings.placeholder}) : null
+                    )
+                );
+
+                $(markup).insertAfter(this);
+
+                $(data.holder).css('width', settings.width);
+                $(data.holder).css('min-height', settings.height);
+                $(data.holder).css('height', settings.height);
+
+                if ($(data.real_input).val() !== '') {
+                    $.fn.tagsInput.importTags($(data.real_input), $(data.real_input).val());
+                }
+                
+                // Stop here if interactive option is not chosen
+                if (!settings.interactive) return;
+                
+                $(data.fake_input).val('');
+                $(data.fake_input).data('pasted', false);
+                
+                $(data.fake_input).on('focus', data, function(event) {
+                    $(data.holder).addClass('focus');
+                    
+                    if ($(this).val() === '') {
+                        $(this).removeClass('error');
+                    }
+                });
+                
+                $(data.fake_input).on('blur', data, function(event) {
+                    $(data.holder).removeClass('focus');
+                });
+
+                if (settings.autocomplete !== null && jQuery.ui.autocomplete !== undefined) {
+                    $(data.fake_input).autocomplete(settings.autocomplete);
+                    $(data.fake_input).on('autocompleteselect', data, function(event, ui) {
+                        $(event.data.real_input).addTag(ui.item.value, {
+                            focus: true,
+                            unique: settings.unique
+                        });
+                        
+                        return false;
+                    });
+                    
+                    $(data.fake_input).on('keypress', data, function(event) {
+                        if (_checkDelimiter(event)) {
+                            $(this).autocomplete("close");
+                        }
+                    });
+                } else {
+                    $(data.fake_input).on('blur', data, function(event) {
+                        $(event.data.real_input).addTag($(event.data.fake_input).val(), {
+                            focus: true,
+                            unique: settings.unique
+                        });
+                        
+                        return false;
+                    });
+                }
+                
+                // If a user types a delimiter create a new tag
+                $(data.fake_input).on('keypress', data, function(event) {
+                    if (_checkDelimiter(event)) {
+                        event.preventDefault();
+                        
+                        $(event.data.real_input).addTag($(event.data.fake_input).val(), {
+                            focus: true,
+                            unique: settings.unique
+                        });
+                        
+                        return false;
+                    }
+                });
+                
+                $(data.fake_input).on('paste', function () {
+                    $(this).data('pasted', true);
+                });
+                
+                // If a user pastes the text check if it shouldn't be splitted into tags
+                $(data.fake_input).on('input', data, function(event) {
+                    if (!$(this).data('pasted')) return;
+                    
+                    $(this).data('pasted', false);
+                    
+                    var value = $(event.data.fake_input).val();
+                    
+                    value = value.replace(/\n/g, '');
+                    value = value.replace(/\s/g, '');
+                    
+                    var tags = _splitIntoTags(event.data.delimiter, value);
+                    
+                    if (tags.length > 1) {
+                        for (var i = 0; i < tags.length; ++i) {
+                            $(event.data.real_input).addTag(tags[i], {
+                                focus: true,
+                                unique: settings.unique
+                            });
+                        }
+                        
+                        return false;
+                    }
+                });
+                
+                // Deletes last tag on backspace
+                data.removeWithBackspace && $(data.fake_input).on('keydown', function(event) {
+                    if (event.keyCode == 8 && $(this).val() === '') {
+                         event.preventDefault();
+                         var lastTag = $(this).closest('.tagsinput').find('.tag:last > span').text();
+                         var id = $(this).attr('id').replace(/_tag$/, '');
+                         $('#' + id).removeTag(encodeURI(lastTag));
+                         $(this).trigger('focus');
+                    }
+                });
+
+                // Removes the error class when user changes the value of the fake input
+                $(data.fake_input).keydown(function(event) {
+                    // enter, alt, shift, esc, ctrl and arrows keys are ignored
+                    if (jQuery.inArray(event.keyCode, [13, 37, 38, 39, 40, 27, 16, 17, 18, 225]) === -1) {
+                        $(this).removeClass('error');
+                    }
+                });
+            });
+
+            return this;
+        };
+        
+        $.fn.tagsInput.updateTagsField = function(obj, tagslist) {
+            var id = $(obj).attr('id');
+            $(obj).val(tagslist.join(_getDelimiter(delimiter[id])));
+        };
+
+        $.fn.tagsInput.importTags = function(obj, val) {
+            $(obj).val('');
+            
+            var id = $(obj).attr('id');
+            var tags = _splitIntoTags(delimiter[id], val); 
+            
+            for (i = 0; i < tags.length; ++i) {
+                $(obj).addTag(tags[i], {
+                    focus: false,
+                    callback: false
+                });
+            }
+            
+            if (callbacks[id] && callbacks[id]['onChange']) {
+                var f = callbacks[id]['onChange'];
+                f.call(obj, obj, tags);
+            }
+        };
+        
+        var _getDelimiter = function(delimiter) {
+            if (typeof delimiter === 'undefined') {
+                return delimiter;
+            } else if (typeof delimiter === 'string') {
+                return delimiter;
+            } else {
+                return delimiter[0];
+            }
+        };
+        
+        var _validateTag = function(value, inputSettings, tagslist, delimiter) {
+            var result = true;
+            
+            if (value === '') result = false;
+            if (value.length < inputSettings.minChars) result = false;
+            if (inputSettings.maxChars !== null && value.length > inputSettings.maxChars) result = false;
+            if (inputSettings.limit !== null && tagslist.length >= inputSettings.limit) result = false;
+            if (inputSettings.validationPattern !== null && !inputSettings.validationPattern.test(value)) result = false;
+            
+            if (typeof delimiter === 'string') {
+                if (value.indexOf(delimiter) > -1) result = false;
+            } else {
+                $.each(delimiter, function(index, _delimiter) {
+                    if (value.indexOf(_delimiter) > -1) result = false;
+                    return false;
+                });
+            }
+            
+            return result;
+        };
+     
+        var _checkDelimiter = function(event) {
+            var found = false;
+            
+            if (event.which === 13) {
+                return true;
+            }
+
+            if (typeof event.data.delimiter === 'string') {
+                if (event.which === event.data.delimiter.charCodeAt(0)) {
+                    found = true;
+                }
+            } else {
+                $.each(event.data.delimiter, function(index, delimiter) {
+                    if (event.which === delimiter.charCodeAt(0)) {
+                        found = true;
+                    }
+                });
+            }
+            
+            return found;
+         };
+         
+         var _splitIntoTags = function(delimiter, value) {
+             if (value === '') return [];
+             
+             if (typeof delimiter === 'string') {
+                 return value.split(delimiter);
+             } else {
+                 var tmpDelimiter = '∞';
+                 var text = value;
+                 
+                 $.each(delimiter, function(index, _delimiter) {
+                     text = text.split(_delimiter).join(tmpDelimiter);
+                 });
+                 
+                 return text.split(tmpDelimiter);
+             }
+             
+             return [];
+         };
+    })(jQuery);
+
+
     </script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
