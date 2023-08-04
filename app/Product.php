@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use App\ProductVariant;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -44,5 +44,10 @@ class Product extends Model
             ['is_active', true],
             ['featured', 1]
         ]);
+    }
+
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class,'product_id');
     }
 }

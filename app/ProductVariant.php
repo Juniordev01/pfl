@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Product; 
 
 class ProductVariant extends Model
 {
@@ -22,5 +23,10 @@ class ProductVariant extends Model
             ['product_id', $product_id],
             ['item_code', $item_code],
         ]);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(product::class,'product_id');
     }
 }
