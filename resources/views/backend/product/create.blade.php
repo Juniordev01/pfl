@@ -10,9 +10,37 @@
 @section('content')
 <style>
     .dropdown-menu {
-        padding:0 !important;
-        width: 30px !important;;
-       
+        padding: 0 !important;
+        width: 30px !important;
+        ;
+    }
+
+    .dropdown-menu.inner {
+        /* Set a fixed width for the dropdown menu */
+        width: 200px;
+        /* Enable text wrapping */
+        white-space: normal;
+        /* Define the maximum height for the dropdown menu */
+        max-height: 200px;
+        /* Enable vertical scrolling if the content overflows */
+        overflow-y: auto;
+    }
+
+    /* Target the inner anchor tags within the dropdown-menu inner */
+    .dropdown-menu.inner a {
+        /* Set the display property to block to enable horizontal wrapping */
+        display: block;
+        /* Add some padding for better appearance */
+        padding: 5px;
+    }
+
+    /* Target the text spans within the anchor tags */
+    .dropdown-menu.inner a .text {
+        /* Set the maximum width to control the wrapping */
+        max-width: 150px;
+        /* Adjust this value as needed */
+        /* Enable text wrapping */
+        white-space: normal;
     }
 </style>
 
@@ -27,7 +55,7 @@
                 @endif
             </div>
         </div>
-        <form action="{{ url('/store') }}" method="POST"  id="hiddenForm" enctype="multipart/form-data">
+        <form action="{{ url('/store') }}" method="POST" id="hiddenForm" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-lg-8 rounded">
@@ -61,7 +89,7 @@
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
                             <span class="validation-msg" id="image-error"></span> -->
-                            <input type="file" id="file-input"  name="pro_image[]" onchange="preview()" multiple>
+                            <input type="file" id="file-input" name="pro_image[]" onchange="preview()" multiple>
                             <label for="file-input" class="multi_image_select">
                                 <i class="fas fa-upload"></i> &nbsp; Choose A Photo
                             </label>
@@ -543,7 +571,7 @@
                                     <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4">Manage</a>
                                 </div>
                                 <div>
-                                    <select class="form-select border w-100 flex-wrap" name="tags[]"  multiple  data-live-search="true" data-size="10">
+                                    <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5">
                                         <option value="" disabled hidden>Choose Tags</option>
                                         @foreach ($collections as $tag)
                                         <option value="{{$tag->title}}" class="flex-wrap">{{$tag->title}}</option>
@@ -788,217 +816,214 @@
             document.getElementById('hiddenForm').appendChild(inputField);
         }
 
-            // Variants Ends Here
+        // Variants Ends Here
 
 
 
 
-            // Variants Code Start
-            var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
-            var variantIds = [];
-            var combinations = [];
-            var oldCombinations = [];
-            var oldAdditionalCost = [];
-            var oldAdditionalPrice = [];
-            var step;
-            var numberOfWarehouse = <?php echo json_encode(count($lims_warehouse_list)) ?>;
+        // Variants Code Start
+        var variantPlaceholder = <?php echo json_encode(trans('file.Enter variant value seperated by comma')); ?>;
+        var variantIds = [];
+        var combinations = [];
+        var oldCombinations = [];
+        var oldAdditionalCost = [];
+        var oldAdditionalPrice = [];
+        var step;
+        var numberOfWarehouse = <?php echo json_encode(count($lims_warehouse_list)) ?>;
 
-            $('[data-toggle="tooltip"]').tooltip();
-
-
-            $('.add-more-variant').on("click", function() {
-                var variantListElement = document.getElementById("variant-section");
-                if (variantListElement.style.display === "none") {
-                    variantListElement.style.display = "block";
-                } else {
-                    var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="{{ old("var_price") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="{{ old("var_available") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="{{ old("var_on_hand") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="{{ old("var_sku") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="{{ old("var_barcode") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
-                    $("#variant-table tbody").append(tableRow);
-                    var htmlText = '<div class="col-md-12 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-12 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div><div class="form-group"><button type="button" onclick="hideNAppend()" class="btn border text-black bg-light mb-1 ml-3" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Done</button></div>';
-                    $("#variant-input-section").append(htmlText);
-                    $('.type-variant').tagsInput();
-
-                }
-
-            });
-            // Variants Code End
+        $('[data-toggle="tooltip"]').tooltip();
 
 
-            function toggleQuantityField() {
-                var checkbox = document.getElementById("toggleQuantityCheck");
-                var quantityField = document.getElementById("toggle_quantity");
-
-                if (checkbox.checked) {
-                    quantityField.style.display = "none";
-                } else {
-                    quantityField.style.display = "block";
-                }
-            }
-
-            function toggleStockField() {
-                var checkbox = document.getElementById("customCheck2");
-                var quantityField = document.getElementById("stock_out");
-
-                if (checkbox.checked) {
-                    quantityField.style.display = "none";
-                } else {
-                    quantityField.style.display = "block";
-                }
-            }
-
-            function toggleBarcodeField() {
-                var checkbox = document.getElementById("customCheck3");
-                var barcodeFields = document.getElementById("barcode");
-
-                if (checkbox.checked) {
-                    barcodeFields.style.display = "flex";
-                } else {
-                    barcodeFields.style.display = "none";
-                }
-            }
-
-            function toggleShippingField() {
-                var checkbox = document.getElementById("shipping");
-                var shippingFields = document.getElementById("shipping_field");
-
-                if (checkbox.checked) {
-                    shippingFields.style.display = "block";
-                } else {
-                    shippingFields.style.display = "none";
-                }
-            }
-
-            function toggleCustomField() {
-                var customInfoElement = document.getElementById("custom_info");
-                var jsCodeBlock = document.getElementById("custom_info_div");
-                if (jsCodeBlock.style.display === "none") {
-                    customInfoElement.style.display = "none";
-                    jsCodeBlock.style.display = "block";
-                } else {
-                    jsCodeBlock.style.display = "none";
-                }
-            }
-
-            function toggleVariant() {
-                var variantsDiv = document.getElementById("variants_div");
-                if (variantsDiv.style.display === "none") {
-                    variantsDiv.style.display = "block";
-                } else {
-                    variantsDiv.style.display = "none";
-                }
-            }
-
-            function belowField() {
-                var extraOption = document.getElementById("extraOption");
-                extraOption.style.display = "block";
-            }
-
-            function getValue() {
-                var price = parseFloat(document.querySelector(".price").value);
-                var cost = parseFloat(document.querySelector(".cost_per_item").value);
-                var profit = price - cost;
-                var price = parseFloat(document.querySelector(".price").value);
-                var cost = parseFloat(document.querySelector(".cost_per_item").value);
-                var profit = price - cost;
-
-                if (profit > 1) {
-                    document.querySelector('.profit_value').value = profit;
-                    var margin = (profit / price) * 100;
-                    document.querySelector('.margin_value').value = margin.toFixed(2) + '%';
-                } else {
-                    document.querySelector('.profit_value').value = "";
-                    document.querySelector('.margin_value').value = "";
-                }
-
-                // const margin = ((price - cost) / cost) * 100;
-                // document.querySelector(".margin").value = margin;
+        $('.add-more-variant').on("click", function() {
+            var variantListElement = document.getElementById("variant-section");
+            if (variantListElement.style.display === "none") {
+                variantListElement.style.display = "block";
+            } else {
+                var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="{{ old("var_price") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="{{ old("var_available") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="{{ old("var_on_hand") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="{{ old("var_sku") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="{{ old("var_barcode") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
+                $("#variant-table tbody").append(tableRow);
+                var htmlText = '<div class="col-md-12 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-12 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div><div class="form-group"><button type="button" onclick="hideNAppend()" class="btn border text-black bg-light mb-1 ml-3" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Done</button></div>';
+                $("#variant-input-section").append(htmlText);
+                $('.type-variant').tagsInput();
 
             }
 
-            //  Schedule Date 
-            $('.schedule_date').on('click', function() {
-                var startDate = $('#start_date').val();
-                var endDate = $('#end_date').val();
-
-                $('#sch_start_date').val(startDate);
-                $('#sch_end_date').val(endDate);
-
-                $('#exampleModal').modal('hide');
-            });
+        });
+        // Variants Code End
 
 
-            // // Image Selector
-            // let fileInput = document.getElementById("file-input");
+        function toggleQuantityField() {
+            var checkbox = document.getElementById("toggleQuantityCheck");
+            var quantityField = document.getElementById("toggle_quantity");
 
-            // let imageContainer = document.getElementById("images");
-            // let numOfFiles = document.getElementById("num-of-files");
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
+            }
+        }
 
-            // function preview() {
-            //     imageContainer.innerHTML = "";
-            //     image_count = numOfFiles.textContent = `${fileInput.files.length}`;
-            //      numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
+        function toggleStockField() {
+            var checkbox = document.getElementById("customCheck2");
+            var quantityField = document.getElementById("stock_out");
+
+            if (checkbox.checked) {
+                quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
+            }
+        }
+
+        function toggleBarcodeField() {
+            var checkbox = document.getElementById("customCheck3");
+            var barcodeFields = document.getElementById("barcode");
+
+            if (checkbox.checked) {
+                barcodeFields.style.display = "flex";
+            } else {
+                barcodeFields.style.display = "none";
+            }
+        }
+
+        function toggleShippingField() {
+            var checkbox = document.getElementById("shipping");
+            var shippingFields = document.getElementById("shipping_field");
+
+            if (checkbox.checked) {
+                shippingFields.style.display = "block";
+            } else {
+                shippingFields.style.display = "none";
+            }
+        }
+
+        function toggleCustomField() {
+            var customInfoElement = document.getElementById("custom_info");
+            var jsCodeBlock = document.getElementById("custom_info_div");
+            if (jsCodeBlock.style.display === "none") {
+                customInfoElement.style.display = "none";
+                jsCodeBlock.style.display = "block";
+            } else {
+                jsCodeBlock.style.display = "none";
+            }
+        }
+
+        function toggleVariant() {
+            var variantsDiv = document.getElementById("variants_div");
+            if (variantsDiv.style.display === "none") {
+                variantsDiv.style.display = "block";
+            } else {
+                variantsDiv.style.display = "none";
+            }
+        }
+
+        function belowField() {
+            var extraOption = document.getElementById("extraOption");
+            extraOption.style.display = "block";
+        }
+
+        function getValue() {
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
+            var price = parseFloat(document.querySelector(".price").value);
+            var cost = parseFloat(document.querySelector(".cost_per_item").value);
+            var profit = price - cost;
+
+            if (profit > 1) {
+                document.querySelector('.profit_value').value = profit;
+                var margin = (profit / price) * 100;
+                document.querySelector('.margin_value').value = margin.toFixed(2) + '%';
+            } else {
+                document.querySelector('.profit_value').value = "";
+                document.querySelector('.margin_value').value = "";
+            }
+
+            // const margin = ((price - cost) / cost) * 100;
+            // document.querySelector(".margin").value = margin;
+
+        }
+
+        //  Schedule Date 
+        $('.schedule_date').on('click', function() {
+            var startDate = $('#start_date').val();
+            var endDate = $('#end_date').val();
+
+            $('#sch_start_date').val(startDate);
+            $('#sch_end_date').val(endDate);
+
+            $('#exampleModal').modal('hide');
+        });
 
 
-            //     for (i of fileInput.files) {
-            //         let reader = new FileReader();
-            //         let figure = document.createElement("figure");
-            //         let figCap = document.createElement("figcaption");
-            //         figCap.innerText = i.name;
-            //         figure.appendChild(figCap);
-            //         reader.onload = () => {
-            //             let img = document.createElement("img");
-            //             img.setAttribute("src", reader.result);
-            //             figure.insertBefore(img, figCap);
-            //         }
-            //         imageContainer.appendChild(figure);
-            //         reader.readAsDataURL(i);
-            //     }
-            //     document.querySelector('.image_count').value = image_count;
-            // }
+        // // Image Selector
+        // let fileInput = document.getElementById("file-input");
 
-            let fileInput = document.getElementById("file-input");
-            let imageContainer = document.getElementById("images");
-            let numOfFiles = document.getElementById("num-of-files");
-            let imageCountInput = document.getElementById("image-count");
+        // let imageContainer = document.getElementById("images");
+        // let numOfFiles = document.getElementById("num-of-files");
 
-            function preview() {
-                // Clear the existing images before adding new ones
-                imageContainer.innerHTML = "";
+        // function preview() {
+        //     imageContainer.innerHTML = "";
+        //     image_count = numOfFiles.textContent = `${fileInput.files.length}`;
+        //      numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
 
-                let imageFiles = [];
-                for (let i = 0; i < fileInput.files.length; i++) {
-                    if (fileInput.files[i].type.startsWith('image/')) {
-                        imageFiles.push(fileInput.files[i]);
-                    }
-                }
 
-                numOfFiles.textContent = `${imageFiles.length} Images Selected`;
+        //     for (i of fileInput.files) {
+        //         let reader = new FileReader();
+        //         let figure = document.createElement("figure");
+        //         let figCap = document.createElement("figcaption");
+        //         figCap.innerText = i.name;
+        //         figure.appendChild(figCap);
+        //         reader.onload = () => {
+        //             let img = document.createElement("img");
+        //             img.setAttribute("src", reader.result);
+        //             figure.insertBefore(img, figCap);
+        //         }
+        //         imageContainer.appendChild(figure);
+        //         reader.readAsDataURL(i);
+        //     }
+        //     document.querySelector('.image_count').value = image_count;
+        // }
 
-                imageCountInput.value = imageFiles.length; // Update the image_count hidden input field
+        let fileInput = document.getElementById("file-input");
+        let imageContainer = document.getElementById("images");
+        let numOfFiles = document.getElementById("num-of-files");
+        let imageCountInput = document.getElementById("image-count");
 
-                for (let i = 0; i < imageFiles.length; i++) {
-                    let image = imageFiles[i];
-                    let reader = new FileReader();
-                    let figure = document.createElement("figure");
+        function preview() {
+            // Clear the existing images before adding new ones
+            imageContainer.innerHTML = "";
 
-                    // Create an input field to hold the image index
-                    let indexInput = document.createElement("input");
-                    indexInput.setAttribute("type", "hidden");
-                    indexInput.setAttribute("name", "imageIndex[]"); // Set the name attribute to an array
-                    indexInput.value = i; // Set the value to the image index
-                    figure.appendChild(indexInput);
-
-                    reader.onload = () => {
-                        let img = document.createElement("img");
-                        img.setAttribute("src", reader.result);
-                        figure.appendChild(img);
-                    }
-                    imageContainer.appendChild(figure);
-                    reader.readAsDataURL(image);
+            let imageFiles = [];
+            for (let i = 0; i < fileInput.files.length; i++) {
+                if (fileInput.files[i].type.startsWith('image/')) {
+                    imageFiles.push(fileInput.files[i]);
                 }
             }
 
+            numOfFiles.textContent = `${imageFiles.length} Images Selected`;
 
-           
+            imageCountInput.value = imageFiles.length; // Update the image_count hidden input field
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                let image = imageFiles[i];
+                let reader = new FileReader();
+                let figure = document.createElement("figure");
+
+                // Create an input field to hold the image index
+                let indexInput = document.createElement("input");
+                indexInput.setAttribute("type", "hidden");
+                indexInput.setAttribute("name", "imageIndex[]"); // Set the name attribute to an array
+                indexInput.value = i; // Set the value to the image index
+                figure.appendChild(indexInput);
+
+                reader.onload = () => {
+                    let img = document.createElement("img");
+                    img.setAttribute("src", reader.result);
+                    figure.appendChild(img);
+                }
+                imageContainer.appendChild(figure);
+                reader.readAsDataURL(image);
+            }
+        }
     </script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
