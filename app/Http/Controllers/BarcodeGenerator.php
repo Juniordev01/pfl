@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\productBarcode;
+use App\Variant;
 use Milon\Barcode\DNS1D;
 
 use Picqer\Barcode\BarcodeGeneratorHTML;
@@ -14,7 +15,10 @@ class BarcodeGenerator extends Controller
     //
     public function generateBarcode()
     {
-        $products = product::all();
+        // $products = variant::with('product')->get();;
+        $products = Product::with('variant')->get();
+
+        return($products);
         foreach ($products as $product) {
             $productBarcode = new productBarcode();
             $productBarcode->name = $product->name;
