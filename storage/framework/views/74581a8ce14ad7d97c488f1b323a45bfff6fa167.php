@@ -1,13 +1,13 @@
-@extends('backend.layout.main')
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<link rel="stylesheet" href="{{asset('calender/date-picker.css')}}">
-<link rel="stylesheet" href="{{asset('ImageSelector/style.css')}}">
+<link rel="stylesheet" href="<?php echo e(asset('calender/date-picker.css')); ?>">
+<link rel="stylesheet" href="<?php echo e(asset('ImageSelector/style.css')); ?>">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
     .dropdown-menu {
         padding: 0 !important;
@@ -127,26 +127,34 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-6 d-flex justify-content-end" style="z-index: 12;">
-                @if (session('create_message'))
+                <?php if(session('create_message')): ?>
                 <div class="alert alert-success">
-                    {{ session('create_message') }}
+                    <?php echo e(session('create_message')); ?>
+
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
-        <form action="{{ url('/store') }}" method="POST" id="hiddenForm" enctype="multipart/form-data">
-            @csrf
+        <form action="<?php echo e(url('/store')); ?>" method="POST" id="hiddenForm" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-8 rounded">
                     <div class="card shadow-lg  p-3  bg-white cards">
                         <div class="form-group">
                             <label class="title">Title</label>
-                            <input type="text" name="name" value="{{ old('name') }}" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
+                            <input type="text" name="name" value="<?php echo e(old('name')); ?>" class="form-control" placeholder="Product Title" style="border: 1px solid black; border-radius: 5px;">
                         </div>
                         <span class="mt-1 mb-2">
-                            @error('name')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span>
 
                         <div class="form-group">
@@ -154,16 +162,23 @@
                             <textarea class="form-control" name="summernote" id="summernote"></textarea>
                         </div>
                         <span class=" mb-2">
-                            @error('summernote')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['summernote'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span>
                     </div>
 
                     <div class="card shadow-lg  p-3 bg-white rounded">
                         <div class="form-group">
                             <div class="d-flex justify-content-start">
-                                <label class="media ml-2">Media</strong></label><i class="dripicons-question ml-2" data-toggle="tooltip" title="{{trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')}}"></i>
+                                <label class="media ml-2">Media</strong></label><i class="dripicons-question ml-2" data-toggle="tooltip" title="<?php echo e(trans('file.You can upload multiple image. Only .jpeg, .jpg, .png, .gif file can be uploaded. First image will be base image.')); ?>"></i>
                             </div>
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
@@ -177,9 +192,16 @@
                         </div>
                         <input type="hidden" id="image-count" name="image_count" value="0">
                         <span class=" mb-2">
-                            @error('images')
-                            <div class="text-danger">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['images'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="text-danger"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                         </span>
                     </div>
 
@@ -192,18 +214,32 @@
                                 <label for="inputPassword4" class="title">Price</label>
                                 <input type="text" class="form-control price" name="price" id="fields" placeholder="Enter amount" aria-label="Amount" oninput="getValue()" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('price')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="title">Compare-at-price</label>
-                                <input type="text" class="form-control comp_price" name="comp_price" value="{{ old('comp_price') }}" id="fields" placeholder="Enter amount" oninput="getValue()" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control comp_price" name="comp_price" value="<?php echo e(old('comp_price')); ?>" id="fields" placeholder="Enter amount" oninput="getValue()" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('comp_price')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['comp_price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                         </div>
@@ -214,29 +250,50 @@
                         <div class="form-row" id="pro_mar" style="display: none;">
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="cost">Cost per item</label>
-                                <input type="text" class="form-control cost_per_item" value="{{ old('per_item_cost') }}" name="per_item_cost" id="fields" oninput="getValue()" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control cost_per_item" value="<?php echo e(old('per_item_cost')); ?>" name="per_item_cost" id="fields" oninput="getValue()" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('per_item_cost')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['per_item_cost'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="profit">Profit</label>
-                                <input type="text" class="form-control profit_value" id="fields" value="{{ old('product_profit') }}" name="product_profit" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control profit_value" id="fields" value="<?php echo e(old('product_profit')); ?>" name="product_profit" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('product_profit')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['product_profit'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputPassword4" class="margin">Margin</label>
-                                <input type="text" class="form-control margin_value" id="fields" value="{{ old('product_margin') }}" name="product_margin" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control margin_value" id="fields" value="<?php echo e(old('product_margin')); ?>" name="product_margin" placeholder="Enter amount" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('product_margin')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['product_margin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                         </div>
@@ -260,11 +317,18 @@
                                     <label for="inputPassword4" id="borough">15 Marlborough</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                    <input type="number" class="form-control" placeholder="0" value="{{ old('product_quantity') }}" name="product_quantity" id="quantityField" style="border: 1px solid black; border-radius: 5px;">
+                                    <input type="number" class="form-control" placeholder="0" value="<?php echo e(old('product_quantity')); ?>" name="product_quantity" id="quantityField" style="border: 1px solid black; border-radius: 5px;">
                                     <span class=" mb-2">
-                                        @error('product_quantity')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['product_quantity'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </span>
                                 </div>
                             </div>
@@ -286,20 +350,34 @@
                         <div class="form-row" id="barcode">
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="sku">SKU (Stock Keeping Unit)</label>
-                                <input type="text" class="form-control" id="currencyInput" value="{{ old('sku_input') }}" name="sku_input" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control" id="currencyInput" value="<?php echo e(old('sku_input')); ?>" name="sku_input" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('sku_input')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['sku_input'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword4" class="Barcode">Barcode (ISBN, UCP, GTIN, etc)</label>
-                                <input type="text" class="form-control" id="currencyInput" name="bar_code" value="{{ old('bar_code') }}" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="text" class="form-control" id="currencyInput" name="bar_code" value="<?php echo e(old('bar_code')); ?>" aria-label="Amount" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('bar_code')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['bar_code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                         </div>
@@ -314,13 +392,20 @@
                         <div class=" form-group col-md-4" id="shipping_field">
                             <label for="" class="Weight ">Weight</label>
                             <div class="d-flex">
-                                <input type="number" class="form-control" value="{{ old('weight') }}" id="currencyInput" name="weight" aria-label="Amount" step="0.01" style="border: 1px solid black; border-radius: 5px;">
+                                <input type="number" class="form-control" value="<?php echo e(old('weight')); ?>" id="currencyInput" name="weight" aria-label="Amount" step="0.01" style="border: 1px solid black; border-radius: 5px;">
                                 <span class=" mb-2">
-                                    @error('weight')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['weight'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
-                                <select class="form-select border ml-2" value="{{ old('weight_unit') }}" style="border-radius: 10px !important;" name="weight_unit" aria-label="Default select example" id="weight_type">
+                                <select class="form-select border ml-2" value="<?php echo e(old('weight_unit')); ?>" style="border-radius: 10px !important;" name="weight_unit" aria-label="Default select example" id="weight_type">
                                     <option value="" disabled hidden>Choose Unit</option>
                                     <option value="1">Kg</option>
                                     <option value="2">lg</option>
@@ -328,9 +413,16 @@
                                     <option value="4">g</option>
                                 </select>
                                 <span class=" mb-2">
-                                    @error('weight_unit')
-                                    <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['weight_unit'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </span>
                             </div>
                         </div>
@@ -345,7 +437,7 @@
                             <div class="form-group">
                                 <label class="Country">Country</label>
                                 <div>
-                                    <select class="form-select border w-100" name="country" value="{{ old('country') }}" aria-label="Default select example">
+                                    <select class="form-select border w-100" name="country" value="<?php echo e(old('country')); ?>" aria-label="Default select example">
                                         <option value="" disabled hidden>Choose Country</option>
                                         <option value="1">Pakistan</option>
                                         <option value="2">India</option>
@@ -353,20 +445,34 @@
                                         <option value="4">England</option>
                                     </select>
                                     <!-- <span class=" mb-2">
-                                        @error('country')
-                                        <div class="text-danger">{{ $message }}</div>
-                                         @enderror
+                                        <?php $__errorArgs = ['country'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                         <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </span > -->
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="HS">HS (Harmonized System)</label>
-                                <input name="harmonized_system" type="search" value="{{ old('harmonized_system') }}" placeholder="Search Here" class="form-control" style="border: 1px solid black; border-radius: 5px;">
+                                <input name="harmonized_system" type="search" value="<?php echo e(old('harmonized_system')); ?>" placeholder="Search Here" class="form-control" style="border: 1px solid black; border-radius: 5px;">
                                 <!-- <span class=" mb-2">
-                                        @error('harmonized_system')
-                                        <div class="text-danger">{{ $message }}</div>
-                                         @enderror
+                                        <?php $__errorArgs = ['harmonized_system'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                         <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </span > -->
                             </div>
                         </div>
@@ -382,18 +488,32 @@
                                     <label>Option Name</label>
                                     <input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc...">
                                     <span class=" mb-2">
-                                        @error('variant_option')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['variant_option'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </span>
                                 </div>
                                 <div class="col-md-12 form-group ">
                                     <label>Option Value</label>
                                     <input type="text" name="variant_value[]" id="var_option_value" class="type-variant form-control variant-field">
                                     <span class=" mb-2">
-                                        @error('variant_value')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
+                                        <?php $__errorArgs = ['variant_value'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                     </span>
                                 </div>
                                 <div class="form-group">
@@ -501,9 +621,16 @@
                                 </div>
                             </div>
                             <span class=" mb-2">
-                                @error('save_status')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['save_status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </span>
                         </div>
                     </div>
@@ -524,22 +651,36 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <label for="">Start Date</label>
-                                            <input type="text" id="start_date" name="starting_date" class="date-picker form-control" value="{{ old('starting_date') }}" />
+                                            <input type="text" id="start_date" name="starting_date" class="date-picker form-control" value="<?php echo e(old('starting_date')); ?>" />
                                             <!-- <input type="date" id="start_date" class="form-control" /> -->
                                         </div>
                                         <span class=" mb-2">
-                                            @error('starting_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                            <?php $__errorArgs = ['starting_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="text-danger"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </span>
                                         <div class="col-lg-6">
                                             <label for="">End Time</label>
-                                            <input type="text" id="end_date" name="ending_date" class="date-picker form-control" value="{{ old('ending_date') }}" />
+                                            <input type="text" id="end_date" name="ending_date" class="date-picker form-control" value="<?php echo e(old('ending_date')); ?>" />
                                         </div>
                                         <span class=" mb-2">
-                                            @error('ending_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                            <?php $__errorArgs = ['ending_date'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                            <div class="text-danger"><?php echo e($message); ?></div>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </span>
                                     </div>
                                 </div>
@@ -566,7 +707,7 @@
                                             <span class="text Publishing_sub_cont"><i class="fa fa-circle-thin"></i> Online Store</span>
                                         </li>
                                         <li>
-                                            <img src="{{asset('icons/datetime.png')}}" alt="" width="20px" height="20px" class="" data-toggle="modal" data-target="#exampleModal">
+                                            <img src="<?php echo e(asset('icons/datetime.png')); ?>" alt="" width="20px" height="20px" class="" data-toggle="modal" data-target="#exampleModal">
                                         </li>
                                     </ul>
                                     <ul class="list-unstyled">
@@ -608,40 +749,61 @@
                             <div class="form-group">
                                 <label for="" class="product">Product Category</label>
 
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_category" value="{{ old('prod_category') }}" style="border: 1px solid black; border-radius: 5px;">
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_category" value="<?php echo e(old('prod_category')); ?>" style="border: 1px solid black; border-radius: 5px;">
                                     <option value="" disabled hidden>Choose Category</option>
-                                    @foreach ($lims_category_list as $lims_category_list)
-                                    <option value="{{$lims_category_list->id}}">{{$lims_category_list->name}}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $lims_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lims_category_list): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($lims_category_list->id); ?>"><?php echo e($lims_category_list->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
-                                @error('prod_category')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_category'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
 
                             </div>
                             <div class="form-group">
                                 <label for="" class="product">Product Type</label>
                                 <!-- <input type="text" class="form-control" name="prod_type" style="border: 1px solid black; border-radius: 5px;"> -->
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_type" value="{{ old('prod_type') }}" style="border: 1px solid black; border-radius: 5px;">
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_type" value="<?php echo e(old('prod_type')); ?>" style="border: 1px solid black; border-radius: 5px;">
                                     <option value="" disabled hidden>Choose Type</option>
                                     <option value="Product Type 1">Product Type 1</option>
                                     <option value="Product Type 2">Product Type 2</option>
                                 </select>
-                                @error('prod_type')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                             <div class="form-group">
                                 <label for="" class="product">Vendor</label>
-                                <select class="form-select border w-100" aria-label="Default select example" name="prod_vendor" value="{{ old('prod_vendor') }}" style="border: 1px solid black; border-radius: 5px;">
+                                <select class="form-select border w-100" aria-label="Default select example" name="prod_vendor" value="<?php echo e(old('prod_vendor')); ?>" style="border: 1px solid black; border-radius: 5px;">
                                     <option value="" disabled hidden>Choose Vendor</option>
                                     <option value="Pakistan Fashion Lounge">Pakistan Fashion Lounge</option>
                                     <!-- Add more option elements for other tags if needed -->
                                 </select>
-                                @error('prod_vendor')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['prod_vendor'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <!-- <input type="text" class="form-control" name="prod_vendor" style="border: 1px solid black; border-radius: 5px;"> -->
                             </div>
                             <span class="coll_error">There are no collection available to add this product to. You can add a new collection or modify your existing collection </span>
@@ -652,9 +814,9 @@
                                 <div>
                                     <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5">
                                         <option value="" disabled hidden>Choose Tags</option>
-                                        @foreach ($collections as $tag)
-                                        <option value="{{$tag->title}}" class="flex-wrap option-limit-length">{{$tag->title}}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $collections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($tag->title); ?>" class="flex-wrap option-limit-length"><?php echo e($tag->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div> -->
@@ -665,9 +827,9 @@
                                 <div>
                                     <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5" id="tagsSelect">
                                         <option value="" disabled hidden>Choose Tags</option>
-                                        @foreach ($collections as $tag)
-                                        <option value="{{$tag->title}}" class="flex-wrap option-limit-length">{{$tag->title}}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $collections; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($tag->title); ?>" class="flex-wrap option-limit-length"><?php echo e($tag->title); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
@@ -699,8 +861,8 @@
         </form>
     </div>
 
-    @endsection
-    @push('scripts')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startPush('scripts'); ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('tagsSelect');
@@ -914,7 +1076,7 @@
             if (variantListElement.style.display === "none") {
                 variantListElement.style.display = "block";
             } else {
-                var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="{{ old("var_price") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="{{ old("var_available") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="{{ old("var_on_hand") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="{{ old("var_sku") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="{{ old("var_barcode") }}" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
+                var tableRow = '<tr class="table_body  text-center"><td class="variantOptionValue"></td><td>    <input type="text" class="form-control" name="var_price" id="var_price" value="<?php echo e(old("var_price")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_available" value="<?php echo e(old("var_available")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_on_hand" value="<?php echo e(old("var_on_hand")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_sku" value="<?php echo e(old("var_sku")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <input type="text" class="form-control" name="var_barcode" value="<?php echo e(old("var_barcode")); ?>" style="border: 1px solid black; border-radius: 5px;"></td><td>    <button type="button" class="btn border text-black bg-light " style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;"><i class="fa-solid fa-trash-can"></i></button></td</tr>'
                 $("#variant-table tbody").append(tableRow);
                 var htmlText = '<div class="col-md-12 form-group mt-2"><label>Option *</label><input type="text" name="variant_option[]" class="form-control variant-field" placeholder="Size, Color etc..."></div><div class="col-md-12 form-group mt-2"><label>Value *</label><input type="text" name="variant_value[]" class="type-variant form-control variant-field"></div><div class="form-group"><button type="button" onclick="hideNAppend()" class="btn border text-black bg-light mb-1 ml-3" style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); border-radius: 5px;">Done</button></div>';
                 $("#variant-input-section").append(htmlText);
@@ -1079,5 +1241,6 @@
             height: 400
         });
     </script>
-    <script src="{{asset('calender/date-picker.js')}}"></script>
-    @endpush
+    <script src="<?php echo e(asset('calender/date-picker.js')); ?>"></script>
+    <?php $__env->stopPush(); ?>
+<?php echo $__env->make('backend.layout.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\PFL\pfl\resources\views/backend/product/create.blade.php ENDPATH**/ ?>

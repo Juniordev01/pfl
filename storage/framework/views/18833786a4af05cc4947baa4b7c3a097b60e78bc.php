@@ -1,7 +1,7 @@
-@extends('backend.layout.main') @section('content')
-@if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
-@endif
+ <?php $__env->startSection('content'); ?>
+<?php if(session()->has('not_permitted')): ?>
+  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div>
+<?php endif; ?>
 <style>
     /*.barcodelist {
         max-width: 378px;
@@ -11,7 +11,7 @@
         max-width: 150px;
     }*/
 
-    @media print {
+    @media  print {
         * {
             font-size:12px;
             line-height: 20px;
@@ -20,7 +20,7 @@
         .hidden-print {
             display: none !important;
         }
-        @page { size: landscape; margin: 0 !important; }
+        @page  { size: landscape; margin: 0 !important; }
         .barcodelist {
             max-width: 378px;
         }
@@ -36,15 +36,15 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
-                        <h4>{{trans('file.print_barcode')}}</h4>
+                        <h4><?php echo e(trans('file.print_barcode')); ?></h4>
                     </div>
                     <div class="card-body">
-                        <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                        <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>{{trans('file.add_product')}} *</label>
+                                        <label><?php echo e(trans('file.add_product')); ?> *</label>
                                         <div class="search-box input-group">
 
                                             <button type="button" class="btn btn-secondary btn-lg"><i class="fa fa-barcode"></i></button>
@@ -58,31 +58,31 @@
                                             <table id="myTable" class="table table-hover order-list">
                                                 <thead>
                                                     <tr>
-                                                        <th>{{trans('file.name')}}</th>
-                                                        <th>{{trans('file.Code')}}</th>
-                                                        <th>{{trans('file.Quantity')}}</th>
+                                                        <th><?php echo e(trans('file.name')); ?></th>
+                                                        <th><?php echo e(trans('file.Code')); ?></th>
+                                                        <th><?php echo e(trans('file.Quantity')); ?></th>
                                                         <th><i class="dripicons-trash"></i></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                @if($preLoadedproduct)
-                                                    <tr data-imagedata="{{$preLoadedproduct[3]}}" data-price="{{$preLoadedproduct[2]}}" data-promo-price="{{$preLoadedproduct[4]}}" data-currency="{{$preLoadedproduct[5]}}" data-currency-position="{{$preLoadedproduct[6]}}">
-                                                        <td>{{$preLoadedproduct[0]}}</td>
-                                                        <td class="product-code">{{$preLoadedproduct[1]}}</td>
+                                                <?php if($preLoadedproduct): ?>
+                                                    <tr data-imagedata="<?php echo e($preLoadedproduct[3]); ?>" data-price="<?php echo e($preLoadedproduct[2]); ?>" data-promo-price="<?php echo e($preLoadedproduct[4]); ?>" data-currency="<?php echo e($preLoadedproduct[5]); ?>" data-currency-position="<?php echo e($preLoadedproduct[6]); ?>">
+                                                        <td><?php echo e($preLoadedproduct[0]); ?></td>
+                                                        <td class="product-code"><?php echo e($preLoadedproduct[1]); ?></td>
                                                         <td><input type="number" class="form-control qty" name="qty[]" value="1" /></td>
                                                         <td><button type="button" class="ibtnDel btn btn-md btn-danger">Delete</button></td>
                                                     </tr>
-                                                @endif
+                                                <?php endif; ?>
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group mt-2">
-                                    <strong>{{trans('file.Print')}}: </strong>&nbsp;
-                                    <strong><input type="checkbox" name="name" checked /> {{trans('file.Product Name')}}</strong>&nbsp;
-                                    <strong><input type="checkbox" name="price" checked/> {{trans('file.Price')}}</strong>&nbsp;
-                                    <strong><input type="checkbox" name="promo_price"/> {{trans('file.Promotional Price')}}</strong>
+                                    <strong><?php echo e(trans('file.Print')); ?>: </strong>&nbsp;
+                                    <strong><input type="checkbox" name="name" checked /> <?php echo e(trans('file.Product Name')); ?></strong>&nbsp;
+                                    <strong><input type="checkbox" name="price" checked/> <?php echo e(trans('file.Price')); ?></strong>&nbsp;
+                                    <strong><input type="checkbox" name="promo_price"/> <?php echo e(trans('file.Promotional Price')); ?></strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
@@ -96,7 +96,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group mt-3">
-                                    <input type="submit" value="{{trans('file.submit')}}" class="btn btn-primary" id="submit-button">
+                                    <input type="submit" value="<?php echo e(trans('file.submit')); ?>" class="btn btn-primary" id="submit-button">
                                 </div>
                             </div>
                         </div>
@@ -110,8 +110,8 @@
         <div role="document" class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                  <h5 id="modal_header" class="modal-title">{{trans('file.Barcode')}}</h5>&nbsp;&nbsp;
-                  <button id="print-btn" type="button" class="btn btn-default btn-sm"><i class="dripicons-print"></i> {{trans('file.Print')}}</button>
+                  <h5 id="modal_header" class="modal-title"><?php echo e(trans('file.Barcode')); ?></h5>&nbsp;&nbsp;
+                  <button id="print-btn" type="button" class="btn btn-default btn-sm"><i class="dripicons-print"></i> <?php echo e(trans('file.Print')); ?></button>
                   <button type="button" id="close-btn" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                 </div>
                 <div class="modal-body">
@@ -123,9 +123,9 @@
     </div>
 </section>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script type="text/javascript">
 
     $("ul#product").siblings('a').attr('aria-expanded','true');
@@ -133,16 +133,16 @@
     $("ul#product #printBarcode-menu").addClass("active");
     <?php $productArray = []; ?>
     var lims_product_code = [
-    @foreach($lims_product_list_without_variant as $product)
+    <?php $__currentLoopData = $lims_product_list_without_variant; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <?php
             $productArray[] = htmlspecialchars($product->code . ' (' . $product->name . ')');
         ?>
-    @endforeach
-    @foreach($lims_product_list_with_variant as $product)
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php $__currentLoopData = $lims_product_list_with_variant; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <?php
             $productArray[] = htmlspecialchars($product->item_code . ' (' . $product->name . ')');
         ?>
-    @endforeach
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     <?php
         echo  '"'.implode('","', $productArray).'"';
     ?>
@@ -291,7 +291,7 @@
           var divToPrint=document.getElementById('print-barcode');
           var newWin=window.open('','Print-Window');
           newWin.document.open();
-          newWin.document.write('<style type="text/css">@media print { #modal_header { display: none } #print-btn { display: none } #close-btn { display: none } } table.barcodelist { page-break-inside:auto } table.barcodelist tr { page-break-inside:avoid; page-break-after:auto }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+          newWin.document.write('<style type="text/css">@media  print { #modal_header { display: none } #print-btn { display: none } #close-btn { display: none } } table.barcodelist { page-break-inside:auto } table.barcodelist tr { page-break-inside:avoid; page-break-after:auto }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
           newWin.document.close();
           setTimeout(function(){newWin.close();},10);
     });*/
@@ -300,10 +300,12 @@
           var divToPrint=document.getElementById('print-barcode');
           var newWin=window.open('','Print-Window');
           newWin.document.open();
-          newWin.document.write('<style type="text/css">@media print { #modal_header { display: none } #print-btn { display: none } #close-btn { display: none } } table.barcodelist { page-break-inside:auto } table.barcodelist tr { page-break-inside:avoid; page-break-after:auto }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+          newWin.document.write('<style type="text/css">@media  print { #modal_header { display: none } #print-btn { display: none } #close-btn { display: none } } table.barcodelist { page-break-inside:auto } table.barcodelist tr { page-break-inside:avoid; page-break-after:auto }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
           newWin.document.close();
         //   setTimeout(function(){newWin.close();},10);
     });
 
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('backend.layout.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\PFL\pfl\resources\views/backend/product/print_barcode.blade.php ENDPATH**/ ?>

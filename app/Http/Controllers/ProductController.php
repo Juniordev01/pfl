@@ -47,7 +47,12 @@ class ProductController extends Controller
                 $all_permission[] = 'dummy text';
             $role_id = $role->id;
             $numberOfProduct = Product::where('is_active', true)->count();
-            $products = Product::where('is_active', true)->get();;
+            $products = Product::where('is_active', true)->where('id', 809)->with('product_image')->first();;
+            // if ($products) {
+            //     $firstProductImage = $products->product_image->first();
+            //     return($firstProductImage->src);
+            // }
+            // return($products->product_image[0]['src']);
             return view('backend.product.index', compact('all_permission', 'role_id', 'numberOfProduct', 'products'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
@@ -85,7 +90,7 @@ class ProductController extends Controller
                 ->get();
         } else {
             $search = $request->input('search.value');
-            $products =  Product::select('products.*')
+            $products =  Product::select('products.*')->with('product_image')
                 ->with('category', 'brand', 'unit')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
@@ -110,6 +115,7 @@ class ProductController extends Controller
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order, $dir)->get();
+            // dd($products'][0]);
 
             $totalFiltered = Product::join('categories', 'products.category_id', '=', 'categories.id')
                 ->leftjoin('brands', 'products.brand_id', '=', 'brands.id')
@@ -133,6 +139,7 @@ class ProductController extends Controller
                 ])
                 ->count();
         }
+        // $products->product_image[0]['src']
         $data = array();
         if (!empty($products)) {
             foreach ($products as $key => $product) {
@@ -140,8 +147,10 @@ class ProductController extends Controller
                 $nestedData['key'] = $key;
                 $product_image = explode(",", $product->image);
                 $product_image = htmlspecialchars($product_image[0]);
-                if ($product_image)
-                    $nestedData['image'] = '<img src="' . url('images/product', $product_image) . '" height="80" width="80">';
+                if (count($product->product_image) > 0)
+                    // $nestedData['image'] = '<img src="' . url('images/product', $product_image) . '" height="80" width="80">';
+                    $nestedData['image'] = '<img src="' . url('images/product/' . $product->product_image[0]['src']) . '" height="80" width="80">';
+                // $nestedData['image'] = $product->product_image[0]['src'];
                 else
                     $nestedData['image'] = '<img src="images/zummXD2dvAtI.png" height="80" width="80">';
                 $nestedData['name'] = $product->name;
@@ -219,12 +228,14 @@ class ProductController extends Controller
                     $tax_method = trans('file.Inclusive');
 
                 $nestedData['product'] = array(
-                    '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $nestedData['qty'] . '"', ' "' . $product->image . '"', ' "' . $product->is_variant . '"]'
+                    '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $nestedData['qty'] . '"' . '"', ' "' . $product->is_variant . '"]'
                 );
                 //$nestedData['imagedata'] = DNS1D::getBarcodePNG($product->code, $product->barcode_symbology);
                 $data[] = $nestedData;
             }
         }
+
+        // dd($productType = $firstElement['product'][0]);
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
@@ -386,9 +397,9 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        
-        
 
+
+        // return ($request->all());
         $request->validate([
             'name' => 'required|unique:products',
             'summernote' => 'required',
@@ -406,7 +417,6 @@ class ProductController extends Controller
             'startDate' => 'required',
             'endDate' => 'required',
             'prod_category' => 'required',
-
             'variant' => 'required',
             // 'pro_image'=> 'required'
         ]);
@@ -416,9 +426,9 @@ class ProductController extends Controller
         $saveProduct->code = $code;
         $saveProduct->is_active = 1;
         $saveProduct->name = $request->name;
-        $saveProduct->barcode_symbology  =  "Code 128";
+        $saveProduct->barcode_symbology  =  "C128";
         $saveProduct->type =  "Standard";
-        // $saveProduct->price =  $request->price;;
+        $saveProduct->price =  $request->price;;
         $saveProduct->cost =  $request->per_item_cost;;
 
         $saveProduct->starting_date =  $request->startDate;;
@@ -436,7 +446,7 @@ class ProductController extends Controller
         $saveProduct->sale_unit_id = 1;
 
 
-        // Summer Note
+        // // // Summer Note
         $content = $request->summernote;
         $dom = new \DomDocument();
         $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -469,11 +479,10 @@ class ProductController extends Controller
                 foreach ($request->pro_image as $index => $image) {
                     $productImages = new product_image();
                     $filename = $image->getClientOriginalName();
-                    $image->move('public/uploads', $filename);
+                    $image->move('images/product', $filename);
                     $productImages->product_id = $saveProduct->id;
                     $productImages->src = $filename;
                     $productImages->position = $request->input('imageIndex')[$index];
-                   
                     $productImages->save();
                 }
             }
@@ -482,9 +491,13 @@ class ProductController extends Controller
 
         $variants = new ProductVariant();
         foreach ($request->variant as $index => $eachVariant) {
+            $parts = explode('-', $saveProduct->name, 2);
+            $lastPart = $parts[1];
+            $parts = explode('-', $saveProduct->name, 2);
+            $lastPart = $parts[1];
             $variants = new ProductVariant();
-            $variants->sku = $request->sku[$index];
-            $variants->barcode = $request->barcode[$index];
+            $variants->sku =  $lastPart . "-" . $eachVariant;
+            $variants->barcode = $lastPart . "-" . $eachVariant . "-" . $eachVariant;
             $variants->product_id = $saveProduct->id;
             $variants->qty = $request->onHand[$index];
             $variants->title = $eachVariant;
@@ -492,7 +505,7 @@ class ProductController extends Controller
             $variants->weight = $request->weight;
             $variants->weight_unit = $request->weight_unit;
             $variants->inventory_quantity = $request->available[$index];
-
+            // return ($variants);
             $variants->save();
         }
 
@@ -1340,6 +1353,7 @@ class ProductController extends Controller
             $variant_id = '';
             $additional_price = 0;
         }
+
         $product[] = $lims_product_data->name;
         if ($lims_product_data->is_variant)
             $product[] = $lims_product_data->item_code;
@@ -1347,7 +1361,8 @@ class ProductController extends Controller
             $product[] = $lims_product_data->code;
 
         $product[] = $lims_product_data->price + $additional_price;
-        $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
+        // Need To Discuss
+        $product[] = DNS1D::getBarcodePNG($lims_product_data->code, 'C128');
         $product[] = $lims_product_data->promotion_price;
         $product[] = config('currency');
         $product[] = config('currency_position');
