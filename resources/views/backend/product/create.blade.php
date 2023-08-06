@@ -119,6 +119,10 @@
     #selectedTagsContainer {
         margin-top: 10px;
     }
+    .media_style {
+        border: 2px dashed grey;
+                padding: 30px; /* Set padding from inside the border */
+    }
 
     /* Optional: Add some styling for the selected tags container */
 </style>
@@ -168,12 +172,15 @@
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
                             <span class="validation-msg" id="image-error"></span> -->
-                            <input type="file" id="file-input" name="pro_image[]" onchange="preview()" multiple>
-                            <label for="file-input" class="multi_image_select">
-                                <i class="fas fa-upload"></i> &nbsp; Choose A Photo
-                            </label>
-                            <p id="num-of-files" class="text-center mt-2">No Files Chosen</p>
-                            <div id="images" class="d-flex justify-content-start"></div>
+                            <div class="media_style"> 
+                                <input type="file" id="file-input" name="pro_image[]" onchange="preview()" multiple>
+                                <label for="file-input" class="multi_image_select">
+                                    <i class="fas fa-upload"></i> &nbsp; Choose A Photo
+                                </label>
+                                <p id="num-of-files" class="text-center mt-2">No Files Chosen</p>
+                            <div id="images" class="d-flex justify-content-start"></div>    
+                            </div>
+                            
                         </div>
                         <input type="hidden" id="image-count" name="image_count" value="0">
                         <span class=" mb-2">
@@ -478,7 +485,7 @@
                         <div class="form-group ">
                             <div class="d-flex justify-content-between">
                                 <h5 class="search_eng">Search Engine Listing</h5>
-                                <a href="#">Edit</a>
+                                <a href="#" class="edit_search">Edit</a>
                             </div>
                             <!-- <div> -->
                             <span class="little_desc">Add a little description below to see how this product might appear in the search engine listing</span>
@@ -660,7 +667,7 @@
                             </div> -->
                             <div class="form-group">
                                 <div class="row d-flex justify-content-between">
-                                    <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4">Manage</a>
+                                    <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4 manage">Manage</a>
                                 </div>
                                 <div>
                                     <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5" id="tagsSelect">
@@ -681,7 +688,7 @@
                         <div class="card-body">
                             <label class="card-title on_store">Online Store</label>
                             <div class="form-group">
-                                <span for="">Theme Template</span>
+                                <span for="" class="template">Theme Template</span>
                                 <div>
                                     <select class="form-select border w-100" name="pro_theme" aria-label="Default select example" style="border: 1px solid black; border-radius: 5px;">
                                         <option value="">Default Product</option>
@@ -797,40 +804,40 @@
         // }
 
         function addToTable() {
-        const variantTable = document.getElementById('show_table');
-        variantTable.style.display = "flex";
+            const variantTable = document.getElementById('show_table');
+            variantTable.style.display = "flex";
 
-        const variantInput = document.getElementById('variantInput');
-        const variant = variantInput.value;
-        const priceInput = document.getElementById('priceInput');
-        const price = priceInput.value;
+            const variantInput = document.getElementById('variantInput');
+            const variant = variantInput.value;
+            const priceInput = document.getElementById('priceInput');
+            const price = priceInput.value;
 
-        if (variant.trim() !== '' && price.trim() !== '') {
-            const table = document.getElementById('dataTable');
-            const newRow = table.insertRow(-1);
+            if (variant.trim() !== '' && price.trim() !== '') {
+                const table = document.getElementById('dataTable');
+                const newRow = table.insertRow(-1);
 
-            for (let i = 0; i < 6; i++) {
-                const newCell = newRow.insertCell(i);
+                for (let i = 0; i < 6; i++) {
+                    const newCell = newRow.insertCell(i);
 
-                if (i === 0) {
-                    newCell.innerHTML = variant;
-                } 
-                // else if (i === 1) {
-                //     newCell.innerHTML = price;
-                // }
-                 else {
-                    newCell.contentEditable = false;
+                    if (i === 0) {
+                        newCell.innerHTML = variant;
+                    }
+                    // else if (i === 1) {
+                    //     newCell.innerHTML = price;
+                    // }
+                    else {
+                        newCell.contentEditable = false;
+                    }
                 }
+
+                const actionCell = newRow.insertCell(6);
+                actionCell.innerHTML = '<button class="btn edit_btn" type="button"  onclick="editRow(this)">Edit</button>';
+
+                // Clear input fields after adding to the table
+                variantInput.value = '';
+                priceInput.value = '';
             }
-
-            const actionCell = newRow.insertCell(6);
-            actionCell.innerHTML = '<button class="btn edit_btn" type="button"  onclick="editRow(this)">Edit</button>';
-
-            // Clear input fields after adding to the table
-            variantInput.value = '';
-            priceInput.value = '';
         }
-    }
 
         function editRow(button) {
             const row = button.parentNode.parentNode;

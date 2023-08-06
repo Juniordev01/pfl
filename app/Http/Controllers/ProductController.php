@@ -83,7 +83,7 @@ class ProductController extends Controller
         $order = 'products.' . $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
         if (empty($request->input('search.value'))) {
-            $products = Product::with('category', 'brand', 'unit')->offset($start)
+            $products = Product::with('category', 'brand', 'unit')->with('product_image')->offset($start)
                 ->where('is_active', true)
                 ->limit($limit)
                 ->orderBy($order, $dir)
@@ -149,7 +149,7 @@ class ProductController extends Controller
                 $product_image = htmlspecialchars($product_image[0]);
                 if (count($product->product_image) > 0)
                     // $nestedData['image'] = '<img src="' . url('images/product', $product_image) . '" height="80" width="80">';
-                    $nestedData['image'] = '<img src="' . url('images/product/' . $product->product_image[0]['src']) . '" height="80" width="80">';
+                    $nestedData['image'] = '<img src="' . url($product->product_image[0]['src']) . '" height="80" width="80">';
                 // $nestedData['image'] = $product->product_image[0]['src'];
                 else
                     $nestedData['image'] = '<img src="images/zummXD2dvAtI.png" height="80" width="80">';
@@ -227,15 +227,38 @@ class ProductController extends Controller
                 else
                     $tax_method = trans('file.Inclusive');
 
-                $nestedData['product'] = array(
-                    '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $nestedData['qty'] . '"' . '"', ' "' . $product->is_variant . '"]'
-                );
+                // $nestedData['product'] = array(
+                //     '[ "' . $product->type . '"', ' "' . $product->name . '"', ' "' . $product->code . '"', ' "' . $nestedData['brand'] . '"', ' "' . $nestedData['category'] . '"', ' "' . $nestedData['unit'] . '"', ' "' . $product->cost . '"', ' "' . $product->price . '"', ' "' . $tax . '"', ' "' . $tax_method . '"', ' "' . $product->alert_quantity . '"', ' "' . preg_replace('/\s+/S', " ", $product->product_details) . '"', ' "' . $product->id . '"', ' "' . $product->product_list . '"', ' "' . $product->variant_list . '"', ' "' . $product->qty_list . '"', ' "' . $product->price_list . '"', ' "' . $nestedData['qty'] . '"' . '"', ' "' . $product->is_variant . '"]'
+                // );
                 //$nestedData['imagedata'] = DNS1D::getBarcodePNG($product->code, $product->barcode_symbology);
+                $nestedData['product'] = array(
+                    $product->type,
+                    $product->name,
+                    $product->code,
+                    $nestedData['brand'],
+                    $nestedData['category'],
+                    $nestedData['unit'],
+                    $product->cost,
+                    $product->price,
+                    $tax,
+                    $tax_method,
+                    $product->alert_quantity,
+                    preg_replace('/\s+/S', " ", $product->product_details),
+                    $product->id,
+                    $product->product_list,
+                    $product->variant_list,
+                    $product->qty_list,
+                    $product->price_list,
+                    $nestedData['qty'],
+                    $product->is_variant,
+                    $nestedData['image']
+                );
+                
                 $data[] = $nestedData;
             }
         }
 
-        // dd($productType = $firstElement['product'][0]);
+        // dd($data);;
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
