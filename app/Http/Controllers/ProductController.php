@@ -444,8 +444,8 @@ class ProductController extends Controller
             // 'pro_image'=> 'required'
         ]);
         // dd("pass");
-        $code = mt_rand(1000, 999999999);
-        $saveProduct  = new product();
+        $code = mt_rand(1000000000000, 9999999999999);
+        $saveProduct = new product();
         $saveProduct->code = $code;
         $saveProduct->is_active = 1;
         $saveProduct->name = $request->name;
@@ -1023,7 +1023,9 @@ class ProductController extends Controller
             $lims_category_list = Category::where('is_active', true)->get();
             $lims_unit_list = Unit::where('is_active', true)->get();
             $lims_tax_list = Tax::where('is_active', true)->get();
-            $lims_product_data = Product::where('id', $id)->first();
+            $lims_product_data = Product::where('id', $id)->with('product_image')->with('productVariants')->with('category')->first();
+            // return( $lims_product_data);
+            // return($lims_product_data->product_image);
             if ($lims_product_data->variant_option) {
                 $lims_product_data->variant_option = json_decode($lims_product_data->variant_option);
                 $lims_product_data->variant_value = json_decode($lims_product_data->variant_value);
@@ -1226,6 +1228,7 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request)
     {
+        return($request->all());
         if (!env('USER_VERIFIED')) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         } else {

@@ -1373,6 +1373,8 @@ class SaleController extends Controller
         if(strpos($request['data'], '|')) {
             $product_info = explode("|", $request['data']);
             $embeded_code = $product_code[0];
+            $parts = explode('|',$request['data']);
+            $number = $parts[0];
             $product_code[0] = substr($embeded_code, 0, 7);
             $qty = substr($embeded_code, 7, 5) / 1000;
         }
@@ -1393,7 +1395,7 @@ class SaleController extends Controller
                         ->select('discounts.*')
                         ->get();
         $lims_product_data = Product::where([
-            ['code', $product_code[0]],
+            ['code', $number],
             ['is_active', true]
         ])->first();
         if(!$lims_product_data) {

@@ -221,11 +221,10 @@
 
         // product[11] = product[11].replace(/@/g, '"');
         htmltext = slidertext = '';
-        alert(productArray[19]);
 
         const srcIndex = productArray[19].indexOf('src=');
 
-        let srcValue =  productArray[19].slice(srcIndex + 5);
+        let srcValue = productArray[19].slice(srcIndex + 5);
 
         srcValue = srcValue.split(' ')[0];
 
@@ -239,10 +238,10 @@
             if (srcValue.length > 0) {
                 slidertext = '<div id="product-img-slider" class="carousel slide" data-ride="carousel"><div class="carousel-inner">';
                 // for (var i = 0; i < srcValue.length; i++) {
-                    // if (!i)
-                        slidertext += '<div class="carousel-item active"><img src="' + srcValue + '" height="300" width="100%"></div>';
-                    // else
-                    //     slidertext += '<div class="carousel-item"><img src="' + srcValue[i] + '" height="300" width="100%"></div>';
+                // if (!i)
+                slidertext += '<div class="carousel-item active"><img src="' + srcValue + '" height="300" width="100%"></div>';
+                // else
+                //     slidertext += '<div class="carousel-item"><img src="' + srcValue[i] + '" height="300" width="100%"></div>';
                 // }
                 slidertext += '</div><a class="carousel-control-prev" href="#product-img-slider" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></a><a class="carousel-control-next" href="#product-img-slider" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></a></div>';
             } else {

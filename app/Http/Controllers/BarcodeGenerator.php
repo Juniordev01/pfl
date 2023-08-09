@@ -21,7 +21,7 @@ class BarcodeGenerator extends Controller
         $products = Product::with('productVariants')->whereNotIn('id', range(1, 809))->get(); //Change The rang according to your need
         foreach ($products as $product) {
 
-            $product->product_barcode = null ? $product->product_barcode : mt_rand(1000, 999999999);
+            $product->product_barcode = null ? $product->product_barcode : mt_rand(1000000000000, 9999999999999);
             if ($product->update()) {
                 $parts = explode('-', $product->name, 2);
                 $lastPart = $parts[1];
@@ -58,9 +58,10 @@ class BarcodeGenerator extends Controller
         // }
     }
 
-    // public function fetchBarcodeProduct()
-    // {
-    //     $products = productBarcode::paginate(6);
-    //     return view('backend.barcode.barcode', compact('products'));
-    // }
+    public function fetchBarcodeProduct()
+    {
+        $products = Product::orderBy('id', 'desc')->paginate(5);
+        // return($products);
+        return view('backend.barcode.barcode', compact('products'));
+    }
 }

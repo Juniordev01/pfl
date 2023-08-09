@@ -1100,9 +1100,9 @@ unset($__errorArgs, $__bag); ?>
             var quantityField = document.getElementById("toggle_quantity");
 
             if (checkbox.checked) {
-                quantityField.style.display = "block";
-            } else {
                 quantityField.style.display = "none";
+            } else {
+                quantityField.style.display = "block";
             }
         }
 
