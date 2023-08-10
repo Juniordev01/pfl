@@ -1366,13 +1366,21 @@ class SaleController extends Controller
 
     public function limsProductSearch(Request $request)
     {
+        
         $todayDate = date('Y-m-d');
         $product_code = explode("(", $request['data']);
+      
         $product_info = explode("?", $request['data']);
+       
         $customer_id = $product_info[1];
+        $product_Detail = explode("|", $product_info[0]);
+        $product = explode(",", $product_Detail[0]) ;
+        $id = $product[0];
+        $prod_var = $product[1];
+        // dd($id);
         if(strpos($request['data'], '|')) {
             $product_info = explode("|", $request['data']);
-            $embeded_code = $product_code[0];
+            $embeded_code = (int)$product_code[0];
             $parts = explode('|',$request['data']);
             $number = $parts[0];
             $product_code[0] = substr($embeded_code, 0, 7);
@@ -1395,16 +1403,25 @@ class SaleController extends Controller
                         ->select('discounts.*')
                         ->get();
         $lims_product_data = Product::where([
-            ['code', $number],
+            ['id', (int)$id],
             ['is_active', true]
         ])->first();
-        if(!$lims_product_data) {
-            $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.additional_price')
+        // dd($lims_product_data);
+        if($lims_product_data) {
+            // $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
+            //     ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.additional_price')
+            //     ->where([
+            //         ['product_variants.item_code', $product_code[0]],
+            //         ['products.is_active', true]
+            //     ])->first();
+                $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
+                ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.price')
                 ->where([
-                    ['product_variants.item_code', $product_code[0]],
+                    ['product_variants.barcode', $prod_var],
                     ['products.is_active', true]
                 ])->first();
+
+                // dd($lims_product_data);
             $product_variant_id = $lims_product_data->product_variant_id;
         }
 
@@ -1487,7 +1504,7 @@ class SaleController extends Controller
         $product[] = $lims_product_data->is_imei;
         $product[] = $lims_product_data->is_variant;
         $product[] = $qty;
-        return $product;
+        dd( $product);
 
     }
 

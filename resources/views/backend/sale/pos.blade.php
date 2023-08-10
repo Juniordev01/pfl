@@ -2000,7 +2000,7 @@ lims_productcodeSearch.autocomplete({
             $(this).autocomplete( "close" );
             productSearch(data);
         }
-        else if(ui.content.length == 0 && $('#lims_productcodeSearch').val().length == 13) {
+        else if(ui.content.length == 0 && $('#lims_productcodeSearch').val().length > 10) {
           productSearch($('#lims_productcodeSearch').val()+'|'+1);
         }
     },

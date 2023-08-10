@@ -34,10 +34,11 @@
                     <!-- <span><?php echo DNS1D::getBarcodeHTML($product->product_id . "123", "C128", 1.4, 22); ?></span> -->
                     <?php $__currentLoopData = $product->productVariants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $variant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <p class="card-text"><strong>Price:</strong> <?php echo e($variant->price); ?></p>
+                    <p><?php echo e($product->id.",".$variant->barcode); ?></p>
                     <?php if(!empty($variant->barcode)): ?>
                     <?php
                     // echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($variant->id, "C128", 1.4, 22) . '" alt="barcode"   />';
-                    echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($product->id."|".$variant->barcode, "C128", 1, 22) . '" alt="barcode"  width="250" />';
+                    echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($product->id.",".$variant->barcode, "C128", 1, 22) . '" alt="barcode" width="250" />';
                     // echo '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($product->code.",".$variant->barcode, "C128", 1, 22) . '" alt="barcode" width="250" height="20"   />';
                     ?>
                     
