@@ -253,7 +253,7 @@ class ProductController extends Controller
                     $product->is_variant,
                     $nestedData['image']
                 );
-                
+
                 $data[] = $nestedData;
             }
         }
@@ -1017,6 +1017,7 @@ class ProductController extends Controller
     {
         $role = Role::firstOrCreate(['id' => Auth::user()->role_id]);
         if ($role->hasPermissionTo('products-edit')) {
+
             $lims_product_list_without_variant = $this->productWithoutVariant();
             $lims_product_list_with_variant = $this->productWithVariant();
             $lims_brand_list = Brand::where('is_active', true)->get();
@@ -1024,7 +1025,7 @@ class ProductController extends Controller
             $lims_unit_list = Unit::where('is_active', true)->get();
             $lims_tax_list = Tax::where('is_active', true)->get();
             $lims_product_data = Product::where('id', $id)->with('product_image')->with('productVariants')->with('category')->first();
-            // return( $lims_product_data);
+            // return( json_decode($lims_product_data->tags));
             // return($lims_product_data->product_image);
             if ($lims_product_data->variant_option) {
                 $lims_product_data->variant_option = json_decode($lims_product_data->variant_option);
@@ -1033,7 +1034,9 @@ class ProductController extends Controller
             $lims_product_variant_data = $lims_product_data->variant()->orderBy('position')->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $noOfVariantValue = 0;
-            $collections = tag::all();
+            // $collection = [];
+            $collections = tag::whereNotIn('title',json_decode($lims_product_data->tags))->get();
+
 
 
             $product_image = product_image::where('product_id', $id)->get();
@@ -1228,7 +1231,7 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request)
     {
-        return($request->all());
+        return ($request->all());
         if (!env('USER_VERIFIED')) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         } else {
@@ -1558,16 +1561,36 @@ class ProductController extends Controller
         if (!env('USER_VERIFIED')) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         } else {
+           
             $lims_product_data = Product::findOrFail($id);
-            $lims_product_data->is_active = false;
-            if ($lims_product_data->image != 'zummXD2dvAtI.png') {
-                $images = explode(",", $lims_product_data->image);
-                foreach ($images as $key => $image) {
-                    if (file_exists('public/images/product/' . $image))
-                        unlink('public/images/product/' . $image);
+            if ($lims_product_data) {
+                
+                $lims_product_data->is_active = false;
+                $lims_product_data->save();
+                $productImages = product_image::where('product_id', $lims_product_data->id)->get();
+                if ($productImages) {
+                    foreach ($productImages as $images) {
+                        $images->is_active = false;
+                        $images->save();
+                    }
+                }
+                $productVariants = ProductVariant::where('product_id', $lims_product_data->id)->get(); {
+                    if ($productVariants) {
+                        foreach ($productVariants as $variants) {
+                            $variants->status = false;
+                            $variants->save();
+                        }
+                    }
                 }
             }
-            $lims_product_data->save();
+            // $lims_product_data->is_active = false;
+            // if ($lims_product_data->image != 'zummXD2dvAtI.png') {
+            //     $images = explode(",", $lims_product_data->image);
+            //     foreach ($images as $key => $image) {
+            //         if (file_exists('public/images/product/' . $image))
+            //             unlink('public/images/product/' . $image);
+            //     }
+            // }
             $this->cacheForget('product_list');
             $this->cacheForget('product_list_with_variant');
             return redirect('products')->with('message', 'Product deleted successfully');

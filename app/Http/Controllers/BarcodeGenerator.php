@@ -60,7 +60,9 @@ class BarcodeGenerator extends Controller
 
     public function fetchBarcodeProduct()
     {
-        $products = Product::orderBy('id', 'desc')->paginate(5);
+        
+        $products = Product::orderBy('id', 'desc')->with('productVariants')->paginate(5);
+        // $products = Product::orderBy('id', 'desc')->with('productVariants')->where('id',786)->get();
         // return($products);
         return view('backend.barcode.barcode', compact('products'));
     }
