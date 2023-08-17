@@ -1415,13 +1415,13 @@ class SaleController extends Controller
             //         ['products.is_active', true]
             //     ])->first();
                 $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.price')
+                ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.price','product_variants.qty')
                 ->where([
                     ['product_variants.barcode', $prod_var],
                     ['products.is_active', true]
                 ])->first();
 
-                dd($lims_product_data);
+                // dd($lims_product_data);
             $product_variant_id = $lims_product_data->product_variant_id;
         }
 
@@ -1504,7 +1504,7 @@ class SaleController extends Controller
         $product[] = $lims_product_data->is_imei;
         $product[] = $lims_product_data->is_variant;
         $product[] = $lims_product_data->qty;
-         dd($product);
+         return ($product);
 
     }
 

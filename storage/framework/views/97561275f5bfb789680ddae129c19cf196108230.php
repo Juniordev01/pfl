@@ -1,41 +1,42 @@
-@extends('backend.layout.top-head')
-@section('content')
-@if($errors->has('phone_number'))
+
+<?php $__env->startSection('content'); ?>
+<?php if($errors->has('phone_number')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ $errors->first('phone_number') }}</div>
-@endif
-@if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{!! session()->get('message') !!}</div>
-@endif
-@if(session()->has('not_permitted'))
-  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{ session()->get('not_permitted') }}</div>
-@endif
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e($errors->first('phone_number')); ?></div>
+<?php endif; ?>
+<?php if(session()->has('message')): ?>
+    <div class="alert alert-success alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo session()->get('message'); ?></div>
+<?php endif; ?>
+<?php if(session()->has('not_permitted')): ?>
+  <div class="alert alert-danger alert-dismissible text-center"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e(session()->get('not_permitted')); ?></div>
+<?php endif; ?>
 <!-- Side Navbar -->
 <nav class="side-navbar shrink">
     <span class="brand-big">
-        @if($general_setting->site_logo)
-        <a href="{{url('/')}}"><img src="{{url('logo', $general_setting->site_logo)}}" width="115"></a>
-        @else
-        <a href="{{url('/')}}"><h1 class="d-inline">{{$general_setting->site_title}}</h1></a>
-        @endif
+        <?php if($general_setting->site_logo): ?>
+        <a href="<?php echo e(url('/')); ?>"><img src="<?php echo e(url('logo', $general_setting->site_logo)); ?>" width="115"></a>
+        <?php else: ?>
+        <a href="<?php echo e(url('/')); ?>"><h1 class="d-inline"><?php echo e($general_setting->site_title); ?></h1></a>
+        <?php endif; ?>
     </span>
 
-    @include('backend.layout.sidebar')
+    <?php echo $__env->make('backend.layout.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </nav>
 <section class="forms pos-section">
     <div class="container-fluid">
         <div class="row">
             <audio id="mysoundclip1" preload="auto">
-                <source src="{{url('beep/beep-timber.mp3')}}"></source>
+                <source src="<?php echo e(url('beep/beep-timber.mp3')); ?>"></source>
             </audio>
             <audio id="mysoundclip2" preload="auto">
-                <source src="{{url('beep/beep-07.mp3')}}"></source>
+                <source src="<?php echo e(url('beep/beep-07.mp3')); ?>"></source>
             </audio>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body" style="padding-bottom: 0">
-                        {!! Form::open(['route' => 'sales.store', 'method' => 'post', 'files' => true, 'class' => 'payment-form']) !!}
-                        @php
+                        <?php echo Form::open(['route' => 'sales.store', 'method' => 'post', 'files' => true, 'class' => 'payment-form']); ?>
+
+                        <?php
                             if($lims_pos_setting_data)
                                 $keybord_active = $lims_pos_setting_data->keybord_active;
                             else
@@ -46,7 +47,7 @@
                               ->where([
                                 ['permissions.name', 'customers-add'],
                                 ['role_id', \Auth::user()->role_id] ])->first();
-                        @endphp
+                        ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
@@ -59,213 +60,217 @@
                                       <div class="form-group">
                                           <input type="text" id="reference-no" name="reference_no" class="form-control" placeholder="Type reference number" onkeyup='saveValue(this);'/>
                                       </div>
-                                      @if($errors->has('reference_no'))
+                                      <?php if($errors->has('reference_no')): ?>
                                        <span>
-                                           <strong>{{ $errors->first('reference_no') }}</strong>
+                                           <strong><?php echo e($errors->first('reference_no')); ?></strong>
                                         </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
-                                    @if($lims_pos_setting_data->is_table)
+                                    <?php if($lims_pos_setting_data->is_table): ?>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                @if($lims_pos_setting_data)
-                                                <input type="hidden" name="warehouse_id_hidden" value="{{$lims_pos_setting_data->warehouse_id}}">
-                                                @endif
+                                                <?php if($lims_pos_setting_data): ?>
+                                                <input type="hidden" name="warehouse_id_hidden" value="<?php echo e($lims_pos_setting_data->warehouse_id); ?>">
+                                                <?php endif; ?>
                                                 <select required id="warehouse_id" name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
-                                                    @foreach($lims_warehouse_list as $warehouse)
-                                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                    @endforeach
+                                                    <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <select required id="table_id" name="table_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select table...">
-                                                    @foreach($lims_table_list as $table)
-                                                    <option value="{{$table->id}}">{{$table->name}}</option>
-                                                    @endforeach
+                                                    <?php $__currentLoopData = $lims_table_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $table): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($table->id); ?>"><?php echo e($table->name); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
                                         </div>
-                                    @else
+                                    <?php else: ?>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                @if($lims_pos_setting_data)
-                                                <input type="hidden" name="warehouse_id_hidden" value="{{$lims_pos_setting_data->warehouse_id}}">
-                                                @endif
+                                                <?php if($lims_pos_setting_data): ?>
+                                                <input type="hidden" name="warehouse_id_hidden" value="<?php echo e($lims_pos_setting_data->warehouse_id); ?>">
+                                                <?php endif; ?>
                                                 <select required id="warehouse_id" name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
-                                                    @foreach($lims_warehouse_list as $warehouse)
-                                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                                    @endforeach
+                                                    <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @if($lims_pos_setting_data)
-                                            <input type="hidden" name="biller_id_hidden" value="{{$lims_pos_setting_data->biller_id}}">
-                                            @endif
+                                            <?php if($lims_pos_setting_data): ?>
+                                            <input type="hidden" name="biller_id_hidden" value="<?php echo e($lims_pos_setting_data->biller_id); ?>">
+                                            <?php endif; ?>
                                             <select required id="biller_id" name="biller_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Biller...">
-                                            @foreach($lims_biller_list as $biller)
-                                            <option value="{{$biller->id}}">{{$biller->name . ' (' . $biller->company_name . ')'}}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $lims_biller_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $biller): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($biller->id); ?>"><?php echo e($biller->name . ' (' . $biller->company_name . ')'); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @if($lims_pos_setting_data)
-                                            <input type="hidden" name="customer_id_hidden" value="{{$lims_pos_setting_data->customer_id}}">
-                                            @endif
+                                            <?php if($lims_pos_setting_data): ?>
+                                            <input type="hidden" name="customer_id_hidden" value="<?php echo e($lims_pos_setting_data->customer_id); ?>">
+                                            <?php endif; ?>
                                             <div class="input-group pos">
-                                                @if($customer_active)
+                                                <?php if($customer_active): ?>
                                                 <select required name="customer_id" id="customer_id" class="selectpicker form-control" data-live-search="true" title="Select customer..." style="width: 100px">
                                                 <?php
                                                   $deposit = [];
                                                   $points = [];
                                                 ?>
-                                                @foreach($lims_customer_list as $customer)
-                                                    @php
+                                                <?php $__currentLoopData = $lims_customer_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php
                                                       $deposit[$customer->id] = $customer->deposit - $customer->expense;
 
                                                       $points[$customer->id] = $customer->points;
-                                                    @endphp
-                                                    <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number . ')'}}</option>
-                                                @endforeach
+                                                    ?>
+                                                    <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name . ' (' . $customer->phone_number . ')'); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#addCustomer"><i class="dripicons-plus"></i></button>
-                                                @else
+                                                <?php else: ?>
                                                 <?php
                                                   $deposit = [];
                                                   $points = [];
                                                 ?>
                                                 <select required name="customer_id" id="customer_id" class="selectpicker form-control" data-live-search="true" title="Select customer...">
-                                                @foreach($lims_customer_list as $customer)
-                                                    @php
+                                                <?php $__currentLoopData = $lims_customer_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php
                                                       $deposit[$customer->id] = $customer->deposit - $customer->expense;
 
                                                       $points[$customer->id] = $customer->points;
-                                                    @endphp
-                                                    <option value="{{$customer->id}}">{{$customer->name . ' (' . $customer->phone_number . ')'}}</option>
-                                                @endforeach
+                                                    ?>
+                                                    <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name . ' (' . $customer->phone_number . ')'); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <select name="currency_id" id="currency" class="form-control selectpicker" data-toggle="tooltip" title="" data-original-title="Sale currency">
-                                            @foreach($currency_list as $currency_data)
-                                            <option value="{{$currency_data->id}}" data-rate="{{$currency_data->exchange_rate}}">{{$currency_data->code}}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $currency_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $currency_data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($currency_data->id); ?>" data-rate="<?php echo e($currency_data->exchange_rate); ?>"><?php echo e($currency_data->code); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div> 
                                     <div class="col-md-2">
                                         <div class="form-group d-flex">
-                                            <input class="form-control" type="text" id="exchange_rate" name="exchange_rate" value="{{$currency->exchange_rate}}">
+                                            <input class="form-control" type="text" id="exchange_rate" name="exchange_rate" value="<?php echo e($currency->exchange_rate); ?>">
                                             <div class="input-group-append">
                                                 <span class="input-group-text" data-toggle="tooltip" title="" data-original-title="currency exchange rate">i</span>
                                             </div>
                                         </div>
                                     </div>
-                                    @foreach($custom_fields as $field)
-                                        @if(!$field->is_admin)
-                                            <div class="{{'col-md-'.$field->grid_value}}">
+                                    <?php $__currentLoopData = $custom_fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if(!$field->is_admin): ?>
+                                            <div class="<?php echo e('col-md-'.$field->grid_value); ?>">
                                                 <div class="form-group">
-                                                    <label>{{$field->name}}</label>
-                                                    @if($field->type == 'text')
-                                                        <input type="text" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif>
-                                                    @elseif($field->type == 'number')
-                                                        <input type="number" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif>
-                                                    @elseif($field->type == 'textarea')
-                                                        <textarea rows="5" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif></textarea>
-                                                    @elseif($field->type == 'checkbox')
+                                                    <label><?php echo e($field->name); ?></label>
+                                                    <?php if($field->type == 'text'): ?>
+                                                        <input type="text" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php elseif($field->type == 'number'): ?>
+                                                        <input type="number" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php elseif($field->type == 'textarea'): ?>
+                                                        <textarea rows="5" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>></textarea>
+                                                    <?php elseif($field->type == 'checkbox'): ?>
                                                         <br>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        @foreach($option_values as $value)
+                                                        <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <label>
-                                                                <input type="checkbox" name="{{str_replace(' ', '_', strtolower($field->name))}}[]" value="{{$value}}" @if($value == $field->default_value){{'checked'}}@endif @if($field->is_required){{'required'}}@endif> {{$value}}
+                                                                <input type="checkbox" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>[]" value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('checked'); ?><?php endif; ?> <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>> <?php echo e($value); ?>
+
                                                             </label>
                                                             &nbsp;
-                                                        @endforeach
-                                                    @elseif($field->type == 'radio_button')
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php elseif($field->type == 'radio_button'): ?>
                                                         <br>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        @foreach($option_values as $value)
+                                                        <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <label class="radio-inline">
-                                                                <input type="radio" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$value}}" @if($value == $field->default_value){{'checked'}}@endif @if($field->is_required){{'required'}}@endif> {{$value}}
+                                                                <input type="radio" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('checked'); ?><?php endif; ?> <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>> <?php echo e($value); ?>
+
                                                             </label>
                                                             &nbsp;
-                                                        @endforeach
-                                                    @elseif($field->type == 'select')
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php elseif($field->type == 'select'): ?>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        <select class="form-control" name="{{str_replace(' ', '_', strtolower($field->name))}}" @if($field->is_required){{'required'}}@endif>
-                                                            @foreach($option_values as $value)
-                                                                <option value="{{$value}}" @if($value == $field->default_value){{'selected'}}@endif>{{$value}}</option>
-                                                            @endforeach
+                                                        <select class="form-control" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                            <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('selected'); ?><?php endif; ?>><?php echo e($value); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
-                                                    @elseif($field->type == 'multi_select')
+                                                    <?php elseif($field->type == 'multi_select'): ?>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        <select class="form-control" name="{{str_replace(' ', '_', strtolower($field->name))}}[]" @if($field->is_required){{'required'}}@endif multiple>
-                                                            @foreach($option_values as $value)
-                                                                <option value="{{$value}}" @if($value == $field->default_value){{'selected'}}@endif>{{$value}}</option>
-                                                            @endforeach
+                                                        <select class="form-control" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>[]" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?> multiple>
+                                                            <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('selected'); ?><?php endif; ?>><?php echo e($value); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
-                                                    @elseif($field->type == 'date_picker')
-                                                        <input type="text" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control date" @if($field->is_required){{'required'}}@endif>
-                                                    @endif
+                                                    <?php elseif($field->type == 'date_picker'): ?>
+                                                        <input type="text" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control date" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
-                                        @elseif(\Auth::user()->role_id == 1)
-                                            <div class="{{'col-md-'.$field->grid_value}}">
+                                        <?php elseif(\Auth::user()->role_id == 1): ?>
+                                            <div class="<?php echo e('col-md-'.$field->grid_value); ?>">
                                                 <div class="form-group">
-                                                    <label>{{$field->name}}</label>
-                                                    @if($field->type == 'text')
-                                                        <input type="text" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif>
-                                                    @elseif($field->type == 'number')
-                                                        <input type="number" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif>
-                                                    @elseif($field->type == 'textarea')
-                                                        <textarea rows="5" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control" @if($field->is_required){{'required'}}@endif></textarea>
-                                                    @elseif($field->type == 'checkbox')
+                                                    <label><?php echo e($field->name); ?></label>
+                                                    <?php if($field->type == 'text'): ?>
+                                                        <input type="text" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php elseif($field->type == 'number'): ?>
+                                                        <input type="number" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php elseif($field->type == 'textarea'): ?>
+                                                        <textarea rows="5" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>></textarea>
+                                                    <?php elseif($field->type == 'checkbox'): ?>
                                                         <br>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        @foreach($option_values as $value)
+                                                        <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <label>
-                                                                <input type="checkbox" name="{{str_replace(' ', '_', strtolower($field->name))}}[]" value="{{$value}}" @if($value == $field->default_value){{'checked'}}@endif @if($field->is_required){{'required'}}@endif> {{$value}}
+                                                                <input type="checkbox" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>[]" value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('checked'); ?><?php endif; ?> <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>> <?php echo e($value); ?>
+
                                                             </label>
                                                             &nbsp;
-                                                        @endforeach
-                                                    @elseif($field->type == 'radio_button')
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php elseif($field->type == 'radio_button'): ?>
                                                         <br>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        @foreach($option_values as $value)
+                                                        <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <label class="radio-inline">
-                                                                <input type="radio" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$value}}" @if($value == $field->default_value){{'checked'}}@endif @if($field->is_required){{'required'}}@endif> {{$value}}
+                                                                <input type="radio" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('checked'); ?><?php endif; ?> <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>> <?php echo e($value); ?>
+
                                                             </label>
                                                             &nbsp;
-                                                        @endforeach
-                                                    @elseif($field->type == 'select')
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php elseif($field->type == 'select'): ?>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        <select class="form-control" name="{{str_replace(' ', '_', strtolower($field->name))}}" @if($field->is_required){{'required'}}@endif>
-                                                            @foreach($option_values as $value)
-                                                                <option value="{{$value}}" @if($value == $field->default_value){{'selected'}}@endif>{{$value}}</option>
-                                                            @endforeach
+                                                        <select class="form-control" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                            <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('selected'); ?><?php endif; ?>><?php echo e($value); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
-                                                    @elseif($field->type == 'multi_select')
+                                                    <?php elseif($field->type == 'multi_select'): ?>
                                                         <?php $option_values = explode(",", $field->option_value); ?>
-                                                        <select class="form-control" name="{{str_replace(' ', '_', strtolower($field->name))}}[]" @if($field->is_required){{'required'}}@endif multiple>
-                                                            @foreach($option_values as $value)
-                                                                <option value="{{$value}}" @if($value == $field->default_value){{'selected'}}@endif>{{$value}}</option>
-                                                            @endforeach
+                                                        <select class="form-control" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>[]" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?> multiple>
+                                                            <?php $__currentLoopData = $option_values; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($value); ?>" <?php if($value == $field->default_value): ?><?php echo e('selected'); ?><?php endif; ?>><?php echo e($value); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
-                                                    @elseif($field->type == 'date_picker')
-                                                        <input type="text" name="{{str_replace(' ', '_', strtolower($field->name))}}" value="{{$field->default_value}}" class="form-control date" @if($field->is_required){{'required'}}@endif>
-                                                    @endif
+                                                    <?php elseif($field->type == 'date_picker'): ?>
+                                                        <input type="text" name="<?php echo e(str_replace(' ', '_', strtolower($field->name))); ?>" value="<?php echo e($field->default_value); ?>" class="form-control date" <?php if($field->is_required): ?><?php echo e('required'); ?><?php endif; ?>>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
-                                        @endif
-                                    @endforeach
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <div class="col-md-12">
                                         <div class="search-box form-group">
                                             <input type="text" name="product_code_name" id="lims_productcodeSearch" placeholder="Scan/Search product by name/code" class="form-control"  />
@@ -277,11 +282,11 @@
                                         <table id="myTable" class="table table-hover table-striped order-list table-fixed">
                                             <thead>
                                                 <tr>
-                                                    <th class="col-sm-2">{{trans('file.product')}}</th>
-                                                    <th class="col-sm-2">{{trans('file.Batch No')}}</th>
-                                                    <th class="col-sm-2">{{trans('file.Price')}}</th>
-                                                    <th class="col-sm-3">{{trans('file.Quantity')}}</th>
-                                                    <th class="col-sm-3">{{trans('file.Subtotal')}}</th>
+                                                    <th class="col-sm-2"><?php echo e(trans('file.product')); ?></th>
+                                                    <th class="col-sm-2"><?php echo e(trans('file.Batch No')); ?></th>
+                                                    <th class="col-sm-2"><?php echo e(trans('file.Price')); ?></th>
+                                                    <th class="col-sm-3"><?php echo e(trans('file.Quantity')); ?></th>
+                                                    <th class="col-sm-3"><?php echo e(trans('file.Subtotal')); ?></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tbody-id">
@@ -297,12 +302,12 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <input type="hidden" name="total_discount" value="{{number_format(0, $general_setting->decimal, '.', '')}}" />
+                                            <input type="hidden" name="total_discount" value="<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>" />
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <input type="hidden" name="total_tax" value="{{number_format(0, $general_setting->decimal, '.', '')}}"/>
+                                            <input type="hidden" name="total_tax" value="<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>"/>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -334,22 +339,22 @@
                                 <div class="col-12 totals" style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
                                     <div class="row">
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Items')}}</span><span id="item">0</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Items')); ?></span><span id="item">0</span>
                                         </div>
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Total')}}</span><span id="subtotal">{{number_format(0, $general_setting->decimal, '.', '')}}</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Total')); ?></span><span id="subtotal"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span>
                                         </div>
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Discount')}} <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#order-discount-modal"> <i class="dripicons-document-edit"></i></button></span><span id="discount">{{number_format(0, $general_setting->decimal, '.', '')}}</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Discount')); ?> <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#order-discount-modal"> <i class="dripicons-document-edit"></i></button></span><span id="discount"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span>
                                         </div>
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Coupon')}} <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#coupon-modal"><i class="dripicons-document-edit"></i></button></span><span id="coupon-text">{{number_format(0, $general_setting->decimal, '.', '')}}</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Coupon')); ?> <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#coupon-modal"><i class="dripicons-document-edit"></i></button></span><span id="coupon-text"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span>
                                         </div>
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Tax')}} <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#order-tax"><i class="dripicons-document-edit"></i></button></span><span id="tax">{{number_format(0, $general_setting->decimal, '.', '')}}</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Tax')); ?> <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#order-tax"><i class="dripicons-document-edit"></i></button></span><span id="tax"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span>
                                         </div>
                                         <div class="col-sm-4">
-                                            <span class="totals-title">{{trans('file.Shipping')}} <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#shipping-cost-modal"><i class="dripicons-document-edit"></i></button></span><span id="shipping-cost">{{number_format(0, $general_setting->decimal, '.', '')}}</span>
+                                            <span class="totals-title"><?php echo e(trans('file.Shipping')); ?> <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#shipping-cost-modal"><i class="dripicons-document-edit"></i></button></span><span id="shipping-cost"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -357,53 +362,53 @@
                         </div>
                     </div>
                     <div class="payment-amount">
-                        <h2>{{trans('file.grand total')}} <span id="grand-total">{{number_format(0, $general_setting->decimal, '.', '')}}</span></h2>
+                        <h2><?php echo e(trans('file.grand total')); ?> <span id="grand-total"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></span></h2>
                     </div>
                     <div class="payment-options">
 
-                        @if(in_array("card",$options))
+                        <?php if(in_array("card",$options)): ?>
                         <div class="column-5">
-                            <button style="background: #0984e3" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="credit-card-btn"><i class="fa fa-credit-card"></i> {{trans('file.Card')}}</button>
+                            <button style="background: #0984e3" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="credit-card-btn"><i class="fa fa-credit-card"></i> <?php echo e(trans('file.Card')); ?></button>
                         </div>
-                        @endif
-                        @if(in_array("cash",$options))
+                        <?php endif; ?>
+                        <?php if(in_array("cash",$options)): ?>
                         <div class="column-5">
-                            <button style="background: #00cec9" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="cash-btn"><i class="fa fa-money"></i> {{trans('file.Cash')}}</button>
+                            <button style="background: #00cec9" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="cash-btn"><i class="fa fa-money"></i> <?php echo e(trans('file.Cash')); ?></button>
                         </div>
-                        @endif
-                        @if(in_array("paypal",$options) && $lims_pos_setting_data && (strlen($lims_pos_setting_data->paypal_live_api_username)>0) && (strlen($lims_pos_setting_data->paypal_live_api_password)>0) && (strlen($lims_pos_setting_data->paypal_live_api_secret)>0))
+                        <?php endif; ?>
+                        <?php if(in_array("paypal",$options) && $lims_pos_setting_data && (strlen($lims_pos_setting_data->paypal_live_api_username)>0) && (strlen($lims_pos_setting_data->paypal_live_api_password)>0) && (strlen($lims_pos_setting_data->paypal_live_api_secret)>0)): ?>
                         <div class="column-5">
-                            <button style="background-color: #213170" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="paypal-btn"><i class="fa fa-paypal"></i> {{trans('file.PayPal')}}</button>
+                            <button style="background-color: #213170" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="paypal-btn"><i class="fa fa-paypal"></i> <?php echo e(trans('file.PayPal')); ?></button>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="column-5">
-                            <button style="background-color: #e28d02" type="button" class="btn btn-sm btn-custom" id="draft-btn"><i class="dripicons-flag"></i> {{trans('file.Draft')}}</button>
+                            <button style="background-color: #e28d02" type="button" class="btn btn-sm btn-custom" id="draft-btn"><i class="dripicons-flag"></i> <?php echo e(trans('file.Draft')); ?></button>
                         </div>
-                        @if(in_array("cheque",$options))
+                        <?php if(in_array("cheque",$options)): ?>
                         <div class="column-5">
-                            <button style="background-color: #fd7272" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="cheque-btn"><i class="fa fa-money"></i> {{trans('file.Cheque')}}</button>
+                            <button style="background-color: #fd7272" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="cheque-btn"><i class="fa fa-money"></i> <?php echo e(trans('file.Cheque')); ?></button>
                         </div>
-                        @endif
-                        @if(in_array("gift_card",$options))
+                        <?php endif; ?>
+                        <?php if(in_array("gift_card",$options)): ?>
                         <div class="column-5">
-                            <button style="background-color: #5f27cd" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="gift-card-btn"><i class="fa fa-credit-card-alt"></i> {{trans('file.Gift Card')}}</button>
+                            <button style="background-color: #5f27cd" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="gift-card-btn"><i class="fa fa-credit-card-alt"></i> <?php echo e(trans('file.Gift Card')); ?></button>
                         </div>
-                        @endif
-                        @if(in_array("deposit",$options))
+                        <?php endif; ?>
+                        <?php if(in_array("deposit",$options)): ?>
                         <div class="column-5">
-                            <button style="background-color: #b33771" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="deposit-btn"><i class="fa fa-university"></i> {{trans('file.Deposit')}}</button>
+                            <button style="background-color: #b33771" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="deposit-btn"><i class="fa fa-university"></i> <?php echo e(trans('file.Deposit')); ?></button>
                         </div>
-                        @endif
-                        @if($lims_reward_point_setting_data && $lims_reward_point_setting_data->is_active)
+                        <?php endif; ?>
+                        <?php if($lims_reward_point_setting_data && $lims_reward_point_setting_data->is_active): ?>
                         <div class="column-5">
-                            <button style="background-color: #319398" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="point-btn"><i class="dripicons-rocket"></i> {{trans('file.Points')}}</button>
+                            <button style="background-color: #319398" type="button" class="btn btn-sm btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="point-btn"><i class="dripicons-rocket"></i> <?php echo e(trans('file.Points')); ?></button>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="column-5">
-                            <button style="background-color: #d63031;" type="button" class="btn btn-sm btn-custom" id="cancel-btn" onclick="return confirmCancel()"><i class="fa fa-close"></i> {{trans('file.Cancel')}}</button>
+                            <button style="background-color: #d63031;" type="button" class="btn btn-sm btn-custom" id="cancel-btn" onclick="return confirmCancel()"><i class="fa fa-close"></i> <?php echo e(trans('file.Cancel')); ?></button>
                         </div>
                         <div class="column-5">
-                            <button style="background-color: #ffc107;" type="button" class="btn btn-sm btn-custom" data-toggle="modal" data-target="#recentTransaction"><i class="dripicons-clock"></i> {{trans('file.Recent Transaction')}}</button>
+                            <button style="background-color: #ffc107;" type="button" class="btn btn-sm btn-custom" data-toggle="modal" data-target="#recentTransaction"><i class="dripicons-clock"></i> <?php echo e(trans('file.Recent Transaction')); ?></button>
                         </div>
                     </div>
                 </div>
@@ -413,7 +418,7 @@
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Finalize Sale')}}</h5>
+                            <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Finalize Sale')); ?></h5>
                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -421,42 +426,42 @@
                                 <div class="col-md-10">
                                     <div class="row">
                                         <div class="col-md-3 mt-1">
-                                            <label>{{trans('file.Recieved Amount')}} *</label>
+                                            <label><?php echo e(trans('file.Recieved Amount')); ?> *</label>
                                             <input type="text" name="paying_amount" class="form-control numkey" required step="any">
                                         </div>
                                         <div class="col-md-3 mt-1">
-                                            <label>{{trans('file.Paying Amount')}} *</label>
+                                            <label><?php echo e(trans('file.Paying Amount')); ?> *</label>
                                             <input type="text" name="paid_amount" class="form-control numkey"  step="any">
                                         </div>
                                         <div class="col-md-3 mt-1">
-                                            <label>{{trans('file.Change')}} : </label>
-                                            <p id="change" class="ml-2">{{number_format(0, $general_setting->decimal, '.', '')}}</p>
+                                            <label><?php echo e(trans('file.Change')); ?> : </label>
+                                            <p id="change" class="ml-2"><?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?></p>
                                         </div>
                                         <div class="col-md-3 mt-1">
                                             <input type="hidden" name="paid_by_id">
-                                            <label>{{trans('file.Paid By')}}</label>
+                                            <label><?php echo e(trans('file.Paid By')); ?></label>
                                             <select name="paid_by_id_select" class="form-control selectpicker">
-                                                @if(in_array("cash",$options))
+                                                <?php if(in_array("cash",$options)): ?>
                                                 <option value="1">Cash</option>
-                                                @endif
-                                                @if(in_array("gift_card",$options))
+                                                <?php endif; ?>
+                                                <?php if(in_array("gift_card",$options)): ?>
                                                 <option value="2">Gift Card</option>
-                                                @endif
-                                                @if(in_array("card",$options))
+                                                <?php endif; ?>
+                                                <?php if(in_array("card",$options)): ?>
                                                 <option value="3">Credit Card</option>
-                                                @endif
-                                                @if(in_array("cheque",$options))
+                                                <?php endif; ?>
+                                                <?php if(in_array("cheque",$options)): ?>
                                                 <option value="4">Cheque</option>
-                                                @endif
-                                                @if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0))
+                                                <?php endif; ?>
+                                                <?php if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0)): ?>
                                                 <option value="5">Paypal</option>
-                                                @endif
-                                                @if(in_array("deposit",$options))
+                                                <?php endif; ?>
+                                                <?php if(in_array("deposit",$options)): ?>
                                                 <option value="6">Deposit</option>
-                                                @endif
-                                                @if($lims_reward_point_setting_data && $lims_reward_point_setting_data->is_active)
+                                                <?php endif; ?>
+                                                <?php if($lims_reward_point_setting_data && $lims_reward_point_setting_data->is_active): ?>
                                                 <option value="7">Points</option>
-                                                @endif
+                                                <?php endif; ?>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-12 mt-3">
@@ -465,42 +470,42 @@
                                             <div class="card-errors" role="alert"></div>
                                         </div>
                                         <div class="form-group col-md-12 gift-card">
-                                            <label> {{trans('file.Gift Card')}} *</label>
+                                            <label> <?php echo e(trans('file.Gift Card')); ?> *</label>
                                             <input type="hidden" name="gift_card_id">
                                             <select id="gift_card_id_select" name="gift_card_id_select" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select Gift Card..."></select>
                                         </div>
                                         <div class="form-group col-md-12 cheque">
-                                            <label>{{trans('file.Cheque Number')}} *</label>
+                                            <label><?php echo e(trans('file.Cheque Number')); ?> *</label>
                                             <input type="text" name="cheque_no" class="form-control">
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <label>{{trans('file.Payment Note')}}</label>
+                                            <label><?php echo e(trans('file.Payment Note')); ?></label>
                                             <textarea id="payment_note" rows="2" class="form-control" name="payment_note"></textarea>
                                         </div>
                                     </div>
                                     <div class="row">
                                        <div class="col-md-6 form-group">
-                                            <label>{{trans('file.Sale Note')}}</label>
+                                            <label><?php echo e(trans('file.Sale Note')); ?></label>
                                             <textarea rows="3" class="form-control" name="sale_note"></textarea>
                                         </div>
                                         <div class="col-md-6 form-group">
-                                            <label>{{trans('file.Staff Note')}}</label>
+                                            <label><?php echo e(trans('file.Staff Note')); ?></label>
                                             <textarea rows="3" class="form-control" name="staff_note"></textarea>
                                         </div>
                                     </div>
                                     <div class="mt-3">
-                                        <button id="submit-btn" type="button" class="btn btn-primary">{{trans('file.submit')}}</button>
+                                        <button id="submit-btn" type="button" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                                     </div>
                                 </div>
                                 <div class="col-md-2 qc" data-initial="1">
-                                    <h4><strong>{{trans('file.Quick Cash')}}</strong></h4>
+                                    <h4><strong><?php echo e(trans('file.Quick Cash')); ?></strong></h4>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="10" type="button">10</button>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="20" type="button">20</button>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="50" type="button">50</button>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="100" type="button">100</button>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="500" type="button">500</button>
                                     <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="1000" type="button">1000</button>
-                                    <button class="btn btn-block btn-danger qc-btn sound-btn" data-amount="0" type="button">{{trans('file.Clear')}}</button>
+                                    <button class="btn btn-block btn-danger qc-btn sound-btn" data-amount="0" type="button"><?php echo e(trans('file.Clear')); ?></button>
                                 </div>
                             </div>
                         </div>
@@ -512,26 +517,26 @@
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{trans('file.Order Discount')}}</h5>
+                            <h5 class="modal-title"><?php echo e(trans('file.Order Discount')); ?></h5>
                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6 form-group">
-                                    <label>{{trans('file.Order Discount Type')}}</label>
+                                    <label><?php echo e(trans('file.Order Discount Type')); ?></label>
                                     <select id="order-discount-type" name="order_discount_type_select" class="form-control">
-                                      <option value="Flat">{{trans('file.Flat')}}</option>
-                                      <option value="Percentage">{{trans('file.Percentage')}}</option>
+                                      <option value="Flat"><?php echo e(trans('file.Flat')); ?></option>
+                                      <option value="Percentage"><?php echo e(trans('file.Percentage')); ?></option>
                                     </select>
                                     <input type="hidden" name="order_discount_type">
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <label>{{trans('file.Value')}}</label>
+                                    <label><?php echo e(trans('file.Value')); ?></label>
                                     <input type="text" name="order_discount_value" class="form-control numkey" id="order-discount-val" onkeyup='saveValue(this);'>
                                     <input type="hidden" name="order_discount" class="form-control" id="order-discount" onkeyup='saveValue(this);'>
                                 </div>
                             </div>
-                            <button type="button" name="order_discount_btn" class="btn btn-primary" data-dismiss="modal">{{trans('file.submit')}}</button>
+                            <button type="button" name="order_discount_btn" class="btn btn-primary" data-dismiss="modal"><?php echo e(trans('file.submit')); ?></button>
                         </div>
                     </div>
                 </div>
@@ -541,14 +546,14 @@
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{trans('file.Coupon Code')}}</h5>
+                            <h5 class="modal-title"><?php echo e(trans('file.Coupon Code')); ?></h5>
                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
                                 <input type="text" id="coupon-code" class="form-control" placeholder="Type Coupon Code...">
                             </div>
-                            <button type="button" class="btn btn-primary coupon-check" data-dismiss="modal">{{trans('file.submit')}}</button>
+                            <button type="button" class="btn btn-primary coupon-check" data-dismiss="modal"><?php echo e(trans('file.submit')); ?></button>
                         </div>
                     </div>
                 </div>
@@ -558,7 +563,7 @@
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{trans('file.Order Tax')}}</h5>
+                            <h5 class="modal-title"><?php echo e(trans('file.Order Tax')); ?></h5>
                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                         </div>
                         <div class="modal-body">
@@ -566,12 +571,12 @@
                                 <input type="hidden" name="order_tax_rate">
                                 <select class="form-control" name="order_tax_rate_select" id="order-tax-rate-select">
                                     <option value="0">No Tax</option>
-                                    @foreach($lims_tax_list as $tax)
-                                    <option value="{{$tax->rate}}">{{$tax->name}}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $lims_tax_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($tax->rate); ?>"><?php echo e($tax->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
-                            <button type="button" name="order_tax_btn" class="btn btn-primary" data-dismiss="modal">{{trans('file.submit')}}</button>
+                            <button type="button" name="order_tax_btn" class="btn btn-primary" data-dismiss="modal"><?php echo e(trans('file.submit')); ?></button>
                         </div>
                     </div>
                 </div>
@@ -581,20 +586,21 @@
                 <div role="document" class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{trans('file.Shipping Cost')}}</h5>
+                            <h5 class="modal-title"><?php echo e(trans('file.Shipping Cost')); ?></h5>
                             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
                                 <input type="text" name="shipping_cost" class="form-control numkey" id="shipping-cost-val" step="any" onkeyup='saveValue(this);'>
                             </div>
-                            <button type="button" name="shipping_cost_btn" class="btn btn-primary" data-dismiss="modal">{{trans('file.submit')}}</button>
+                            <button type="button" name="shipping_cost_btn" class="btn btn-primary" data-dismiss="modal"><?php echo e(trans('file.submit')); ?></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {!! Form::close() !!}
+            <?php echo Form::close(); ?>
+
             <!-- product list -->
             <div class="col-md-6">
                 <!-- navbar-->
@@ -612,81 +618,81 @@
                                 <?php
                                     $category_permission_active = $role_has_permissions_list->where('name', 'category')->first();
                                 ?>
-                                @if($category_permission_active)
-                                <li class="dropdown-item"><a data-toggle="modal" data-target="#category-modal">{{__('file.Add Category')}}</a></li>
-                                @endif
+                                <?php if($category_permission_active): ?>
+                                <li class="dropdown-item"><a data-toggle="modal" data-target="#category-modal"><?php echo e(__('file.Add Category')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                     $add_permission_active = $role_has_permissions_list->where('name', 'products-add')->first();
                                 ?>
-                                @if($add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('products.create')}}">{{__('file.add_product')}}</a></li>
-                                @endif
+                                <?php if($add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('products.create')); ?>"><?php echo e(__('file.add_product')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $add_permission_active = $role_has_permissions_list->where('name', 'purchases-add')->first();
                                 ?>
-                                @if($add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('purchases.create')}}">{{trans('file.Add Purchase')}}</a></li>
-                                @endif
+                                <?php if($add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('purchases.create')); ?>"><?php echo e(trans('file.Add Purchase')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $sale_add_permission_active = $role_has_permissions_list->where('name', 'sales-add')->first();
                                 ?>
-                                @if($sale_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('sales.create')}}">{{trans('file.Add Sale')}}</a></li>
-                                @endif
+                                <?php if($sale_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('sales.create')); ?>"><?php echo e(trans('file.Add Sale')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $expense_add_permission_active = $role_has_permissions_list->where('name', 'expenses-add')->first();
                                 ?>
-                                @if($expense_add_permission_active)
-                                <li class="dropdown-item"><a data-toggle="modal" data-target="#expense-modal"> {{trans('file.Add Expense')}}</a></li>
-                                @endif
+                                <?php if($expense_add_permission_active): ?>
+                                <li class="dropdown-item"><a data-toggle="modal" data-target="#expense-modal"> <?php echo e(trans('file.Add Expense')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $quotation_add_permission_active = $role_has_permissions_list->where('name', 'quotes-add')->first();
                                 ?>
-                                @if($quotation_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('quotations.create')}}">{{trans('file.Add Quotation')}}</a></li>
-                                @endif
+                                <?php if($quotation_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('quotations.create')); ?>"><?php echo e(trans('file.Add Quotation')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $transfer_add_permission_active = $role_has_permissions_list->where('name', 'transfers-add')->first();
                                 ?>
-                                @if($transfer_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('transfers.create')}}">{{trans('file.Add Transfer')}}</a></li>
-                                @endif
+                                <?php if($transfer_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('transfers.create')); ?>"><?php echo e(trans('file.Add Transfer')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $return_add_permission_active = $role_has_permissions_list->where('name', 'returns-add')->first();
                                 ?>
-                                @if($return_add_permission_active)
-                                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-sale-return"> {{trans('file.Add Return')}}</a></li>
-                                @endif
+                                <?php if($return_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-sale-return"> <?php echo e(trans('file.Add Return')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                 $purchase_return_add_permission_active = $role_has_permissions_list->where('name', 'purchase-return-add')->first();
                                 ?>
-                                @if($purchase_return_add_permission_active)
-                                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-purchase-return"> {{trans('file.Add Purchase Return')}}</a></li>
-                                @endif
+                                <?php if($purchase_return_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="#" data-toggle="modal" data-target="#add-purchase-return"> <?php echo e(trans('file.Add Purchase Return')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                     $user_add_permission_active = $role_has_permissions_list->where('name', 'users-add')->first();
                                 ?>
-                                @if($user_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('user.create')}}">{{trans('file.Add User')}}</a></li>
-                                @endif
+                                <?php if($user_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('user.create')); ?>"><?php echo e(trans('file.Add User')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                     $customer_add_permission_active = $role_has_permissions_list->where('name', 'customers-add')->first();
                                 ?>
-                                @if($customer_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('customer.create')}}">{{trans('file.Add Customer')}}</a></li>
-                                @endif
+                                <?php if($customer_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('customer.create')); ?>"><?php echo e(trans('file.Add Customer')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                     $biller_add_permission_active = $role_has_permissions_list->where('name', 'billers-add')->first();
                                 ?>
-                                @if($biller_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('biller.create')}}">{{trans('file.Add Biller')}}</a></li>
-                                @endif
+                                <?php if($biller_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('biller.create')); ?>"><?php echo e(trans('file.Add Biller')); ?></a></li>
+                                <?php endif; ?>
                                 <?php
                                     $supplier_add_permission_active = $role_has_permissions_list->where('name', 'suppliers-add')->first();
                                 ?>
-                                @if($supplier_add_permission_active)
-                                <li class="dropdown-item"><a href="{{route('supplier.create')}}">{{trans('file.Add Supplier')}}</a></li>
-                                @endif
+                                <?php if($supplier_add_permission_active): ?>
+                                <li class="dropdown-item"><a href="<?php echo e(route('supplier.create')); ?>"><?php echo e(trans('file.Add Supplier')); ?></a></li>
+                                <?php endif; ?>
                               </ul>
                             </div>
                             <li class="nav-item ml-4"><a id="btnFullscreen" data-toggle="tooltip" title="Full Screen"><i class="dripicons-expand"></i></a></li>
@@ -704,14 +710,14 @@
                                     ['role_id', Auth::user()->role_id]
                                 ])->first();
                             ?>
-                            @if($pos_setting_permission_active)
-                            <li class="nav-item"><a class="dropdown-item" data-toggle="tooltip" href="{{route('setting.pos')}}" title="{{trans('file.POS Setting')}}"><i class="dripicons-gear"></i></a> </li>
-                            @endif
+                            <?php if($pos_setting_permission_active): ?>
+                            <li class="nav-item"><a class="dropdown-item" data-toggle="tooltip" href="<?php echo e(route('setting.pos')); ?>" title="<?php echo e(trans('file.POS Setting')); ?>"><i class="dripicons-gear"></i></a> </li>
+                            <?php endif; ?>
                             <li class="nav-item">
-                                <a href="{{route('sales.printLastReciept')}}" data-toggle="tooltip" title="{{trans('file.Print Last Reciept')}}"><i class="dripicons-print"></i></a>
+                                <a href="<?php echo e(route('sales.printLastReciept')); ?>" data-toggle="tooltip" title="<?php echo e(trans('file.Print Last Reciept')); ?>"><i class="dripicons-print"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a href="" id="register-details-btn" data-toggle="tooltip" title="{{trans('file.Cash Register Details')}}"><i class="dripicons-briefcase"></i></a>
+                                <a href="" id="register-details-btn" data-toggle="tooltip" title="<?php echo e(trans('file.Cash Register Details')); ?>"><i class="dripicons-briefcase"></i></a>
                             </li>
                             <?php
                                 $today_sale_permission = $permission_list->where('name', 'today_sale')->first();
@@ -727,62 +733,63 @@
                                         ])->first();
                             ?>
 
-                            @if($today_sale_permission_active)
+                            <?php if($today_sale_permission_active): ?>
                             <li class="nav-item">
-                                <a href="" id="today-sale-btn" data-toggle="tooltip" title="{{trans('file.Today Sale')}}"><i class="dripicons-shopping-bag"></i></a>
+                                <a href="" id="today-sale-btn" data-toggle="tooltip" title="<?php echo e(trans('file.Today Sale')); ?>"><i class="dripicons-shopping-bag"></i></a>
                             </li>
-                            @endif
-                            @if($today_profit_permission_active)
+                            <?php endif; ?>
+                            <?php if($today_profit_permission_active): ?>
                             <li class="nav-item">
-                                <a href="" id="today-profit-btn" data-toggle="tooltip" title="{{trans('file.Today Profit')}}"><i class="dripicons-graph-line"></i></a>
+                                <a href="" id="today-profit-btn" data-toggle="tooltip" title="<?php echo e(trans('file.Today Profit')); ?>"><i class="dripicons-graph-line"></i></a>
                             </li>
-                            @endif
-                            @if(($alert_product + count(\Auth::user()->unreadNotifications)) > 0)
+                            <?php endif; ?>
+                            <?php if(($alert_product + count(\Auth::user()->unreadNotifications)) > 0): ?>
                             <li class="nav-item" id="notification-icon">
-                                  <a rel="nofollow" data-toggle="tooltip" title="{{__('Notifications')}}" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number">{{$alert_product + count(\Auth::user()->unreadNotifications)}}</span>
+                                  <a rel="nofollow" data-toggle="tooltip" title="<?php echo e(__('Notifications')); ?>" class="nav-link dropdown-item"><i class="dripicons-bell"></i><span class="badge badge-danger notification-number"><?php echo e($alert_product + count(\Auth::user()->unreadNotifications)); ?></span>
                                       <span class="caret"></span>
                                       <span class="sr-only">Toggle Dropdown</span>
                                   </a>
                                   <ul class="right-sidebar" user="menu">
                                       <li class="notifications">
-                                        <a href="{{route('report.qtyAlert')}}" class="btn btn-link">{{$alert_product}} product exceeds alert quantity</a>
+                                        <a href="<?php echo e(route('report.qtyAlert')); ?>" class="btn btn-link"><?php echo e($alert_product); ?> product exceeds alert quantity</a>
                                       </li>
-                                      @foreach(\Auth::user()->unreadNotifications as $key => $notification)
+                                      <?php $__currentLoopData = \Auth::user()->unreadNotifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                           <li class="notifications">
-                                              <a href="#" class="btn btn-link">{{ $notification->data['message'] }}</a>
+                                              <a href="#" class="btn btn-link"><?php echo e($notification->data['message']); ?></a>
                                           </li>
-                                      @endforeach
+                                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                   </ul>
                             </li>
-                            @endif
+                            <?php endif; ?>
                             <li class="nav-item">
-                                <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                                <a rel="nofollow" data-toggle="tooltip" class="nav-link dropdown-item"><i class="dripicons-user"></i> <span><?php echo e(ucfirst(Auth::user()->name)); ?></span> <i class="fa fa-angle-down"></i>
                                 </a>
                                 <ul class="right-sidebar">
                                     <li>
-                                        <a href="{{route('user.profile', ['id' => Auth::id()])}}"><i class="dripicons-user"></i> {{trans('file.profile')}}</a>
+                                        <a href="<?php echo e(route('user.profile', ['id' => Auth::id()])); ?>"><i class="dripicons-user"></i> <?php echo e(trans('file.profile')); ?></a>
                                     </li>
-                                    @if($general_setting_permission_active)
+                                    <?php if($general_setting_permission_active): ?>
                                     <li>
-                                        <a href="{{route('setting.general')}}"><i class="dripicons-gear"></i> {{trans('file.settings')}}</a>
+                                        <a href="<?php echo e(route('setting.general')); ?>"><i class="dripicons-gear"></i> <?php echo e(trans('file.settings')); ?></a>
                                     </li>
-                                    @endif
+                                    <?php endif; ?>
                                     <li>
-                                        <a href="{{url('my-transactions/'.date('Y').'/'.date('m'))}}"><i class="dripicons-swap"></i> {{trans('file.My Transaction')}}</a>
+                                        <a href="<?php echo e(url('my-transactions/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-swap"></i> <?php echo e(trans('file.My Transaction')); ?></a>
                                     </li>
-                                    @if(Auth::user()->role_id != 5)
+                                    <?php if(Auth::user()->role_id != 5): ?>
                                     <li>
-                                        <a href="{{url('holidays/my-holiday/'.date('Y').'/'.date('m'))}}"><i class="dripicons-vibrate"></i> {{trans('file.My Holiday')}}</a>
+                                        <a href="<?php echo e(url('holidays/my-holiday/'.date('Y').'/'.date('m'))); ?>"><i class="dripicons-vibrate"></i> <?php echo e(trans('file.My Holiday')); ?></a>
                                     </li>
-                                    @endif
+                                    <?php endif; ?>
                                     <li>
-                                        <a href="{{ route('logout') }}"
+                                        <a href="<?php echo e(route('logout')); ?>"
                                             onclick="event.preventDefault();
                                                             document.getElementById('logout-form').submit();"><i class="dripicons-power"></i>
-                                            {{trans('file.logout')}}
+                                            <?php echo e(trans('file.logout')); ?>
+
                                         </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            @csrf
+                                        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+                                            <?php echo csrf_field(); ?>
                                         </form>
                                     </li>
                                 </ul>
@@ -802,16 +809,16 @@
                             </div>
                         </div>
                         <div class="row ml-2 mt-3">
-                            @foreach($lims_category_list as $category)
-                            <div class="col-md-3 category-img text-center" data-category="{{$category->id}}">
-                                @if($category->image)
-                                    <img  src="{{url('images/category', $category->image)}}" />
-                                @else
-                                    <img  src="{{url('images/product/zummXD2dvAtI.png')}}" />
-                                @endif
-                                <p class="text-center">{{$category->name}}</p>
+                            <?php $__currentLoopData = $lims_category_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="col-md-3 category-img text-center" data-category="<?php echo e($category->id); ?>">
+                                <?php if($category->image): ?>
+                                    <img  src="<?php echo e(url('images/category', $category->image)); ?>" />
+                                <?php else: ?>
+                                    <img  src="<?php echo e(url('images/product/zummXD2dvAtI.png')); ?>" />
+                                <?php endif; ?>
+                                <p class="text-center"><?php echo e($category->name); ?></p>
                             </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                     <div class="brand mt-3">
@@ -824,31 +831,31 @@
                             </div>
                         </div>
                         <div class="row ml-2 mt-3">
-                            @foreach($lims_brand_list as $brand)
-                            @if($brand->image)
-                                <div class="col-md-3 brand-img text-center" data-brand="{{$brand->id}}">
-                                    <img  src="{{url('images/brand',$brand->image)}}" />
-                                    <p class="text-center">{{$brand->title}}</p>
+                            <?php $__currentLoopData = $lims_brand_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if($brand->image): ?>
+                                <div class="col-md-3 brand-img text-center" data-brand="<?php echo e($brand->id); ?>">
+                                    <img  src="<?php echo e(url('images/brand',$brand->image)); ?>" />
+                                    <p class="text-center"><?php echo e($brand->title); ?></p>
                                 </div>
-                            @else
-                                <div class="col-md-3 brand-img" data-brand="{{$brand->id}}">
-                                    <img  src="{{url('images/product/zummXD2dvAtI.png')}}" />
-                                    <p class="text-center">{{$brand->title}}</p>
+                            <?php else: ?>
+                                <div class="col-md-3 brand-img" data-brand="<?php echo e($brand->id); ?>">
+                                    <img  src="<?php echo e(url('images/product/zummXD2dvAtI.png')); ?>" />
+                                    <p class="text-center"><?php echo e($brand->title); ?></p>
                                 </div>
-                            @endif
-                            @endforeach
+                            <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
           <div class="row">
                     <div class="col-md-4">
-                        <button class="btn btn-block btn-primary" id="category-filter">{{trans('file.category')}}</button>
+                        <button class="btn btn-block btn-primary" id="category-filter"><?php echo e(trans('file.category')); ?></button>
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-block btn-info" id="brand-filter">{{trans('file.Brand')}}</button>
+                        <button class="btn btn-block btn-info" id="brand-filter"><?php echo e(trans('file.Brand')); ?></button>
                     </div>
                     <div class="col-md-4">
-                        <button class="btn btn-block btn-danger" id="featured-filter">{{trans('file.Featured')}}</button>
+                        <button class="btn btn-block btn-danger" id="featured-filter"><?php echo e(trans('file.Featured')); ?></button>
                     </div>
                     <div class="col-md-12 mt-1 table-container">
                         <table id="product-table" class="table no-shadow product-list">
@@ -862,46 +869,46 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @for ($i=0; $i < ceil($product_number/5); $i++)
+                            <?php for($i=0; $i < ceil($product_number/5); $i++): ?>
                                 <tr>
-                                    <td class="product-img sound-btn" title="{{$lims_product_list[0+$i*5]->name}}" data-product ="{{$lims_product_list[0+$i*5]->code . ' (' . $lims_product_list[0+$i*5]->name . ')'}}"><img  src="{{url('images/product',$lims_product_list[0+$i*5]->base_image)}}" width="100%" />
-                                        <p>{{$lims_product_list[0+$i*5]->name}}</p>
-                                        <span>{{$lims_product_list[0+$i*5]->code}}</span>
+                                    <td class="product-img sound-btn" title="<?php echo e($lims_product_list[0+$i*5]->name); ?>" data-product ="<?php echo e($lims_product_list[0+$i*5]->code . ' (' . $lims_product_list[0+$i*5]->name . ')'); ?>"><img  src="<?php echo e(url('images/product',$lims_product_list[0+$i*5]->base_image)); ?>" width="100%" />
+                                        <p><?php echo e($lims_product_list[0+$i*5]->name); ?></p>
+                                        <span><?php echo e($lims_product_list[0+$i*5]->code); ?></span>
                                     </td>
-                                    @if(!empty($lims_product_list[1+$i*5]))
-                                    <td class="product-img sound-btn" title="{{$lims_product_list[1+$i*5]->name}}" data-product ="{{$lims_product_list[1+$i*5]->code . ' (' . $lims_product_list[1+$i*5]->name . ')'}}"><img  src="{{url('images/product',$lims_product_list[1+$i*5]->base_image)}}" width="100%" />
-                                        <p>{{$lims_product_list[1+$i*5]->name}}</p>
-                                        <span>{{$lims_product_list[1+$i*5]->code}}</span>
+                                    <?php if(!empty($lims_product_list[1+$i*5])): ?>
+                                    <td class="product-img sound-btn" title="<?php echo e($lims_product_list[1+$i*5]->name); ?>" data-product ="<?php echo e($lims_product_list[1+$i*5]->code . ' (' . $lims_product_list[1+$i*5]->name . ')'); ?>"><img  src="<?php echo e(url('images/product',$lims_product_list[1+$i*5]->base_image)); ?>" width="100%" />
+                                        <p><?php echo e($lims_product_list[1+$i*5]->name); ?></p>
+                                        <span><?php echo e($lims_product_list[1+$i*5]->code); ?></span>
                                     </td>
-                                    @else
+                                    <?php else: ?>
                                     <td style="border:none;"></td>
-                                    @endif
-                                    @if(!empty($lims_product_list[2+$i*5]))
-                                    <td class="product-img sound-btn" title="{{$lims_product_list[2+$i*5]->name}}" data-product ="{{$lims_product_list[2+$i*5]->code . ' (' . $lims_product_list[2+$i*5]->name . ')'}}"><img  src="{{url('images/product',$lims_product_list[2+$i*5]->base_image)}}" width="100%" />
-                                        <p>{{$lims_product_list[2+$i*5]->name}}</p>
-                                        <span>{{$lims_product_list[2+$i*5]->code}}</span>
+                                    <?php endif; ?>
+                                    <?php if(!empty($lims_product_list[2+$i*5])): ?>
+                                    <td class="product-img sound-btn" title="<?php echo e($lims_product_list[2+$i*5]->name); ?>" data-product ="<?php echo e($lims_product_list[2+$i*5]->code . ' (' . $lims_product_list[2+$i*5]->name . ')'); ?>"><img  src="<?php echo e(url('images/product',$lims_product_list[2+$i*5]->base_image)); ?>" width="100%" />
+                                        <p><?php echo e($lims_product_list[2+$i*5]->name); ?></p>
+                                        <span><?php echo e($lims_product_list[2+$i*5]->code); ?></span>
                                     </td>
-                                    @else
+                                    <?php else: ?>
                                     <td style="border:none;"></td>
-                                    @endif
-                                    @if(!empty($lims_product_list[3+$i*5]))
-                                    <td class="product-img sound-btn" title="{{$lims_product_list[3+$i*5]->name}}" data-product ="{{$lims_product_list[3+$i*5]->code . ' (' . $lims_product_list[3+$i*5]->name . ')'}}"><img  src="{{url('images/product',$lims_product_list[3+$i*5]->base_image)}}" width="100%" />
-                                        <p>{{$lims_product_list[3+$i*5]->name}}</p>
-                                        <span>{{$lims_product_list[3+$i*5]->code}}</span>
+                                    <?php endif; ?>
+                                    <?php if(!empty($lims_product_list[3+$i*5])): ?>
+                                    <td class="product-img sound-btn" title="<?php echo e($lims_product_list[3+$i*5]->name); ?>" data-product ="<?php echo e($lims_product_list[3+$i*5]->code . ' (' . $lims_product_list[3+$i*5]->name . ')'); ?>"><img  src="<?php echo e(url('images/product',$lims_product_list[3+$i*5]->base_image)); ?>" width="100%" />
+                                        <p><?php echo e($lims_product_list[3+$i*5]->name); ?></p>
+                                        <span><?php echo e($lims_product_list[3+$i*5]->code); ?></span>
                                     </td>
-                                    @else
+                                    <?php else: ?>
                                     <td style="border:none;"></td>
-                                    @endif
-                                    @if(!empty($lims_product_list[4+$i*5]))
-                                    <td class="product-img sound-btn" title="{{$lims_product_list[4+$i*5]->name}}" data-product ="{{$lims_product_list[4+$i*5]->code . ' (' . $lims_product_list[4+$i*5]->name . ')'}}"><img  src="{{url('images/product',$lims_product_list[4+$i*5]->base_image)}}" width="100%" />
-                                        <p>{{$lims_product_list[4+$i*5]->name}}</p>
-                                        <span>{{$lims_product_list[4+$i*5]->code}}</span>
+                                    <?php endif; ?>
+                                    <?php if(!empty($lims_product_list[4+$i*5])): ?>
+                                    <td class="product-img sound-btn" title="<?php echo e($lims_product_list[4+$i*5]->name); ?>" data-product ="<?php echo e($lims_product_list[4+$i*5]->code . ' (' . $lims_product_list[4+$i*5]->name . ')'); ?>"><img  src="<?php echo e(url('images/product',$lims_product_list[4+$i*5]->base_image)); ?>" width="100%" />
+                                        <p><?php echo e($lims_product_list[4+$i*5]->name); ?></p>
+                                        <span><?php echo e($lims_product_list[4+$i*5]->code); ?></span>
                                     </td>
-                                    @else
+                                    <?php else: ?>
                                     <td style="border:none;"></td>
-                                    @endif
+                                    <?php endif; ?>
                                 </tr>
-                            @endfor
+                            <?php endfor; ?>
                             </tbody>
                         </table>
                     </div>
@@ -919,15 +926,15 @@
                             <form>
                                 <div class="row modal-element">
                                     <div class="col-md-4 form-group">
-                                        <label>{{trans('file.Quantity')}}</label>
+                                        <label><?php echo e(trans('file.Quantity')); ?></label>
                                         <input type="text" name="edit_qty" class="form-control numkey">
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <label>{{trans('file.Unit Discount')}}</label>
+                                        <label><?php echo e(trans('file.Unit Discount')); ?></label>
                                         <input type="text" name="edit_discount" class="form-control numkey">
                                     </div>
                                     <div class="col-md-4 form-group">
-                                        <label>{{trans('file.Unit Price')}}</label>
+                                        <label><?php echo e(trans('file.Unit Price')); ?></label>
                                         <input type="text" name="edit_unit_price" class="form-control numkey" step="any">
                                     </div>
                                     <?php
@@ -939,20 +946,20 @@
                                         }
                                     ?>
                                     <div class="col-md-4 form-group">
-                                        <label>{{trans('file.Tax Rate')}}</label>
+                                        <label><?php echo e(trans('file.Tax Rate')); ?></label>
                                         <select name="edit_tax_rate" class="form-control selectpicker">
-                                            @foreach($tax_name_all as $key => $name)
-                                            <option value="{{$key}}">{{$name}}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $tax_name_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $name): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key); ?>"><?php echo e($name); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                     <div id="edit_unit" class="col-md-4 form-group">
-                                        <label>{{trans('file.Product Unit')}}</label>
+                                        <label><?php echo e(trans('file.Product Unit')); ?></label>
                                         <select name="edit_unit" class="form-control selectpicker">
                                         </select>
                                     </div>
                                 </div>
-                                <button type="button" name="update_btn" class="btn btn-primary">{{trans('file.update')}}</button>
+                                <button type="button" name="update_btn" class="btn btn-primary"><?php echo e(trans('file.update')); ?></button>
                             </form>
                         </div>
                     </div>
@@ -962,47 +969,49 @@
             <div id="addCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
-                    {!! Form::open(['route' => 'customer.store', 'method' => 'post', 'files' => true, 'id' => 'customer-form']) !!}
+                    <?php echo Form::open(['route' => 'customer.store', 'method' => 'post', 'files' => true, 'id' => 'customer-form']); ?>
+
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Customer')}}</h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Customer')); ?></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
-                      <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                      <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                         <div class="form-group">
-                            <label>{{trans('file.Customer Group')}} *</strong> </label>
+                            <label><?php echo e(trans('file.Customer Group')); ?> *</strong> </label>
                             <select required class="form-control selectpicker" name="customer_group_id">
-                                @foreach($lims_customer_group_all as $customer_group)
-                                    <option value="{{$customer_group->id}}">{{$customer_group->name}}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $lims_customer_group_all; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer_group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($customer_group->id); ?>"><?php echo e($customer_group->name); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.name')}} *</strong> </label>
+                            <label><?php echo e(trans('file.name')); ?> *</strong> </label>
                             <input type="text" name="customer_name" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.Email')}}</label>
+                            <label><?php echo e(trans('file.Email')); ?></label>
                             <input type="text" name="email" placeholder="example@example.com" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.Phone Number')}} *</label>
+                            <label><?php echo e(trans('file.Phone Number')); ?> *</label>
                             <input type="text" name="phone_number" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.Address')}} *</label>
+                            <label><?php echo e(trans('file.Address')); ?> *</label>
                             <input type="text" name="address" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>{{trans('file.City')}} *</label>
+                            <label><?php echo e(trans('file.City')); ?> *</label>
                             <input type="text" name="city" required class="form-control">
                         </div>
                         <div class="form-group">
                             <input type="hidden" name="pos" value="1">
-                            <button type="button" class="btn btn-primary customer-submit-btn">{{trans('file.submit')}}</button>
+                            <button type="button" class="btn btn-primary customer-submit-btn"><?php echo e(trans('file.submit')); ?></button>
                         </div>
                     </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                   </div>
                 </div>
             </div>
@@ -1011,16 +1020,16 @@
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Recent Transaction')}} <div class="badge badge-primary">{{trans('file.latest')}} 10</div></h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Recent Transaction')); ?> <div class="badge badge-primary"><?php echo e(trans('file.latest')); ?> 10</div></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
                         <ul class="nav nav-tabs" role="tablist">
                           <li class="nav-item">
-                            <a class="nav-link active" href="#sale-latest" role="tab" data-toggle="tab">{{trans('file.Sale')}}</a>
+                            <a class="nav-link active" href="#sale-latest" role="tab" data-toggle="tab"><?php echo e(trans('file.Sale')); ?></a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" href="#draft-latest" role="tab" data-toggle="tab">{{trans('file.Draft')}}</a>
+                            <a class="nav-link" href="#draft-latest" role="tab" data-toggle="tab"><?php echo e(trans('file.Draft')); ?></a>
                           </li>
                         </ul>
                         <div class="tab-content">
@@ -1029,35 +1038,37 @@
                                 <table class="table">
                                   <thead>
                                     <tr>
-                                      <th>{{trans('file.date')}}</th>
-                                      <th>{{trans('file.reference')}}</th>
-                                      <th>{{trans('file.customer')}}</th>
-                                      <th>{{trans('file.grand total')}}</th>
-                                      <th>{{trans('file.action')}}</th>
+                                      <th><?php echo e(trans('file.date')); ?></th>
+                                      <th><?php echo e(trans('file.reference')); ?></th>
+                                      <th><?php echo e(trans('file.customer')); ?></th>
+                                      <th><?php echo e(trans('file.grand total')); ?></th>
+                                      <th><?php echo e(trans('file.action')); ?></th>
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    @foreach($recent_sale as $sale)
+                                    <?php $__currentLoopData = $recent_sale; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php $customer = DB::table('customers')->find($sale->customer_id); ?>
                                     <tr>
-                                      <td>{{date('d-m-Y', strtotime($sale->created_at))}}</td>
-                                      <td>{{$sale->reference_no}}</td>
-                                      <td>{{$customer->name}}</td>
-                                      <td>{{$sale->grand_total}}</td>
+                                      <td><?php echo e(date('d-m-Y', strtotime($sale->created_at))); ?></td>
+                                      <td><?php echo e($sale->reference_no); ?></td>
+                                      <td><?php echo e($customer->name); ?></td>
+                                      <td><?php echo e($sale->grand_total); ?></td>
                                       <td>
                                         <div class="btn-group">
-                                            @if(in_array("sales-edit", $all_permission))
-                                            <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-success btn-sm" title="Edit"><i class="dripicons-document-edit"></i></a>&nbsp;
-                                            @endif
-                                            @if(in_array("sales-delete", $all_permission))
-                                            {{ Form::open(['route' => ['sales.destroy', $sale->id], 'method' => 'DELETE'] ) }}
+                                            <?php if(in_array("sales-edit", $all_permission)): ?>
+                                            <a href="<?php echo e(route('sales.edit', $sale->id)); ?>" class="btn btn-success btn-sm" title="Edit"><i class="dripicons-document-edit"></i></a>&nbsp;
+                                            <?php endif; ?>
+                                            <?php if(in_array("sales-delete", $all_permission)): ?>
+                                            <?php echo e(Form::open(['route' => ['sales.destroy', $sale->id], 'method' => 'DELETE'] )); ?>
+
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete()" title="Delete"><i class="dripicons-trash"></i></button>
-                                            {{ Form::close() }}
-                                            @endif
+                                            <?php echo e(Form::close()); ?>
+
+                                            <?php endif; ?>
                                         </div>
                                       </td>
                                     </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                   </tbody>
                                 </table>
                               </div>
@@ -1067,35 +1078,37 @@
                                 <table class="table">
                                   <thead>
                                     <tr>
-                                      <th>{{trans('file.date')}}</th>
-                                      <th>{{trans('file.reference')}}</th>
-                                      <th>{{trans('file.customer')}}</th>
-                                      <th>{{trans('file.grand total')}}</th>
-                                      <th>{{trans('file.action')}}</th>
+                                      <th><?php echo e(trans('file.date')); ?></th>
+                                      <th><?php echo e(trans('file.reference')); ?></th>
+                                      <th><?php echo e(trans('file.customer')); ?></th>
+                                      <th><?php echo e(trans('file.grand total')); ?></th>
+                                      <th><?php echo e(trans('file.action')); ?></th>
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    @foreach($recent_draft as $draft)
+                                    <?php $__currentLoopData = $recent_draft; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $draft): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php $customer = DB::table('customers')->find($draft->customer_id); ?>
                                     <tr>
-                                      <td>{{date('d-m-Y', strtotime($draft->created_at))}}</td>
-                                      <td>{{$draft->reference_no}}</td>
-                                      <td>{{$customer->name}}</td>
-                                      <td>{{$draft->grand_total}}</td>
+                                      <td><?php echo e(date('d-m-Y', strtotime($draft->created_at))); ?></td>
+                                      <td><?php echo e($draft->reference_no); ?></td>
+                                      <td><?php echo e($customer->name); ?></td>
+                                      <td><?php echo e($draft->grand_total); ?></td>
                                       <td>
                                         <div class="btn-group">
-                                            @if(in_array("sales-edit", $all_permission))
-                                            <a href="{{url('sales/'.$draft->id.'/create') }}" class="btn btn-success btn-sm" title="Edit"><i class="dripicons-document-edit"></i></a>&nbsp;
-                                            @endif
-                                            @if(in_array("sales-delete", $all_permission))
-                                            {{ Form::open(['route' => ['sales.destroy', $draft->id], 'method' => 'DELETE'] ) }}
+                                            <?php if(in_array("sales-edit", $all_permission)): ?>
+                                            <a href="<?php echo e(url('sales/'.$draft->id.'/create')); ?>" class="btn btn-success btn-sm" title="Edit"><i class="dripicons-document-edit"></i></a>&nbsp;
+                                            <?php endif; ?>
+                                            <?php if(in_array("sales-delete", $all_permission)): ?>
+                                            <?php echo e(Form::open(['route' => ['sales.destroy', $draft->id], 'method' => 'DELETE'] )); ?>
+
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete()" title="Delete"><i class="dripicons-trash"></i></button>
-                                            {{ Form::close() }}
-                                            @endif
+                                            <?php echo e(Form::close()); ?>
+
+                                            <?php endif; ?>
                                         </div>
                                       </td>
                                     </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                   </tbody>
                                 </table>
                               </div>
@@ -1109,32 +1122,34 @@
             <div id="cash-register-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
-                    {!! Form::open(['route' => 'cashRegister.store', 'method' => 'post']) !!}
+                    <?php echo Form::open(['route' => 'cashRegister.store', 'method' => 'post']); ?>
+
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Add Cash Register')}}</h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Add Cash Register')); ?></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
-                      <p class="italic"><small>{{trans('file.The field labels marked with * are required input fields')}}.</small></p>
+                      <p class="italic"><small><?php echo e(trans('file.The field labels marked with * are required input fields')); ?>.</small></p>
                         <div class="row">
                           <div class="col-md-6 form-group warehouse-section">
-                              <label>{{trans('file.Warehouse')}} *</strong> </label>
+                              <label><?php echo e(trans('file.Warehouse')); ?> *</strong> </label>
                               <select required name="warehouse_id" class="selectpicker form-control" data-live-search="true" data-live-search-style="begins" title="Select warehouse...">
-                                  @foreach($lims_warehouse_list as $warehouse)
-                                  <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                  @endforeach
+                                  <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                  <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                               </select>
                           </div>
                           <div class="col-md-6 form-group">
-                              <label>{{trans('file.Cash in Hand')}} *</strong> </label>
+                              <label><?php echo e(trans('file.Cash in Hand')); ?> *</strong> </label>
                               <input type="number" step="any" name="cash_in_hand" required class="form-control">
                           </div>
                           <div class="col-md-12 form-group">
-                              <button type="submit" class="btn btn-primary">{{trans('file.submit')}}</button>
+                              <button type="submit" class="btn btn-primary"><?php echo e(trans('file.submit')); ?></button>
                           </div>
                         </div>
                     </div>
-                    {{ Form::close() }}
+                    <?php echo e(Form::close()); ?>
+
                   </div>
                 </div>
             </div>
@@ -1143,83 +1158,83 @@
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Cash Register Details')}}</h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Cash Register Details')); ?></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
-                      <p>{{trans('file.Please review the transaction and payments.')}}</p>
+                      <p><?php echo e(trans('file.Please review the transaction and payments.')); ?></p>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table table-hover">
                                     <tbody>
                                         <tr>
-                                          <td>{{trans('file.Cash in Hand')}}:</td>
+                                          <td><?php echo e(trans('file.Cash in Hand')); ?>:</td>
                                           <td id="cash_in_hand" class="text-right">0</td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Total Sale Amount')}}:</td>
+                                          <td><?php echo e(trans('file.Total Sale Amount')); ?>:</td>
                                           <td id="total_sale_amount" class="text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Total Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Total Payment')); ?>:</td>
                                           <td id="total_payment" class="text-right"></td>
                                         </tr>
-                                        @if(in_array("cash",$options))
+                                        <?php if(in_array("cash",$options)): ?>
                                         <tr>
-                                          <td>{{trans('file.Cash Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Cash Payment')); ?>:</td>
                                           <td id="cash_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
-                                        @if(in_array("card",$options))
+                                        <?php endif; ?>
+                                        <?php if(in_array("card",$options)): ?>
                                         <tr>
-                                          <td>{{trans('file.Credit Card Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Credit Card Payment')); ?>:</td>
                                           <td id="credit_card_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
-                                        @if(in_array("cheque",$options))
+                                        <?php endif; ?>
+                                        <?php if(in_array("cheque",$options)): ?>
                                         <tr>
-                                          <td>{{trans('file.Cheque Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Cheque Payment')); ?>:</td>
                                           <td id="cheque_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
-                                        @if(in_array("gift_card",$options))
+                                        <?php endif; ?>
+                                        <?php if(in_array("gift_card",$options)): ?>
                                         <tr>
-                                          <td>{{trans('file.Gift Card Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Gift Card Payment')); ?>:</td>
                                           <td id="gift_card_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
-                                        @if(in_array("deposit",$options))
+                                        <?php endif; ?>
+                                        <?php if(in_array("deposit",$options)): ?>
                                         <tr>
-                                          <td>{{trans('file.Deposit Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Deposit Payment')); ?>:</td>
                                           <td id="deposit_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
-                                        @if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0))
+                                        <?php endif; ?>
+                                        <?php if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0)): ?>
                                         <tr>
-                                          <td>{{trans('file.Paypal Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Paypal Payment')); ?>:</td>
                                           <td id="paypal_payment" class="text-right"></td>
                                         </tr>
-                                        @endif
+                                        <?php endif; ?>
                                         <tr>
-                                          <td>{{trans('file.Total Sale Return')}}:</td>
+                                          <td><?php echo e(trans('file.Total Sale Return')); ?>:</td>
                                           <td id="total_sale_return" class="text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Total Expense')}}:</td>
+                                          <td><?php echo e(trans('file.Total Expense')); ?>:</td>
                                           <td id="total_expense" class="text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td><strong>{{trans('file.Total Cash')}}:</strong></td>
+                                          <td><strong><?php echo e(trans('file.Total Cash')); ?>:</strong></td>
                                           <td id="total_cash" class="text-right"></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="col-md-6" id="closing-section">
-                              <form action="{{route('cashRegister.close')}}" method="POST">
-                                  @csrf
+                              <form action="<?php echo e(route('cashRegister.close')); ?>" method="POST">
+                                  <?php echo csrf_field(); ?>
                                   <input type="hidden" name="cash_register_id">
-                                  <button type="submit" class="btn btn-primary">{{trans('file.Close Register')}}</button>
+                                  <button type="submit" class="btn btn-primary"><?php echo e(trans('file.Close Register')); ?></button>
                               </form>
                             </div>
                         </div>
@@ -1232,59 +1247,59 @@
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Today Sale')}}</h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Today Sale')); ?></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
-                      <p>{{trans('file.Please review the transaction and payments.')}}</p>
+                      <p><?php echo e(trans('file.Please review the transaction and payments.')); ?></p>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="table table-hover">
                                     <tbody>
                                         <tr>
-                                          <td>{{trans('file.Total Sale Amount')}}:</td>
+                                          <td><?php echo e(trans('file.Total Sale Amount')); ?>:</td>
                                           <td class="total_sale_amount text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Cash Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Cash Payment')); ?>:</td>
                                           <td class="cash_payment text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Credit Card Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Credit Card Payment')); ?>:</td>
                                           <td class="credit_card_payment text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Cheque Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Cheque Payment')); ?>:</td>
                                           <td class="cheque_payment text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Gift Card Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Gift Card Payment')); ?>:</td>
                                           <td class="gift_card_payment text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Deposit Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Deposit Payment')); ?>:</td>
                                           <td class="deposit_payment text-right"></td>
                                         </tr>
-                                        @if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0))
+                                        <?php if(in_array("paypal",$options) && (strlen(env('PAYPAL_LIVE_API_USERNAME'))>0) && (strlen(env('PAYPAL_LIVE_API_PASSWORD'))>0) && (strlen(env('PAYPAL_LIVE_API_SECRET'))>0)): ?>
                                         <tr>
-                                          <td>{{trans('file.Paypal Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Paypal Payment')); ?>:</td>
                                           <td class="paypal_payment text-right"></td>
                                         </tr>
-                                        @endif
+                                        <?php endif; ?>
                                         <tr>
-                                          <td>{{trans('file.Total Payment')}}:</td>
+                                          <td><?php echo e(trans('file.Total Payment')); ?>:</td>
                                           <td class="total_payment text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Total Sale Return')}}:</td>
+                                          <td><?php echo e(trans('file.Total Sale Return')); ?>:</td>
                                           <td class="total_sale_return text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Total Expense')}}:</td>
+                                          <td><?php echo e(trans('file.Total Expense')); ?>:</td>
                                           <td class="total_expense text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td><strong>{{trans('file.Total Cash')}}:</strong></td>
+                                          <td><strong><?php echo e(trans('file.Total Cash')); ?>:</strong></td>
                                           <td class="total_cash text-right"></td>
                                         </tr>
                                     </tbody>
@@ -1300,36 +1315,36 @@
                 <div role="document" class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 id="exampleModalLabel" class="modal-title">{{trans('file.Today Profit')}}</h5>
+                      <h5 id="exampleModalLabel" class="modal-title"><?php echo e(trans('file.Today Profit')); ?></h5>
                       <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i class="dripicons-cross"></i></span></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <select required name="warehouseId" class="form-control">
-                                    <option value="0">{{trans('file.All Warehouse')}}</option>
-                                    @foreach($lims_warehouse_list as $warehouse)
-                                    <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                                    @endforeach
+                                    <option value="0"><?php echo e(trans('file.All Warehouse')); ?></option>
+                                    <?php $__currentLoopData = $lims_warehouse_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $warehouse): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($warehouse->id); ?>"><?php echo e($warehouse->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <table class="table table-hover">
                                     <tbody>
                                         <tr>
-                                          <td>{{trans('file.Product Revenue')}}:</td>
+                                          <td><?php echo e(trans('file.Product Revenue')); ?>:</td>
                                           <td class="product_revenue text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Product Cost')}}:</td>
+                                          <td><?php echo e(trans('file.Product Cost')); ?>:</td>
                                           <td class="product_cost text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td>{{trans('file.Expense')}}:</td>
+                                          <td><?php echo e(trans('file.Expense')); ?>:</td>
                                           <td class="expense_amount text-right"></td>
                                         </tr>
                                         <tr>
-                                          <td><strong>{{trans('file.Profit')}}:</strong></td>
+                                          <td><strong><?php echo e(trans('file.Profit')); ?>:</strong></td>
                                           <td class="profit text-right"></td>
                                         </tr>
                                     </tbody>
@@ -1345,10 +1360,10 @@
 </section>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script type="text/javascript">
     $("ul#sale").siblings('a').attr('aria-expanded','true');
     $("ul#sale").addClass("show");
@@ -1360,24 +1375,24 @@
         }
     });
 
-    @if(config('database.connections.saleprosaas_landlord'))
+    <?php if(config('database.connections.saleprosaas_landlord')): ?>
         numberOfInvoice = <?php echo json_encode($numberOfInvoice)?>;
         $.ajax({
             type: 'GET',
             async: false,
-            url: '{{route("package.fetchData", $general_setting->package_id)}}',
+            url: '<?php echo e(route("package.fetchData", $general_setting->package_id)); ?>',
             success: function(data) {
                 if(data['number_of_invoice'] > 0 && data['number_of_invoice'] <= numberOfInvoice) {
                     localStorage.setItem("message", "You don't have permission to create another invoice as you already exceed the limit! Subscribe to another package if you wants more!");
-                    location.href = "{{route('sales.index')}}";
+                    location.href = "<?php echo e(route('sales.index')); ?>";
                 }
             }
         });
-    @endif
+    <?php endif; ?>
 
-    @if($lims_pos_setting_data)
+    <?php if($lims_pos_setting_data): ?>
     var public_key = <?php echo json_encode($lims_pos_setting_data->stripe_public_key) ?>;
-    @endif
+    <?php endif; ?>
     var alert_product = <?php echo json_encode($alert_product) ?>;
     var currency = <?php echo json_encode($currency) ?>;
     var valid;
@@ -1415,9 +1430,9 @@ var deposit = <?php echo json_encode($deposit) ?>;
 var points = <?php echo json_encode($points) ?>;
 var reward_point_setting = <?php echo json_encode($lims_reward_point_setting_data) ?>;
 
-@if($lims_pos_setting_data)
+<?php if($lims_pos_setting_data): ?>
 var product_row_number = <?php echo json_encode($lims_pos_setting_data->product_number) ?>;
-@endif
+<?php endif; ?>
 var rowindex;
 var customer_group_rate;
 var row_product_price;
@@ -1529,7 +1544,7 @@ if(getSavedValue("localStorageQty")) {
 
     product_price.push(parseFloat($('table.order-list tbody tr:nth-child(' + (i + 1) + ')').find('.product_price').val()));
     var quantity = parseFloat($('table.order-list tbody tr:nth-child(' + (i + 1) + ')').find('.qty').val());
-    product_discount.push(parseFloat(localStorageProductDiscount[i] / localStorageQty[i]).toFixed({{$general_setting->decimal}}));
+    product_discount.push(parseFloat(localStorageProductDiscount[i] / localStorageQty[i]).toFixed(<?php echo e($general_setting->decimal); ?>));
     tax_rate.push(parseFloat($('table.order-list tbody tr:nth-child(' + (i + 1) + ')').find('.tax-rate').val()));
     tax_name.push($('table.order-list tbody tr:nth-child(' + (i + 1) + ')').find('.tax-name').val());
     tax_method.push($('table.order-list tbody tr:nth-child(' + (i + 1) + ')').find('.tax-method').val());
@@ -1642,7 +1657,7 @@ if(keyboard_active==1){
 $('.customer-submit-btn').on("click", function() {
     $.ajax({
         type:'POST',
-        url:'{{route('customer.store')}}',
+        url:'<?php echo e(route('customer.store')); ?>',
         data: $("#customer-form").serialize(),
         success:function(response) {
             console.log(response);
@@ -1853,7 +1868,7 @@ $("#print-btn").on("click", function(){
       var divToPrint=document.getElementById('sale-details');
       var newWin=window.open('','Print-Window');
       newWin.document.open();
-      newWin.document.write('<link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
+      newWin.document.write('<link rel="stylesheet" href="<?php echo asset('vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media  print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
       newWin.document.close();
       setTimeout(function(){newWin.close();},10);
 });
@@ -2405,20 +2420,20 @@ $('.coupon-btn-close').on("click", function() {
 $(document).on('click', '.qc-btn', function(e) {
     if($(this).data('amount')) {
         if($('.qc').data('initial')) {
-            $('input[name="paying_amount"]').val( $(this).data('amount').toFixed({{$general_setting->decimal}}) );
+            $('input[name="paying_amount"]').val( $(this).data('amount').toFixed(<?php echo e($general_setting->decimal); ?>) );
             $('.qc').data('initial', 0);
         }
         else {
-            $('input[name="paying_amount"]').val( (parseFloat($('input[name="paying_amount"]').val()) + $(this).data('amount')).toFixed({{$general_setting->decimal}}) );
+            $('input[name="paying_amount"]').val( (parseFloat($('input[name="paying_amount"]').val()) + $(this).data('amount')).toFixed(<?php echo e($general_setting->decimal); ?>) );
         }
     }
     else
-        $('input[name="paying_amount"]').val('{{number_format(0, $general_setting->decimal, '.', '')}}');
+        $('input[name="paying_amount"]').val('<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
     change( $('input[name="paying_amount"]').val(), $('input[name="paid_amount"]').val() );
 });
 
 function change(paying_amount, paid_amount) {
-    $("#change").text( parseFloat(paying_amount - paid_amount).toFixed({{$general_setting->decimal}}) );
+    $("#change").text( parseFloat(paying_amount - paid_amount).toFixed(<?php echo e($general_setting->decimal); ?>) );
 }
 
 function confirmDelete() {
@@ -2522,7 +2537,7 @@ function addNewProduct(data){
     else {
         product_price.splice(rowindex, 0, parseFloat(data[2] * currency['exchange_rate']) + parseFloat(data[2] * currency['exchange_rate'] * customer_group_rate));
     }
-    product_discount.splice(rowindex, 0, '{{number_format(0, $general_setting->decimal, '.', '')}}');
+    product_discount.splice(rowindex, 0, '<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
     tax_rate.splice(rowindex, 0, parseFloat(data[3]));
     tax_name.splice(rowindex, 0, data[4]);
     tax_method.splice(rowindex, 0, data[5]);
@@ -2537,17 +2552,17 @@ function addNewProduct(data){
     localStorageProductCode.splice(rowindex, 0, data[1]);
     localStorageSaleUnit.splice(rowindex, 0, temp_unit_name[0]);
     localStorageProductDiscount.splice(rowindex, 0, product_discount[rowindex]);
-    localStorageTaxRate.splice(rowindex, 0, tax_rate[rowindex].toFixed({{$general_setting->decimal}}));
+    localStorageTaxRate.splice(rowindex, 0, tax_rate[rowindex].toFixed(<?php echo e($general_setting->decimal); ?>));
     localStorageTaxName.splice(rowindex, 0, data[4]);
     localStorageTaxMethod.splice(rowindex, 0, data[5]);
     localStorageTempUnitName.splice(rowindex, 0, data[6]);
     localStorageSaleUnitOperator.splice(rowindex, 0, data[7]);
     localStorageSaleUnitOperationValue.splice(rowindex, 0, data[8]);
     //put some dummy value
-    localStorageNetUnitPrice.splice(rowindex, 0, '{{number_format(0, $general_setting->decimal, '.', '')}}');
-    localStorageTaxValue.splice(rowindex, 0, '{{number_format(0, $general_setting->decimal, '.', '')}}');
-    localStorageSubTotalUnit.splice(rowindex, 0, '{{number_format(0, $general_setting->decimal, '.', '')}}');
-    localStorageSubTotal.splice(rowindex, 0, '{{number_format(0, $general_setting->decimal, '.', '')}}');
+    localStorageNetUnitPrice.splice(rowindex, 0, '<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
+    localStorageTaxValue.splice(rowindex, 0, '<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
+    localStorageSubTotalUnit.splice(rowindex, 0, '<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
+    localStorageSubTotal.splice(rowindex, 0, '<?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>');
 
     localStorage.setItem("localStorageProductId", localStorageProductId);
     localStorage.setItem("localStorageSaleUnit", localStorageSaleUnit);
@@ -2579,7 +2594,7 @@ function edit(){
     var qty = $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.qty').val();
     $('input[name="edit_qty"]').val(qty);
 
-    $('input[name="edit_discount"]').val(parseFloat(product_discount[rowindex]).toFixed({{$general_setting->decimal}}));
+    $('input[name="edit_discount"]').val(parseFloat(product_discount[rowindex]).toFixed(<?php echo e($general_setting->decimal); ?>));
 
     var tax_name_all = <?php echo json_encode($tax_name_all) ?>;
     pos = tax_name_all.indexOf(tax_name[rowindex]);
@@ -2605,7 +2620,7 @@ function edit(){
         row_product_price = product_price[rowindex];
         $("#edit_unit").hide();
     }
-    $('input[name="edit_unit_price"]').val(row_product_price.toFixed({{$general_setting->decimal}}));
+    $('input[name="edit_unit_price"]').val(row_product_price.toFixed(<?php echo e($general_setting->decimal); ?>));
     $('.selectpicker').selectpicker('refresh');
 }
 
@@ -2627,7 +2642,7 @@ function couponDiscount() {
                 else if(value['type'] == 'fixed'){
                     if(parseFloat($('input[name="grand_total"]').val()) >= value['minimum_amount']) {
                         $('input[name="grand_total"]').val($('input[name="grand_total"]').val() - (value['amount'] * currency['exchange_rate']));
-                        $('#grand-total').text(parseFloat($('input[name="grand_total"]').val()).toFixed({{$general_setting->decimal}}));
+                        $('#grand-total').text(parseFloat($('input[name="grand_total"]').val()).toFixed(<?php echo e($general_setting->decimal); ?>));
                         if(!$('input[name="coupon_active"]').val())
                             alert('Congratulation! You got '+(value['amount'] * currency['exchange_rate'])+' '+currency['code']+' discount');
                         $(".coupon-check").prop("disabled",true);
@@ -2636,7 +2651,7 @@ function couponDiscount() {
                         $("#coupon-modal").modal('hide');
                         $('input[name="coupon_id"]').val(value['id']);
                         $('input[name="coupon_discount"]').val(value['amount'] * currency['exchange_rate']);
-                        $('#coupon-text').text(parseFloat(value['amount'] * currency['exchange_rate']).toFixed({{$general_setting->decimal}}));
+                        $('#coupon-text').text(parseFloat(value['amount'] * currency['exchange_rate']).toFixed(<?php echo e($general_setting->decimal); ?>));
                     }
                     else
                         alert('Grand Total is not sufficient for discount! Required '+value['minimum_amount']+' '+currency['code']);
@@ -2646,7 +2661,7 @@ function couponDiscount() {
                     var coupon_discount = grand_total * (value['amount'] / 100);
                     grand_total = grand_total - coupon_discount;
                     $('input[name="grand_total"]').val(grand_total);
-                    $('#grand-total').text(parseFloat(grand_total).toFixed({{$general_setting->decimal}}));
+                    $('#grand-total').text(parseFloat(grand_total).toFixed(<?php echo e($general_setting->decimal); ?>));
                     if(!$('input[name="coupon_active"]').val())
                             alert('Congratulation! You got '+value['amount']+'% discount');
                     $(".coupon-check").prop("disabled",true);
@@ -2655,7 +2670,7 @@ function couponDiscount() {
                     $("#coupon-modal").modal('hide');
                     $('input[name="coupon_id"]').val(value['id']);
                     $('input[name="coupon_discount"]').val(coupon_discount);
-                    $('#coupon-text').text(parseFloat(coupon_discount).toFixed({{$general_setting->decimal}}));
+                    $('#coupon-text').text(parseFloat(coupon_discount).toFixed(<?php echo e($general_setting->decimal); ?>));
                 }
             }
         });
@@ -2775,20 +2790,20 @@ function calculateRowProductData(quantity) {
         var sub_total = sub_total_unit * quantity;
     }
 
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount-value').val((product_discount[rowindex] * quantity).toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-rate').val(tax_rate[rowindex].toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').val(net_unit_price.toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-value').val(tax.toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.product-price').text(sub_total_unit.toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed({{$general_setting->decimal}}));
-    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total.toFixed({{$general_setting->decimal}}));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.discount-value').val((product_discount[rowindex] * quantity).toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-rate').val(tax_rate[rowindex].toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').val(net_unit_price.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-value').val(tax.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.product-price').text(sub_total_unit.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.subtotal-value').val(sub_total.toFixed(<?php echo e($general_setting->decimal); ?>));
 
-    localStorageProductDiscount.splice(rowindex, 1, (product_discount[rowindex] * quantity).toFixed({{$general_setting->decimal}}));
-    localStorageTaxRate.splice(rowindex, 1, tax_rate[rowindex].toFixed({{$general_setting->decimal}}));
-    localStorageNetUnitPrice.splice(rowindex, 1, net_unit_price.toFixed({{$general_setting->decimal}}));
-    localStorageTaxValue.splice(rowindex, 1, tax.toFixed({{$general_setting->decimal}}));
-    localStorageSubTotalUnit.splice(rowindex, 1, sub_total_unit.toFixed({{$general_setting->decimal}}));
-    localStorageSubTotal.splice(rowindex, 1, sub_total.toFixed({{$general_setting->decimal}}));
+    localStorageProductDiscount.splice(rowindex, 1, (product_discount[rowindex] * quantity).toFixed(<?php echo e($general_setting->decimal); ?>));
+    localStorageTaxRate.splice(rowindex, 1, tax_rate[rowindex].toFixed(<?php echo e($general_setting->decimal); ?>));
+    localStorageNetUnitPrice.splice(rowindex, 1, net_unit_price.toFixed(<?php echo e($general_setting->decimal); ?>));
+    localStorageTaxValue.splice(rowindex, 1, tax.toFixed(<?php echo e($general_setting->decimal); ?>));
+    localStorageSubTotalUnit.splice(rowindex, 1, sub_total_unit.toFixed(<?php echo e($general_setting->decimal); ?>));
+    localStorageSubTotal.splice(rowindex, 1, sub_total.toFixed(<?php echo e($general_setting->decimal); ?>));
     localStorage.setItem("localStorageProductDiscount", localStorageProductDiscount);
     localStorage.setItem("localStorageTaxRate", localStorageTaxRate);
     localStorage.setItem("localStorageNetUnitPrice", localStorageNetUnitPrice);
@@ -2817,7 +2832,7 @@ function calculateTotal() {
         total_discount += parseFloat($(this).val());
     });
 
-    $('input[name="total_discount"]').val(total_discount.toFixed({{$general_setting->decimal}}));
+    $('input[name="total_discount"]').val(total_discount.toFixed(<?php echo e($general_setting->decimal); ?>));
 
     //Sum of tax
     var total_tax = 0;
@@ -2825,14 +2840,14 @@ function calculateTotal() {
         total_tax += parseFloat($(this).val());
     });
 
-    $('input[name="total_tax"]').val(total_tax.toFixed({{$general_setting->decimal}}));
+    $('input[name="total_tax"]').val(total_tax.toFixed(<?php echo e($general_setting->decimal); ?>));
 
     //Sum of subtotal
     var total = 0;
     $(".sub-total").each(function() {
         total += parseFloat($(this).text());
     });
-    $('input[name="total_price"]').val(total.toFixed({{$general_setting->decimal}}));
+    $('input[name="total_price"]').val(total.toFixed(<?php echo e($general_setting->decimal); ?>));
 
     calculateGrandTotal();
 }
@@ -2846,7 +2861,7 @@ function calculateGrandTotal() {
     var order_discount_value = parseFloat($('input[name="order_discount_value"]').val());
 
     if (!order_discount_value)
-        order_discount_value = {{number_format(0, $general_setting->decimal, '.', '')}};
+        order_discount_value = <?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>;
 
     if(order_discount_type == 'Flat') {
         if(!currencyChange) {
@@ -2860,7 +2875,7 @@ function calculateGrandTotal() {
 
     localStorage.setItem("order-tax-rate-select", order_tax);
     localStorage.setItem("order-discount-type", order_discount_type);
-    $("#discount").text(order_discount.toFixed({{$general_setting->decimal}}));
+    $("#discount").text(order_discount.toFixed(<?php echo e($general_setting->decimal); ?>));
     $('input[name="order_discount"]').val(order_discount);
     $('input[name="order_discount_type"]').val(order_discount_type);
     if(!currencyChange)
@@ -2868,12 +2883,12 @@ function calculateGrandTotal() {
     else
         var shipping_cost = parseFloat($('input[name="shipping_cost"]').val() * currency['exchange_rate']);
     if (!shipping_cost)
-        shipping_cost = {{number_format(0, $general_setting->decimal, '.', '')}};
+        shipping_cost = <?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>;
 
     item = ++item + '(' + total_qty + ')';
     order_tax = (subtotal - order_discount) * (order_tax / 100);
     var grand_total = (subtotal + order_tax + shipping_cost) - order_discount;
-    $('input[name="grand_total"]').val(grand_total.toFixed({{$general_setting->decimal}}));
+    $('input[name="grand_total"]').val(grand_total.toFixed(<?php echo e($general_setting->decimal); ?>));
 
     couponDiscount();
     if(!currencyChange)
@@ -2881,18 +2896,18 @@ function calculateGrandTotal() {
     else
         var coupon_discount = parseFloat($('input[name="coupon_discount"]').val() * currency['exchange_rate']);
     if (!coupon_discount)
-        coupon_discount = {{number_format(0, $general_setting->decimal, '.', '')}};
+        coupon_discount = <?php echo e(number_format(0, $general_setting->decimal, '.', '')); ?>;
     grand_total -= coupon_discount;
 
     $('#item').text(item);
     $('input[name="item"]').val($('table.order-list tbody tr:last').index() + 1);
-    $('#subtotal').text(subtotal.toFixed({{$general_setting->decimal}}));
-    $('#tax').text(order_tax.toFixed({{$general_setting->decimal}}));
-    $('input[name="order_tax"]').val(order_tax.toFixed({{$general_setting->decimal}}));
-    $('#shipping-cost').text(shipping_cost.toFixed({{$general_setting->decimal}}));
+    $('#subtotal').text(subtotal.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('#tax').text(order_tax.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('input[name="order_tax"]').val(order_tax.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('#shipping-cost').text(shipping_cost.toFixed(<?php echo e($general_setting->decimal); ?>));
     $('input[name="shipping_cost"]').val(shipping_cost);
-    $('#grand-total').text(grand_total.toFixed({{$general_setting->decimal}}));
-    $('input[name="grand_total"]').val(grand_total.toFixed({{$general_setting->decimal}}));
+    $('#grand-total').text(grand_total.toFixed(<?php echo e($general_setting->decimal); ?>));
+    $('input[name="grand_total"]').val(grand_total.toFixed(<?php echo e($general_setting->decimal); ?>));
     currencyChange = false;
 }
 
@@ -2936,11 +2951,11 @@ function cheque() {
 }
 
 function creditCard() {
-    @if($lims_pos_setting_data && (strlen($lims_pos_setting_data->stripe_public_key)>0) && (strlen($lims_pos_setting_data->stripe_secret_key )>0))
+    <?php if($lims_pos_setting_data && (strlen($lims_pos_setting_data->stripe_public_key)>0) && (strlen($lims_pos_setting_data->stripe_secret_key )>0)): ?>
     $.getScript( "vendor/stripe/checkout.js" );
     $(".card-element").show();
     $(".card-errors").show();
-    @endif
+    <?php endif; ?>
     $(".cheque").hide();
     $(".gift-card").hide();
     $('input[name="cheque_no"]').attr('required', false);
@@ -3024,4 +3039,6 @@ $('#product-table').DataTable( {
 });
 </script>
 <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('backend.layout.top-head', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\PFL\pfl\resources\views/backend/sale/pos.blade.php ENDPATH**/ ?>
