@@ -445,6 +445,7 @@ class ProductController extends Controller
         ]);
         // dd("pass");
         $code = mt_rand(1000000000000, 9999999999999);
+        // return("pass");
         $saveProduct = new product();
         $saveProduct->code = $code;
         $saveProduct->is_active = 1;
@@ -503,14 +504,15 @@ class ProductController extends Controller
                     $productImages = new product_image();
                     $filename = $image->getClientOriginalName();
                     $image->move('images/product', $filename);
-                    $productImages->product_id = $saveProduct->id;
+                    $productImages->product_id =$saveProduct->id;
                     $productImages->src = $filename;
+                    $productImages->is_active = 1;
                     $productImages->position = $request->input('imageIndex')[$index];
+                    // return($productImages);
                     $productImages->save();
                 }
             }
         }
-
 
         $variants = new ProductVariant();
         foreach ($request->variant as $index => $eachVariant) {
@@ -524,6 +526,7 @@ class ProductController extends Controller
             $variants->product_id = $saveProduct->id;
             $variants->qty = $request->onHand[$index];
             $variants->title = $eachVariant;
+            $variants->status = 1;
             $variants->price = $request->price[$index];
             $variants->weight = $request->weight;
             $variants->weight_unit = $request->weight_unit;
@@ -1035,12 +1038,11 @@ class ProductController extends Controller
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
             $noOfVariantValue = 0;
             // $collection = [];
-            $collections = tag::whereNotIn('title',json_decode($lims_product_data->tags))->get();
-
-
+            $collections = tag::whereNotIn('title', json_decode($lims_product_data->tags))->get();
 
             $product_image = product_image::where('product_id', $id)->get();
-            $productVariant = ProductVariant::where('product_id', $id)->first();
+            $productVariant = ProductVariant::where('product_id', $id)->get();
+            // return($productVariant);
             if ($product_image->count() > 0) {
                 $imageCount = $product_image->count();
             }
@@ -1048,6 +1050,15 @@ class ProductController extends Controller
             return view('backend.product.edit', compact('lims_product_list_without_variant', 'lims_product_list_with_variant', 'lims_brand_list', 'lims_category_list', 'lims_unit_list', 'lims_tax_list', 'lims_product_data', 'lims_product_variant_data', 'lims_warehouse_list', 'noOfVariantValue', 'collections', 'product_image', 'imageCount', 'productVariant'));
         } else
             return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    }
+
+
+
+    public function productTags(Request $request)
+    {
+        $query = $request->get('query');
+        $collections = tag::where('title', 'LIKE', '%' . $query . '%')->get();
+        return response()->json($collections);
     }
 
     // public function updateProduct(Request $request)
@@ -1231,15 +1242,122 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request)
     {
-        return ($request->all());
+        // return($request->all());
         if (!env('USER_VERIFIED')) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         } else {
             $request->validate([
                 'id' => 'required',
+                'variant'=>'required',
+                'pro_image'=> 'required'
             ]);
-            $product = findOrFail($request->id);
-            return ($product);
+            // dd("pass");
+            $update_product = product::findOrFail($request->id);
+            $update_product->is_active = 1;
+            $update_product->name = $request->name;
+            $update_product->barcode_symbology  =  "C128";
+            $update_product->type =  "Standard";
+            $update_product->price =  $request->price;;
+            $update_product->cost =  $request->per_item_cost;;
+
+            $update_product->starting_date =  $request->startDate;;
+            $update_product->last_date =  $request->endDate;;
+            // /update_productuct->qty =  $request->product_quantity;;
+            $update_product->status =  $request->save_status;;
+            $update_product->vendor =  $request->prod_vendor;;
+            if(count($request->tags)>0)
+            {
+                $update_product->tags =  json_encode($request->tags);;
+            }
+            else
+            {
+                $update_product->tags =  json_encode($request->user_database_tags);;
+            }
+            $update_product->product_type =  $request->prod_type;;
+
+
+            $update_product->unit_id = 1;
+            $update_product->purchase_unit_id = 1;
+            $update_product->sale_unit_id = 1;
+
+
+            // // // Summer Note
+            $content = $request->summernote;
+            $dom = new \DomDocument();
+            $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            $imageFile = $dom->getElementsByTagName('imageFile');
+
+            foreach ($imageFile as $item => $image) {
+                $data = $img->getAttribute('src');
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
+                $imgeData = base64_decode($data);
+                $image_name = "/upload/" . time() . $item . '.png';
+                $path = public_path() . $image_name;
+                file_put_contents($path, $imgeData);
+
+                $image->removeAttribute('src');
+                $image->setAttribute('src', $image_name);
+            }
+
+            $content = $dom->saveHTML();
+            $update_product->product_details =  $content;;
+            $update_product->is_active =  1;;
+            $update_product->images =  $request->image_count;;
+            $update_product->category_id =  $request->prod_category;;
+            $update_product->price =  $request->price[2];
+            $update_product->qty =  $request->product_quantity;;
+            $update_product->variants =  count($request->variant);
+            $update_product->title = $request->name;
+           
+            if ($update_product->update()) {
+                 $update_product = product::where('id',$request->id)->with('product_image')->first();
+                    // return ($update_product->product_image);
+                    foreach($update_product->product_image as $images)
+                    {
+                        $images->delete();
+                    }
+                if ($request->pro_image) {
+                    foreach ($request->pro_image as $index => $image) {
+                        $productImages = new product_image();
+                        $filename = $image->getClientOriginalName();
+                        $image->move('images/product', $filename);
+                        $productImages->product_id = $update_product->id;
+                        $productImages->src = $filename;
+                        $productImages->is_active = 1;
+                        $productImages->position = $request->input('imageIndex')[$index];
+                        $productImages->save();
+                    }
+                }
+            }
+
+            $update_product = product::where('id',$request->id)->with('productVariants')->first();
+            foreach($update_product->productVariants as $variants)
+            {
+                $variants->delete();
+            }
+            $variants = new ProductVariant();
+            foreach ($request->variant as $index => $eachVariant) {
+                $parts = explode('-', $request->name, 2);
+                $lastPart = $parts[1];
+                $variants = new ProductVariant();
+                $variants->sku =  $lastPart . "-" . $eachVariant;
+                $variants->barcode = $lastPart . "-" . $eachVariant . "-" . $eachVariant;
+                $variants->product_id = $update_product->id;
+                $variants->qty = $request->onHand[$index];
+                $variants->title = $eachVariant;
+                $variants->price = $request->price[$index];
+                $variants->weight = $request->weight;
+                $variants->weight_unit = $request->weight_unit;
+                $variants->status = 1;
+                $variants->inventory_quantity = $request->available[$index];
+                // return ($variants);
+                $variants->save();
+            }
+
+            \Session::flash('create_message', 'Product created successfully');
+            return redirect()->back();
+
             \Session::flash('edit_message', 'Product updated successfully');
         }
     }
@@ -1561,10 +1679,10 @@ class ProductController extends Controller
         if (!env('USER_VERIFIED')) {
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         } else {
-           
+
             $lims_product_data = Product::findOrFail($id);
             if ($lims_product_data) {
-                
+
                 $lims_product_data->is_active = false;
                 $lims_product_data->save();
                 $productImages = product_image::where('product_id', $lims_product_data->id)->get();

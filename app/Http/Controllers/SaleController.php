@@ -1421,7 +1421,7 @@ class SaleController extends Controller
                     ['products.is_active', true]
                 ])->first();
 
-                // dd($lims_product_data);
+                dd($lims_product_data);
             $product_variant_id = $lims_product_data->product_variant_id;
         }
 
@@ -1503,8 +1503,8 @@ class SaleController extends Controller
         $product[] = $lims_product_data->is_batch;
         $product[] = $lims_product_data->is_imei;
         $product[] = $lims_product_data->is_variant;
-        $product[] = $qty;
-        dd( $product);
+        $product[] = $lims_product_data->qty;
+         dd($product);
 
     }
 

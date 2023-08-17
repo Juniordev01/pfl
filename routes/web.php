@@ -408,6 +408,8 @@ Route::group(['middleware' => ['common', 'auth', 'active']], function() {
 
 	// Route::resource('products', 'ProductController');
 
+	Route::get('search_tags', 'ProductController@productTags')->name('search_tags');
+
 
 });
 

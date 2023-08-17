@@ -5,7 +5,19 @@
 <link rel="stylesheet" href="<?php echo e(asset('calender/date-picker.css')); ?>">
 <link rel="stylesheet" href="<?php echo e(asset('ImageSelector/style.css')); ?>">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .selected-column {
+        border: 2px solid green;
+    }
 
+    th:focus,
+    td:focus {
+        outline: none;
+        /* Remove default outline */
+        border-color: transparent;
+        /* Hide the border color */
+    }
+</style>
 
 <?php $__env->startSection('content'); ?>
 <style>
@@ -101,8 +113,6 @@
         padding: 30px;
         /* Set padding from inside the border */
     }
-
-    /* Optional: Add some styling for the selected tags container */
 </style>
 
 <section>
@@ -122,6 +132,7 @@
             <?php echo csrf_field(); ?>
             <?php echo method_field('PUT'); ?>
             <div class="row">
+                <input type="hidden" name="id" value="<?php echo e($lims_product_data->id); ?>">
                 <div class="col-lg-8 rounded">
                     <div class="card shadow-lg  p-3  bg-white cards">
                         <div class="form-group">
@@ -143,7 +154,7 @@ unset($__errorArgs, $__bag); ?>
 
                         <div class="form-group">
                             <label class="title">Description</label>
-                            <textarea class="form-control" name="summernote" id="summernote"><?php echo e($lims_product_data->name); ?></textarea>
+                            <textarea class="form-control" name="summernote" id="summernote"><?php echo e($lims_product_data->product_details); ?></textarea>
                         </div>
                         <span class=" mb-2">
                             <?php $__errorArgs = ['summernote'];
@@ -176,11 +187,14 @@ unset($__errorArgs, $__bag); ?>
                                     <i class="fas fa-upload"></i> &nbsp; Choose A Photo
                                 </label>
                                 <p id="num-of-files" class="text-center mt-2">No Files Chosen</p>
-                                <?php $__currentLoopData = $lims_product_data->product_image; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <div id="images" class="d-flex justify-content-start">
-                                    <img src="<?php echo e($image->src); ?>" id="images"  alt="Product Image 1">
+                                <div id="images" class="d-flex justify-content-between">
+                                   
                                 </div>
+                               <div class="d-flex justify-content-start " id="images_container">
+                               <?php $__currentLoopData = $lims_product_data->product_image; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <img src="<?php echo e($image->src); ?>"  alt="Product Image 1" width="100px" height="150px" class="ml-2">
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                               </div>
 
                             </div>
 
@@ -195,7 +209,7 @@ unset($__errorArgs, $__bag); ?>
                         </div>
                         <input type="hidden" id="image-count" name="image_count" value="0">
                         <span class=" mb-2">
-                            <?php $__errorArgs = ['images'];
+                            <?php $__errorArgs = ['pro_image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -484,7 +498,19 @@ unset($__errorArgs, $__bag); ?>
                     <div class="card shadow-lg p-3  bg-white cards">
                         <label for="" class="Variants ">Variants</label>
                         <div class="form-group">
-                            <input type="text" id="priceInput" name="var_name" class="form-control mt-2" placeholder="Enter Variants Name...">
+                            <input type="text" id="priceInput" name="variant" class="form-control mt-2" placeholder="Enter Variants Name...">
+                            <span class=" mb-2">
+                                <?php $__errorArgs = ['variant'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            </span>
                         </div>
                         <div class="form-group">
                             <input type="text" id="variantInput" name="var_values" class="form-control mt-3 mb-2">
@@ -492,7 +518,7 @@ unset($__errorArgs, $__bag); ?>
                         <div class="form-group">
                             <button class="btn mt-2 variant_btn" type="button" onclick="addToTable()">Add to Table</button>
                         </div>
-                        <div class=" table-responsive" id="show_table" style="display: none;">
+                        <div class=" table-responsive" id="show_table">
                             <table id="dataTable" class="table table-bordered mt-4 custom-table">
                                 <tr>
                                     <th>Variant</th>
@@ -503,6 +529,20 @@ unset($__errorArgs, $__bag); ?>
                                     <th>Barcode</th>
                                     <th>Action</th>
                                 </tr>
+                                <tbody>
+                                    <?php $__currentLoopData = $productVariant; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $eachVariant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr>
+                                        <td><?php echo e($eachVariant->title); ?></td>
+                                        <td><?php echo e($eachVariant->price); ?></td>
+                                        <td><?php echo e($eachVariant->inventory_quantity); ?></td>
+                                        <td><?php echo e($eachVariant->qty); ?></td>
+                                        <td><?php echo e($eachVariant->sku); ?></td>
+                                        <td class="selectable-column"><?php echo e($eachVariant->barcode); ?></td>
+                                        <td style="text-align: center;"><button class="btn edit_btn text-center" disabled style="text-align: center;" type="button" onclick="editRow(this)">Edit</button></td>
+                                    </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -736,7 +776,7 @@ unset($__errorArgs, $__bag); ?>
                                 <div class="row d-flex justify-content-between">
                                     <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4 manage">Manage</a>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5" id="tagsSelect">
                                         <?php $__currentLoopData = json_decode($lims_product_data->tags); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $selectedTags): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($selectedTags); ?>" selected class="flex-wrap option-limit-length"><?php echo e($selectedTags); ?></option>
@@ -745,16 +785,35 @@ unset($__errorArgs, $__bag); ?>
                                         <option value="<?php echo e($tag->title); ?>" class="flex-wrap option-limit-length"><?php echo e($tag->title); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
+                                </div> -->
+                                <div>
+                                    <input type="text" class="form-control tags" id="search_tags" placeholder="Search Tags" style="border: 1px solid black; border-radius: 5px;">
+                                    <div id="tag_suggestions" class="tag-suggestions form-group"></div>
+                                    <div id="selected_tag_suggestions" class="select-tag-suggestions form-group mt-2"></div>
+                                    <input type="hidden" class="form-control tags" name="tags[]" id="tag_collection" placeholder="Search Tags" style="border: 1px solid black; border-radius: 5px;">
+                                    <div class="user_database_tags">
+                                        <?php $__currentLoopData = json_decode($lims_product_data->tags); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tags): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <span class="data_user_tags"><?php echo e($tags); ?></span>
+
+                                        <input type="hidden" class="user_database_tags" name="user_database_tags[]" value="<?php echo e($tags); ?>"></input>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
+                                    <span class=" mb-2">
+                                        <?php $__errorArgs = ['price'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger"><?php echo e($message); ?></div>
+                                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                    </span>
+
                                 </div>
                             </div>
                             <div id="selectedTagsContainer" style="border: 5px;"></div>
-                            <!-- <div id="selectedTags" class="d-block">
-                                <?php $__currentLoopData = json_decode($lims_product_data->tags); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tags): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <span class="db_tags"><?php echo e($tags); ?></span>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </div> -->
-
-
                         </div>
                     </div>
 
@@ -783,6 +842,46 @@ unset($__errorArgs, $__bag); ?>
     <?php $__env->stopSection(); ?>
     <?php $__env->startPush('scripts'); ?>
     <script>
+        $('#search_tags').on('keyup', function() {
+            var query = $(this).val();
+            $.ajax({
+                url: "<?php echo e(route('search_tags')); ?>",
+                type: "GET",
+                data: {
+                    'query': query
+                },
+                success: function(data) {
+                    var maxSuggestions = 5; // Maximum number of suggestions to display   string.substring(0, length)
+                    var suggestions = data.slice(0, maxSuggestions).map(tag => '<div class="tag-option mt-2 tx">' + tag.title.substr(0, 35) + '</div>').join('');
+                    $('#tag_suggestions').html(suggestions);
+                    var inputWidth = $('#search_tags').outerWidth();
+                    $('#tag_suggestions').css('width', inputWidth);
+                }
+            })
+        });
+        var selectedTags = [];
+
+        $('#tag_suggestions').on('click', '.tag-option', function() {
+
+            var selectedTag = $(this).text().trim();
+
+            // Append the selected tag to the selected_tag_suggestions with styling and remove button
+            $('#selected_tag_suggestions').append('<div class="selected-tag">' + selectedTag + '<span class="remove-tag">✕</span></div>');
+
+            // Clear the input and suggestions
+            $('#search_tags').val('');
+            $('#tag_suggestions').empty();
+            $('.user_database_tags').hide();
+
+            selectedTags.push(selectedTag);
+            $('#tag_collection').val(selectedTags.join(','));
+
+
+        });
+
+        $('#selected_tag_suggestions').on('click', '.remove-tag', function() {
+            $(this).parent('.selected-tag').remove();
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('tagsSelect');
             const selectedTagsContainer = document.getElementById('selectedTagsContainer');
@@ -855,7 +954,9 @@ unset($__errorArgs, $__bag); ?>
                 }
 
                 const actionCell = newRow.insertCell(6);
-                actionCell.innerHTML = '<button class="btn edit_btn" type="button"  onclick="editRow(this)">Edit</button>';
+                actionCell.innerHTML = '<button class="btn edit_btn" type="button" onclick="editRow(this)" style="text-align: center;">Edit</button>';
+
+                // actionCell.innerHTML = '<button class="btn edit_btn"  type="button"  onclick="editRow(this)">Edit</button>';
 
                 // Clear input fields after adding to the table
                 variantInput.value = '';
@@ -868,7 +969,7 @@ unset($__errorArgs, $__bag); ?>
             const cells = row.cells;
 
             // Toggle the editable state for the cells (start from index 2 to skip Variant and Price columns)
-            for (let i = 1; i < cells.length - 1; i++) {
+            for (let i = 1; i < cells.length; i++) {
                 cells[i].contentEditable = true;
             }
 
@@ -1073,12 +1174,17 @@ unset($__errorArgs, $__bag); ?>
 
         let fileInput = document.getElementById("file-input");
         let imageContainer = document.getElementById("images");
+        let images_Container = document.getElementById("images_container");
         let numOfFiles = document.getElementById("num-of-files");
         let imageCountInput = document.getElementById("image-count");
+        let counter = 0;
 
         function preview() {
+            images_Container.style.setProperty("display", "none", "important");
+            if (counter == 0) {
+                imageContainer.innerHTML = "";
+            }
             // Clear the existing images before adding new ones
-            // imageContainer.innerHTML = "";
 
             let imageFiles = [];
             for (let i = 0; i < fileInput.files.length; i++) {
@@ -1111,6 +1217,7 @@ unset($__errorArgs, $__bag); ?>
                 imageContainer.appendChild(figure);
                 reader.readAsDataURL(image);
             }
+            counter++;
         }
     </script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">

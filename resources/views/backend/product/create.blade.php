@@ -9,122 +9,8 @@
 
 @section('content')
 <style>
-    .dropdown-menu {
-        padding: 0 !important;
-        width: 30px !important;
-        ;
-    }
-
-    .dropdown-menu.inner {
-        /* Set a fixed width for the dropdown menu */
-        width: 200px;
-        /* Enable text wrapping */
-        white-space: normal;
-        /* Define the maximum height for the dropdown menu */
-        max-height: 200px;
-        /* Enable vertical scrolling if the content overflows */
-        overflow-y: auto;
-    }
-
-    /* Target the inner anchor tags within the dropdown-menu inner */
-    .dropdown-menu.inner a {
-        /* Set the display property to block to enable horizontal wrapping */
-        display: block;
-        /* Add some padding for better appearance */
-        padding: 5px;
-    }
-
-    /* Target the text spans within the anchor tags */
-    .dropdown-menu.inner a .text {
-        /* Set the maximum width to control the wrapping */
-        max-width: 150px;
-        /* Adjust this value as needed */
-        /* Enable text wrapping */
-        white-space: normal;
-    }
-
-    .option-limit-length {
-        max-width: 200px;
-        /* Adjust the maximum width as needed */
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-
-
-
-
-    /*  */
-
-    .selected-tag {
-        display: inline-block;
-        margin: 5px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f0f0f0;
-    }
-
-    .selected-tag .close-icon {
-        cursor: pointer;
-        margin-left: 5px;
-    }
-
-    /* Hide all options in the select box */
-    #tagsSelect option {
-        display: none;
-    }
-
-    /* Hide selected options in the select box */
-    /* #tagsSelect option:checked {
-        display: none;
-    } */
-
-
-    #selectedTagsContainer {
-        font-family: 'Inter', sans-serif;
-        font-style: normal;
-        font-size: 13px;
-        ;
-        color: #303030;
-        line-height: 20px;
-        ;
-        font-weight: 400;
-    }
-
-
-    .selected-tag {
-        display: inline-block;
-        margin: 5px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f0f0f0;
-    }
-
-    .selected-tag .close-icon {
-        cursor: pointer;
-        font-size: 16px;
-        /* Increase the cross icon size */
-        margin-left: 5px;
-    }
-
-    /* Hide all options in the select box */
-    #tagsSelect option {
-        display: none;
-    }
-
-    /* Proper styling for the selectedTagsContainer */
-    #selectedTagsContainer {
-        margin-top: 10px;
-    }
-    .media_style {
-        border: 2px dashed grey;
-                padding: 30px; /* Set padding from inside the border */
-    }
-
-    /* Optional: Add some styling for the selected tags container */
+    
+    
 </style>
 
 <section>
@@ -172,15 +58,15 @@
                             <input type="hidden" name="image_count" class="image_count">
                             <!-- <div id="imageUpload" class="dropzone"></div>
                             <span class="validation-msg" id="image-error"></span> -->
-                            <div class="media_style"> 
+                            <div class="media_style">
                                 <input type="file" id="file-input" name="pro_image[]" onchange="preview()" multiple>
                                 <label for="file-input" class="multi_image_select">
                                     <i class="fas fa-upload"></i> &nbsp; Choose A Photo
                                 </label>
                                 <p id="num-of-files" class="text-center mt-2">No Files Chosen</p>
-                            <div id="images" class="d-flex justify-content-start"></div>    
+                                <div id="images" class="d-flex justify-content-start"></div>
                             </div>
-                            
+
                         </div>
                         <input type="hidden" id="image-count" name="image_count" value="0">
                         <span class=" mb-2">
@@ -670,17 +556,26 @@
                                     <label for="" class="ml-3" class="product">Tags</label><a href="#" class="mr-4 manage">Manage</a>
                                 </div>
                                 <div>
-                                    <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5" id="tagsSelect">
+                                    <input type="text" class="form-control tags"  id="search_tags" placeholder="Search Tags" style="border: 1px solid black; border-radius: 5px;">
+                                    <div id="tag_suggestions" class="tag-suggestions form-group"></div>
+                                    <div id="selected_tag_suggestions" class="select-tag-suggestions form-group"></div>
+                                    <input type="hidden" class="form-control tags" name="tags[]" id="tag_collection" placeholder="Search Tags" style="border: 1px solid black; border-radius: 5px;">
+
+
+                                    <span class=" mb-2">
+                                        @error('price')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </span>
+                                    <!-- <select class="form-select border w-100 flex-wrap" name="tags[]" multiple data-live-search="true" data-size="5" id="tagsSelect">
                                         <option value="" disabled hidden>Choose Tags</option>
                                         @foreach ($collections as $tag)
                                         <option value="{{$tag->title}}" class="flex-wrap option-limit-length">{{$tag->title}}</option>
                                         @endforeach
-                                    </select>
+                                    </select> -->
                                 </div>
                             </div>
                             <div id="selectedTagsContainer" style="border: 5px;"></div>
-
-
                         </div>
                     </div>
 
@@ -709,36 +604,36 @@
     @endsection
     @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const select = document.getElementById('tagsSelect');
-            const selectedTagsContainer = document.getElementById('selectedTagsContainer');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const select = document.getElementById('tagsSelect');
+        //     const selectedTagsContainer = document.getElementById('selectedTagsContainer');
 
-            select.addEventListener('change', function() {
-                const selectedOptions = Array.from(select.selectedOptions);
+        //     select.addEventListener('change', function() {
+        //         const selectedOptions = Array.from(select.selectedOptions);
 
-                // Clear the selected tags container
-                selectedTagsContainer.innerHTML = '';
+        //         // Clear the selected tags container
+        //         selectedTagsContainer.innerHTML = '';
 
-                // Populate the selected tags container with the selected options
-                selectedOptions.forEach(function(option) {
-                    const selectedTag = document.createElement('div');
-                    selectedTag.className = 'selected-tag';
-                    selectedTag.innerText = option.value;
+        //         // Populate the selected tags container with the selected options
+        //         selectedOptions.forEach(function(option) {
+        //             const selectedTag = document.createElement('div');
+        //             selectedTag.className = 'selected-tag';
+        //             selectedTag.innerText = option.value;
 
-                    const closeIcon = document.createElement('span');
-                    closeIcon.className = 'close-icon';
-                    closeIcon.innerHTML = '&times;';
-                    closeIcon.addEventListener('click', function() {
-                        // Remove the selected option when the close icon is clicked
-                        select.add(option);
-                        selectedTagsContainer.removeChild(selectedTag);
-                    });
+        //             const closeIcon = document.createElement('span');
+        //             closeIcon.className = 'close-icon';
+        //             closeIcon.innerHTML = '&times;';
+        //             closeIcon.addEventListener('click', function() {
+        //                 // Remove the selected option when the close icon is clicked
+        //                 select.add(option);
+        //                 selectedTagsContainer.removeChild(selectedTag);
+        //             });
 
-                    selectedTag.appendChild(closeIcon);
-                    selectedTagsContainer.appendChild(selectedTag);
-                });
-            });
-        });
+        //             selectedTag.appendChild(closeIcon);
+        //             selectedTagsContainer.appendChild(selectedTag);
+        //         });
+        //     });
+        // });
 
 
 
@@ -1078,6 +973,47 @@
                 reader.readAsDataURL(image);
             }
         }
+
+
+        $('#search_tags').on('keyup', function() {
+            var query = $(this).val();
+            $.ajax({
+                url: "{{ route('search_tags') }}",
+                type: "GET",
+                data: {
+                    'query': query
+                },
+                success: function(data) {
+                    var maxSuggestions = 5; // Maximum number of suggestions to display   string.substring(0, length)
+                    var suggestions = data.slice(0, maxSuggestions).map(tag => '<div class="tag-option mt-2 tx">' + tag.title.substr(0, 35) + '</div>').join('');
+                    $('#tag_suggestions').html(suggestions);
+                    var inputWidth = $('#search_tags').outerWidth();
+                    $('#tag_suggestions').css('width', inputWidth);
+                }
+            })  
+        });
+        var selectedTags = [];
+
+        $('#tag_suggestions').on('click', '.tag-option', function() {
+
+        var selectedTag = $(this).text().trim();
+        
+        // Append the selected tag to the selected_tag_suggestions with styling and remove button
+        $('#selected_tag_suggestions').append('<div class="selected-tag">' + selectedTag + '<span class="remove-tag">✕</span></div>');
+        
+        // Clear the input and suggestions
+        $('#search_tags').val('');
+        $('#tag_suggestions').empty();
+
+        selectedTags.push(selectedTag);
+            $('#tag_collection').val(selectedTags.join(','));
+        
+        
+    });
+
+    $('#selected_tag_suggestions').on('click', '.remove-tag', function() {
+        $(this).parent('.selected-tag').remove();
+    });
     </script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
