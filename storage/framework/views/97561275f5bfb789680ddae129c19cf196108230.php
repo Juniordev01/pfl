@@ -1,5 +1,14 @@
 
 <?php $__env->startSection('content'); ?>
+<style>
+    .table.dataTable img
+    {
+       max-width: none !important;
+       max-height: none  !important;;
+       height: 160px;;
+       width: 130px;;
+    }
+</style>
 <?php if($errors->has('phone_number')): ?>
 <div class="alert alert-danger alert-dismissible text-center">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><?php echo e($errors->first('phone_number')); ?></div>
@@ -1784,9 +1793,10 @@ var id = $("#customer_id").val();
 $.get('sales/getcustomergroup/' + id, function(data) {
     customer_group_rate = (data / 100);
 });
-
+// suggestion code
 var id = $("#warehouse_id").val();
 $.get('sales/getproduct/' + id, function(data) {
+    // console.log(JSON.stringify(data[1]))
     lims_product_array = [];
     product_code = data[0];
     product_name = data[1];
@@ -1799,11 +1809,18 @@ $.get('sales/getproduct/' + id, function(data) {
     batch_no = data[8];
     product_batch_id = data[9];
     is_embeded = data[11];
+    barcode = data[12];
+    // $.each(product_code, function(index) {
+    //     if(is_embeded[index])
+    //         lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')|' + is_embeded[index]);
+    //     else
+    //         lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')');
+    // });
     $.each(product_code, function(index) {
         if(is_embeded[index])
-            lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')|' + is_embeded[index]);
+            lims_product_array.push(product_id[index] + ',' + barcode[index] + ','+ ' (' + product_name[index] + ')|' + is_embeded[index]);
         else
-            lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')');
+        lims_product_array.push(product_id[index] + ',' + barcode[index] + ','+ ' (' + product_name[index] + ')|' + is_embeded[index]);
     });
 });
 
@@ -1919,15 +1936,16 @@ $('#featured-filter').on('click', function(){
 });
 
 function populateProduct(data) {
+    console.log(data);
     var tableData = '<table id="product-table" class="table no-shadow product-list"> <thead class="d-none"> <tr> <th></th> <th></th> <th></th> <th></th> <th></th> </tr></thead> <tbody><tr>';
 
     if (Object.keys(data).length != 0) {
         $.each(data['name'], function(index) {
             var product_info = data['code'][index]+' (' + data['name'][index] + ')';
             if(index % 5 == 0 && index != 0)
-                tableData += '</tr><tr><td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="images/product/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
+                tableData += '</tr><tr><td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="'+data['src'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
             else
-                tableData += '<td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="images/product/'+data['image'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
+                tableData += '<td class="product-img sound-btn" title="'+data['name'][index]+'" data-product = "'+product_info+'"><img  src="'+data['src'][index]+'" width="100%" /><p>'+data['name'][index]+'</p><span>'+data['code'][index]+'</span></td>';
         });
 
         if(data['name'].length % 5){
@@ -2491,9 +2509,10 @@ function productSearch(data) {
 }
 
 function addNewProduct(data){
+    alert(data.length);
     var newRow = $("<tr>");
     var cols = '';
-    temp_unit_name = (data[6]).split(',');
+    // temp_unit_name = (data[6]).split(',');
     pos = product_code.indexOf(data[1]);
     cols += '<td class="col-sm-2 product-title"><button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"><span style="margin-left: -19px; white-space: break-spaces;"><strong>' + data[0] + '</strong></span></button><br>' + data[1] + '<p>In Stock: <span class="in-stock"></span></p></td>';
     if(data[12]) {
@@ -2503,7 +2522,7 @@ function addNewProduct(data){
     else {
         cols += '<td class="col-sm-2"><input type="text" class="form-control batch-no" disabled/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
     }
-    cols += '<td class="col-sm-2">'+data[4]+'</td>';
+    cols += '<td class="col-sm-2">'+((data.length <= 18) ? data[4] : data[5])+'</td>';
     cols += '<td class="col-sm-3"><div class="input-group"><span class="input-group-btn"><button type="button" class="btn btn-default minus"><span class="dripicons-minus"></span></button></span><input type="text" name="qty[]" class="form-control qty numkey input-number" step="any" value="'+data[17]+'" required><span class="input-group-btn"><button type="button" class="btn btn-default plus"><span class="dripicons-plus"></span></button></span></div></td>';
     cols += '<td class="col-sm-2">'+data[4] * data[17]+'</td>';
     cols += '<td class="col-sm-1"><button type="button" class="ibtnDel btn btn-danger btn-sm"><i class="dripicons-cross"></i></button></td>';
