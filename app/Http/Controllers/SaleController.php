@@ -990,6 +990,7 @@ class SaleController extends Controller
     public function getProduct($id)
     {
         $lims_product_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
+        ->join('product_variants','products.id', '=', 'product_variants.product_id')
         ->where([
             ['products.is_active', true],
             ['product_warehouse.warehouse_id', $id],
@@ -997,13 +998,16 @@ class SaleController extends Controller
         ])
         ->whereNull('product_warehouse.variant_id')
         ->whereNull('product_warehouse.product_batch_id')
-        ->select('product_warehouse.*',  'products.is_embeded')
+        ->select('product_warehouse.*',  'products.is_embeded','product_variants.barcode')
         ->get();
+
+        // dd($lims_product_warehouse_data);
 
         config()->set('database.connections.mysql.strict', false);
         \DB::reconnect(); //important as the existing connection if any would be in strict mode
 
         $lims_product_with_batch_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
+        ->join('product_variants','products.id', '=', 'product_variants.product_id')
         ->where([
             ['products.is_active', true],
             ['product_warehouse.warehouse_id', $id],
@@ -1011,24 +1015,29 @@ class SaleController extends Controller
         ])
         ->whereNull('product_warehouse.variant_id')
         ->whereNotNull('product_warehouse.product_batch_id')
-        ->select('product_warehouse.*', 'products.is_embeded')
+        ->select('product_warehouse.*', 'products.is_embeded','product_variants.barcode')
         ->groupBy('product_warehouse.product_id')
         ->get();
 
+        // dd($lims_product_with_batch_warehouse_data);
         //now changing back the strict ON
         config()->set('database.connections.mysql.strict', true);
         \DB::reconnect();
 
         $lims_product_with_variant_warehouse_data = Product::join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')
+        ->join('product_variants','products.id', '=', 'product_variants.product_id')
+
         ->where([
             ['products.is_active', true],
             ['product_warehouse.warehouse_id', $id],
             ['product_warehouse.qty', '>', 0]
         ])
         ->whereNotNull('product_warehouse.variant_id')
-        ->select('product_warehouse.*', 'products.is_embeded')
+        ->select('product_warehouse.*', 'products.is_embeded','product_variants.barcode')
         ->get();
         
+            // dd($lims_product_with_variant_warehouse_data);
+
         $product_code = [];
         $product_name = [];
         $product_qty = [];
@@ -1041,6 +1050,7 @@ class SaleController extends Controller
         $product_batch_id = [];
         $expired_date = [];
         $is_embeded = [];
+        $barcode = [];
         //product without variant
         foreach ($lims_product_warehouse_data as $product_warehouse) 
         {
@@ -1056,11 +1066,13 @@ class SaleController extends Controller
             $batch_no[] = null;
             $product_batch_id[] = null;
             $expired_date[] = null;
+            $barcode [] = $product_warehouse->barcode;
             if($product_warehouse->is_embeded)
                 $is_embeded[] = $product_warehouse->is_embeded;
             else
                 $is_embeded[] = 0;
         }
+        // dd($barcode);
         //product with batches
         foreach ($lims_product_with_batch_warehouse_data as $product_warehouse) 
         {
@@ -1076,6 +1088,8 @@ class SaleController extends Controller
             $product_batch_data = ProductBatch::select('id', 'batch_no', 'expired_date')->find($product_warehouse->product_batch_id);
             $batch_no[] = $product_batch_data->batch_no;
             $product_batch_id[] = $product_batch_data->id;
+            $barcode [] = $product_warehouse->barcode;
+
             $expired_date[] = date(config('date_format'), strtotime($product_batch_data->expired_date));
             if($product_warehouse->is_embeded)
                 $is_embeded[] = $product_warehouse->is_embeded;
@@ -1095,6 +1109,8 @@ class SaleController extends Controller
                 $product_id[] = $lims_product_data->id;
                 $product_list[] = $lims_product_data->product_list;
                 $qty_list[] = $lims_product_data->qty_list;
+            $barcode [] = $product_warehouse->barcode;
+
                 $batch_no[] = null;
                 $product_batch_id[] = null;
                 $expired_date[] = null;
@@ -1115,12 +1131,15 @@ class SaleController extends Controller
             $product_id[] = $product->id;
             $product_list[] = $product->product_list;
             $qty_list[] = $product->qty_list;
+            $barcode [] = $product->barcode;
+
             $batch_no[] = null;
             $product_batch_id[] = null;
             $expired_date[] = null;
             $is_embeded[] = 0;
         }
-        $product_data = [$product_code, $product_name, $product_qty, $product_type, $product_id, $product_list, $qty_list, $product_price, $batch_no, $product_batch_id, $expired_date, $is_embeded];
+        $product_data = [$product_code, $product_name, $product_qty, $product_type, $product_id, $product_list, $qty_list, $product_price, $batch_no, $product_batch_id, $expired_date, $is_embeded,$barcode];
+        //  dd($product_data);
         return $product_data;
     }
 
@@ -1220,6 +1239,8 @@ class SaleController extends Controller
             $currency_list = DB::table('currencies')->get();
             $numberOfInvoice = Sale::count();
             $custom_fields = CustomField::where('belongs_to', 'sale')->get();
+            // return($lims_category_list);
+            // return($lims_product_list);
             return view('backend.sale.pos', compact('currency_list','role','all_permission', 'lims_customer_list', 'lims_customer_group_all', 'lims_warehouse_list', 'lims_reward_point_setting_data', 'lims_product_list', 'product_number', 'lims_tax_list', 'lims_biller_list', 'lims_pos_setting_data', 'options', 'lims_brand_list', 'lims_category_list', 'lims_table_list', 'recent_sale', 'recent_draft', 'lims_coupon_list', 'flag', 'numberOfInvoice', 'custom_fields'));
         }
         else
@@ -1269,6 +1290,7 @@ class SaleController extends Controller
         if(($category_id != 0) && ($brand_id != 0)){
             $lims_product_list = DB::table('products')
                                 ->join('categories', 'products.category_id', '=', 'categories.id')
+                                ->join('product_images','products.id','=','product_images.product_id')
                                 ->where([
                                     ['products.is_active', true],
                                     ['products.category_id', $category_id],
@@ -1277,18 +1299,20 @@ class SaleController extends Controller
                                     ['categories.parent_id', $category_id],
                                     ['products.is_active', true],
                                     ['brand_id', $brand_id]
-                                ])->select('products.name', 'products.code', 'products.image')->get();
+                                ])->select('products.name', 'products.code', 'products.image','product_images.src')->get();
         }
         elseif(($category_id != 0) && ($brand_id == 0)){
             $lims_product_list = DB::table('products')
                                 ->join('categories', 'products.category_id', '=', 'categories.id')
+                                ->join('product_images','products.id','=','product_images.product_id')
                                 ->where([
                                     ['products.is_active', true],
                                     ['products.category_id', $category_id],
                                 ])->orWhere([
                                     ['categories.parent_id', $category_id],
                                     ['products.is_active', true]
-                                ])->select('products.id', 'products.name', 'products.code', 'products.image', 'products.is_variant')->get();
+                                ])->select('products.id', 'products.name', 'products.code', 'products.image', 'products.is_variant','product_images.src')->get();
+
         }
         elseif(($category_id == 0) && ($brand_id != 0)){
             $lims_product_list = Product::where([
@@ -1310,7 +1334,8 @@ class SaleController extends Controller
                     $data['name'][$index] = $product->name.' ['.$variant->name.']';
                     $data['code'][$index] = $variant->pivot['item_code'];
                     $images = explode(",", $product->image);
-                    $data['image'][$index] = $images[0];
+                    $src = explode(",", $product->src);
+                    $data['src'][$index] = $src[0];
                     $index++;
                 }
             }
@@ -1319,6 +1344,8 @@ class SaleController extends Controller
                 $data['code'][$index] = $product->code;
                 $images = explode(",", $product->image);
                 $data['image'][$index] = $images[0];
+                $src = explode(",", $product->src);
+                $data['src'][$index] = $src[0];
                 $index++;
             }
         }
@@ -1367,6 +1394,13 @@ class SaleController extends Controller
     public function limsProductSearch(Request $request)
     {
         
+        // $product_code = explode("(", $request['data']);
+        // $lims_product_data = Product::where([
+        //     ['code', (int)$product_code[0]],
+        //     ['is_active', true]
+        // ])->first();
+        // dd($lims_product_data);
+
         $todayDate = date('Y-m-d');
         $product_code = explode("(", $request['data']);
       
@@ -1376,8 +1410,9 @@ class SaleController extends Controller
         $product_Detail = explode("|", $product_info[0]);
         $product = explode(",", $product_Detail[0]) ;
         $id = $product[0];
-        $prod_var = $product[1];
         // dd($id);
+        $prod_var = $product[1];
+        // dd($prod_var);
         if(strpos($request['data'], '|')) {
             $product_info = explode("|", $request['data']);
             $embeded_code = (int)$product_code[0];
@@ -1421,7 +1456,7 @@ class SaleController extends Controller
                     ['products.is_active', true]
                 ])->first();
 
-                // dd($lims_product_data);
+                // dd("dgfgjgfhgf");
             $product_variant_id = $lims_product_data->product_variant_id;
         }
 
