@@ -18,28 +18,25 @@ class BarcodeGenerator extends Controller
     public function generateBarcode()
     {
 
-        $products = Product::with('productVariants')->whereNotIn('id', range(1, 809))->get(); //Change The rang according to your need
+        $products = Product::with('productVariants')->whereNotIn('id', range(1, 10))->get(); //Change The rang according to your need
+
         foreach ($products as $product) {
 
             $product->product_barcode = null ? $product->product_barcode : mt_rand(1000000000000, 9999999999999);
             if ($product->update()) {
                 $parts = explode('-', $product->name, 2);
-                $lastPart = $parts[1];
-                if (count($product->productVariants) > 0) {
-                    foreach ($product->productVariants as $eachVariant) {
-                        $eachVariant->sku =  $lastPart . "-" . $eachVariant->title;
-                        $eachVariant->barcode = $lastPart . "-" . $eachVariant->title . "-" . $eachVariant->title;
-                        $eachVariant->update();
+                if (isset($parts[1])) {
+                    $lastPart = $parts[1];
+                    if (count($product->productVariants) > 0) {
+                        foreach ($product->productVariants as $eachVariant) {
+                            if ($eachVariant->sku == null && $eachVariant->barcode == null) {
+                                $eachVariant->sku =  $lastPart . "-" . $eachVariant->title;
+                                $eachVariant->barcode = $lastPart . "-" . $eachVariant->title . "-" . $eachVariant->title;
+                                $eachVariant->update();
+                            }
+                        }
                     }
-                    return $this->json(
-                        ['message' => 'Product barcode and Variants Updated'],
-                        200
-                    );
-                } else
-                    return $this->json(
-                        ['message' => 'No Variant Available'],
-                        404
-                    );
+                }
             }
         }
 
@@ -60,7 +57,7 @@ class BarcodeGenerator extends Controller
 
     public function fetchBarcodeProduct()
     {
-        
+
         $products = Product::orderBy('id', 'desc')->with('productVariants')->paginate(5);
         // $products = Product::orderBy('id', 'desc')->with('productVariants')->where('id',786)->get();
         // return($products);

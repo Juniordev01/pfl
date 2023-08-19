@@ -2497,6 +2497,7 @@ function addNewProduct(data){
     alert(data.length);
     var newRow = $("<tr>");
     var cols = '';
+    console.log(data);
     // temp_unit_name = (data[6]).split(',');
     pos = product_code.indexOf(data[1]);
     cols += '<td class="col-sm-2 product-title"><button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"><span style="margin-left: -19px; white-space: break-spaces;"><strong>' + data[0] + '</strong></span></button><br>' + data[1] + '<p>In Stock: <span class="in-stock"></span></p></td>';
@@ -2508,8 +2509,10 @@ function addNewProduct(data){
         cols += '<td class="col-sm-2"><input type="text" class="form-control batch-no" disabled/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
     }
     cols += '<td class="col-sm-2">'+((data.length <= 18) ? data[4] : data[5])+'</td>';
+   
     cols += '<td class="col-sm-3"><div class="input-group"><span class="input-group-btn"><button type="button" class="btn btn-default minus"><span class="dripicons-minus"></span></button></span><input type="text" name="qty[]" class="form-control qty numkey input-number" step="any" value="'+data[17]+'" required><span class="input-group-btn"><button type="button" class="btn btn-default plus"><span class="dripicons-plus"></span></button></span></div></td>';
-    cols += '<td class="col-sm-2">'+data[4] * data[17]+'</td>';
+    // cols += '<td class="col-sm-2">'+data[4] * data[17]+'</td>';
+    cols += '<td class="col-sm-2"></td>';
     cols += '<td class="col-sm-1"><button type="button" class="ibtnDel btn btn-danger btn-sm"><i class="dripicons-cross"></i></button></td>';
     cols += '<input type="hidden" class="product-code" name="product_code[]" value="' + data[1] + '"/>';
     cols += '<input type="hidden" class="product-id" name="product_id[]" value="' + data[9] + '"/>';
